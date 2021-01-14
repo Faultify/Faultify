@@ -19,6 +19,7 @@ Faultify is a dotnet mutation tool that performs mutations in the byte code to t
 
 **Non-Funnctional Features**
 - [X] Crossplatform .net core compitability. 
+- [X] Nunit/Xunit/Msunit support via `dotnet test`.
 - [X] Runnable from console. 
 
 ## How to use
