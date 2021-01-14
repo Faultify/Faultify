@@ -1,5 +1,7 @@
 # Faultify
 Faultify is a dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
+Basicly, it imitates the bad programmer by introducing mistakes on purpose. 
+A test is supposed to fail after a mutation, if that is not the case the test is probable error-prone.
 
 ## Features
 
