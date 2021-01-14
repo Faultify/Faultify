@@ -1,0 +1,21 @@
+name:  Tester
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore Source/Faultify/Faultify.sln
+    - name: Build
+      run: dotnet build Source/Faultify/Faultify.sln
+    - name: Test
+      run: dotnet test Source/Faultify/Faultify.Tests/Faultify.Tests.csproj --no-restore --verbosity normal
