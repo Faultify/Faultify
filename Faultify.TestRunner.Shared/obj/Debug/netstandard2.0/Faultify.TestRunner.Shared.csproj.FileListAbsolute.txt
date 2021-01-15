@@ -1,0 +1,9 @@
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\bin\Debug\netstandard2.0\Faultify.TestRunner.Shared.deps.json
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\bin\Debug\netstandard2.0\Faultify.TestRunner.Shared.dll
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\bin\Debug\netstandard2.0\Faultify.TestRunner.Shared.pdb
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\obj\Debug\netstandard2.0\Faultify.TestRunner.Shared.AssemblyInfoInputs.cache
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\obj\Debug\netstandard2.0\Faultify.TestRunner.Shared.AssemblyInfo.cs
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\obj\Debug\netstandard2.0\Faultify.TestRunner.Shared.csproj.CoreCompileInputs.cache
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\obj\Debug\netstandard2.0\Faultify.TestRunner.Shared.dll
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\obj\Debug\netstandard2.0\Faultify.TestRunner.Shared.pdb
+E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Shared\obj\Debug\netstandard2.0\Faultify.TestRunner.Shared.csprojAssemblyReference.cache

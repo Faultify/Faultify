@@ -1,0 +1,12 @@
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard20\Faultify.Injection.AssemblyInfoInputs.cache
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard20\Faultify.Injection.AssemblyInfo.cs
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard20\Faultify.Injection.csproj.CoreCompileInputs.cache
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard20\Faultify.Injection.deps.json
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard20\Faultify.Injection.dll
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard20\Faultify.Injection.pdb
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard20\Faultify.Injection.dll
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard20\Faultify.Injection.pdb
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard20\Faultify.TestRunner.Shared.dll
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard20\Faultify.TestRunner.Shared.pdb
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard20\Faultify.Injection.csprojAssemblyReference.cache
+E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard20\Faultify.Injection.csproj.CopyComplete

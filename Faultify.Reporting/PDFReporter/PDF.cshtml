@@ -1,0 +1,124 @@
+﻿@model Faultify.Reporting.MutationProjectReportModel
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <style>
+        .ul-list { margin-top: 2%; }
+
+        #TopTitle {
+            margin-bottom: 2%;
+            margin-top: 1%;
+            text-align: center;
+        }
+
+        .infopanel {
+            border-color: rgba(0, 0, 0, .125);
+            border-radius: 3px;
+            border-style: solid;
+            border-width: 1px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 40%;
+        }
+
+        .infolist {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1 id="TopTitle">@Model.Name</h1>
+</div>
+<div class="card-header infopanel">
+
+    <ul>
+        Total amount of possible mutations: @Model.Total
+    </ul>
+    <ul>
+        # Mutants killed: @Model.TotalKilled
+    </ul>
+    <ul>
+        # Mutants survived: @Model.TotalSurvived
+    </ul>
+    <ul>
+        # Mutants timed out: @Model.TotalTimedOut
+    </ul>
+    <ul>
+        # Mutations without coverage: @Model.TotalNoCoverage
+    </ul>
+    <ul>
+        <label>
+            Mutation Score:
+        </label>
+        <div class="progress">
+
+            @if (Model.ScoreAsInt == 100)
+            {
+                <div class="progress-bar progress-bar-animated progress-bar-striped bg-success" role="progressbar" style="width: @Model.ScoreString" aria-valuenow="@Model.ScoreAsInt" aria-valuemin="0" aria-valuemax="100">@Model.ScoreString</div>
+            }
+            else if (Model.ScoreAsInt > 50 && Model.ScoreAsInt < 100)
+            {
+                <div class="progress-bar progress-bar-animated progress-bar-striped bg-warning" role="progressbar" style="width: @Model.ScoreString" aria-valuenow="@Model.ScoreAsInt" aria-valuemin="0" aria-valuemax="100">@Model.ScoreString</div>
+            }
+            else
+            {
+                <div class="progress-bar progress-bar-animated progress-bar-striped bg-danger" role="progressbar" style="width: @Model.ScoreString" aria-valuenow="@Model.ScoreAsInt" aria-valuemin="0" aria-valuemax="100">@Model.ScoreString</div>
+            }
+        </div>
+    </ul>
+</div>
+
+<div>
+    @for (var i = 0; i < Model.TestProjects.Count; i++)
+    {
+        var testProject = Model.TestProjects[i];
+        <ul>
+            <div class="card-header ul-list">
+                <h5 class="mb-0">
+                    @testProject.Name
+                    @if (testProject.TotalMutationsKilledProject == testProject.TotalProject)
+                    {
+                        <label style="float: right;" class="text-success">Mutants killed: @testProject.TotalMutationsKilledProject / @testProject.TotalProject</label>
+                    }
+                    else if (testProject.TotalMutationsSurvivedProject == testProject.TotalProject)
+                    {
+                        <label style="float: right;" class="text-danger">Mutants killed: @testProject.TotalMutationsKilledProject / @testProject.TotalProject</label>
+                    }
+                    else
+                    {
+                        <label style="float: right;" class="text-warning">Mutants killed: @testProject.TotalMutationsKilledProject / @testProject.TotalProject</label>
+                    }
+                </h5>
+            </div>
+
+            @for (var y = 0; y < testProject.Tests.Count; y++)
+            {
+                var testCaseModel = testProject.Tests[y];
+                <ul>
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            @testCaseModel.Name
+                            @if (testCaseModel.TotalMutationsKilledResult == testCaseModel.TotalResult)
+                            {
+                                <label style="float: right;" class="text-success">Mutants killed: @testCaseModel.TotalMutationsKilledResult / @testCaseModel.TotalResult</label>
+                            }
+                            else if (testCaseModel.TotalMutationsSurvivedResult == testCaseModel.TotalResult)
+                            {
+                                <label style="float: right;" class="text-danger">Mutants killed: @testCaseModel.TotalMutationsKilledResult / @testCaseModel.TotalResult</label>
+                            }
+                            else
+                            {
+                                <label style="float: right;" class="text-warning">Mutants killed: @testCaseModel.TotalMutationsKilledResult / @testCaseModel.TotalResult</label>
+                            }
+                        </h6>
+                    </div>
+                </ul>
+            }
+        </ul>
+    }
+</div>
+</body>

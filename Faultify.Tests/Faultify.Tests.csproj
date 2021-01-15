@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="UnitTests\TestSource\ArithmeticTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\ArrayTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\BiggerThanTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\BitwiseTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\BooleanLiteralTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\BooleanTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\ConstantTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\DecompilerTestTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\EqualityTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\LogicalTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\LoopTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\SmallerThanTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\SumTarget.cs" />
+    <Compile Remove="UnitTests\TestSource\TestAssemblyTarget.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="UnitTests\TestSource\ArithmeticTarget" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="UnitTests\TestSource\ArithmeticTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\ArrayTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\BitwiseTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\BooleanLiteralTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\BooleanTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\ConstantTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\DecompilerTestTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\EqualityTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\LogicalTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\LoopTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UnitTests\TestSource\TestAssemblyTarget.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.3" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Faultify.Analyzers\Faultify.Analyzers.csproj" />
+    <ProjectReference Include="..\Faultify.Core\Faultify.Core.csproj" />
+  </ItemGroup>
+
+</Project>

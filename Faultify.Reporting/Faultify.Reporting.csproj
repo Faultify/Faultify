@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HTMLReporter\Page.cshtml" />
+    <None Remove="PDFReporter\PDF.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="HTMLReporter\Page.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PDFReporter\PDF.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Haukcode.WkHtmlToPdfDotNet" Version="1.3.0" />
+    <PackageReference Include="RazorLight" Version="2.0.0-rc.2" />
+  </ItemGroup>
+
+</Project>

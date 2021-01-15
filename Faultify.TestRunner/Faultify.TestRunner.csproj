@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Faultify.Analyzers\Faultify.Analyzers.csproj" />
+    <ProjectReference Include="..\Faultify.Core\Faultify.Core.csproj" />
+    <ProjectReference Include="..\Faultify.Reporting\Faultify.Reporting.csproj" />
+  </ItemGroup>
+
+</Project>
