@@ -1,8 +1,0 @@
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netcoreapp3.1\Faultify.Injection.deps.json
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netcoreapp3.1\Faultify.Injection.dll
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netcoreapp3.1\Faultify.Injection.pdb
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netcoreapp3.1\Faultify.Injection.AssemblyInfoInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netcoreapp3.1\Faultify.Injection.AssemblyInfo.cs
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netcoreapp3.1\Faultify.Injection.csproj.CoreCompileInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netcoreapp3.1\Faultify.Injection.dll
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netcoreapp3.1\Faultify.Injection.pdb

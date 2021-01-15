@@ -1,9 +1,0 @@
-E:\programming\Faultify\Source\Faultify\Faultify.Core\bin\Debug\netstandard2.0\Faultify.Core.deps.json
-E:\programming\Faultify\Source\Faultify\Faultify.Core\bin\Debug\netstandard2.0\Faultify.Core.dll
-E:\programming\Faultify\Source\Faultify\Faultify.Core\bin\Debug\netstandard2.0\Faultify.Core.pdb
-E:\programming\Faultify\Source\Faultify\Faultify.Core\obj\Debug\netstandard2.0\Faultify.Core.AssemblyInfoInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.Core\obj\Debug\netstandard2.0\Faultify.Core.AssemblyInfo.cs
-E:\programming\Faultify\Source\Faultify\Faultify.Core\obj\Debug\netstandard2.0\Faultify.Core.csproj.CoreCompileInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.Core\obj\Debug\netstandard2.0\Faultify.Core.dll
-E:\programming\Faultify\Source\Faultify\Faultify.Core\obj\Debug\netstandard2.0\Faultify.Core.pdb
-E:\programming\Faultify\Source\Faultify\Faultify.Core\obj\Debug\netstandard2.0\Faultify.Core.csprojAssemblyReference.cache

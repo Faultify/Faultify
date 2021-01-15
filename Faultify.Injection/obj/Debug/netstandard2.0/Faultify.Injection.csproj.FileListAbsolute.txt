@@ -1,9 +1,0 @@
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard2.0\Faultify.Injection.deps.json
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard2.0\Faultify.Injection.dll
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\bin\Debug\netstandard2.0\Faultify.Injection.pdb
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard2.0\Faultify.Injection.AssemblyInfoInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard2.0\Faultify.Injection.AssemblyInfo.cs
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard2.0\Faultify.Injection.csproj.CoreCompileInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard2.0\Faultify.Injection.dll
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard2.0\Faultify.Injection.pdb
-E:\programming\Faultify\Source\Faultify\Faultify.Injection\obj\Debug\netstandard2.0\Faultify.Injection.csprojAssemblyReference.cache

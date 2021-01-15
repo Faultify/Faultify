@@ -1,8 +1,0 @@
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\bin\Debug\netstandard2.0\Faultify.TestRunner.Collector.deps.json
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\bin\Debug\netstandard2.0\Faultify.TestRunner.Collector.dll
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\bin\Debug\netstandard2.0\Faultify.TestRunner.Collector.pdb
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\obj\Debug\netstandard2.0\Faultify.TestRunner.Collector.AssemblyInfoInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\obj\Debug\netstandard2.0\Faultify.TestRunner.Collector.AssemblyInfo.cs
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\obj\Debug\netstandard2.0\Faultify.TestRunner.Collector.csproj.CoreCompileInputs.cache
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\obj\Debug\netstandard2.0\Faultify.TestRunner.Collector.dll
-E:\programming\Faultify\Source\Faultify\Faultify.TestRunner.Collector\obj\Debug\netstandard2.0\Faultify.TestRunner.Collector.pdb
