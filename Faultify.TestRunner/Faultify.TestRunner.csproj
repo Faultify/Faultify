@@ -7,7 +7,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Faultify.Analyzers\Faultify.Analyzers.csproj" />
     <ProjectReference Include="..\Faultify.Core\Faultify.Core.csproj" />
+    <ProjectReference Include="..\Faultify.Injection\Faultify.Injection.csproj" />
     <ProjectReference Include="..\Faultify.Reporting\Faultify.Reporting.csproj" />
+    <ProjectReference Include="..\Faultify.TestRunner.Shared\Faultify.TestRunner.Shared.csproj" />
   </ItemGroup>
 
 </Project>

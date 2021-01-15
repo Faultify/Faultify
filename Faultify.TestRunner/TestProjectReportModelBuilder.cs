@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Faultify.Reporting;
+using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using TestResult = Faultify.TestRunner.Shared.TestResult;

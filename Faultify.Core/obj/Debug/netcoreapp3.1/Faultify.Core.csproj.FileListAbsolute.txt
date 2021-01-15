@@ -558,3 +558,4 @@ E:\programming\FaultifyNew\Faultify\Faultify.Core\obj\Debug\netcoreapp3.1\Faulti
 E:\programming\FaultifyNew\Faultify\Faultify.Core\obj\Debug\netcoreapp3.1\Faultify.Core.csproj.CoreCompileInputs.cache
 E:\programming\FaultifyNew\Faultify\Faultify.Core\obj\Debug\netcoreapp3.1\Faultify.Core.dll
 E:\programming\FaultifyNew\Faultify\Faultify.Core\obj\Debug\netcoreapp3.1\Faultify.Core.pdb
+E:\programming\FaultifyNew\Faultify\Faultify.Core\obj\Debug\netcoreapp3.1\Faultify.Core.csprojAssemblyReference.cache

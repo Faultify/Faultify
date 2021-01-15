@@ -672,3 +672,4 @@ E:\programming\FaultifyNew\Faultify\Faultify.Cli\bin\Debug\netcoreapp3.1\refs\Sy
 E:\programming\FaultifyNew\Faultify\Faultify.Cli\bin\Debug\netcoreapp3.1\refs\System.Reflection.Metadata.dll
 E:\programming\FaultifyNew\Faultify\Faultify.Cli\bin\Debug\netcoreapp3.1\refs\System.Runtime.CompilerServices.Unsafe.dll
 E:\programming\FaultifyNew\Faultify\Faultify.Cli\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.UserSecrets.dll
+E:\programming\FaultifyNew\Faultify\Faultify.Cli\obj\Debug\netcoreapp3.1\Faultify.Cli.csprojAssemblyReference.cache

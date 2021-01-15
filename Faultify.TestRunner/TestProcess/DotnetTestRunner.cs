@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Faultify.TestRunner.Shared;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using TestResult = Faultify.TestRunner.Shared.TestResult;
 
