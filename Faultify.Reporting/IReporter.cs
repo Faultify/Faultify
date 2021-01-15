@@ -5,6 +5,6 @@ namespace Faultify.Reporting
     public interface IReporter
     {
         string FileExtension { get; }
-        Task<byte[]> CreateReport(MutationProjectReportModel mutationRun);
+        Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun);
     }
 }

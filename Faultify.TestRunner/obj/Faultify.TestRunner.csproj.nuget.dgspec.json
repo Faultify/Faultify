@@ -112,7 +112,7 @@
           "dependencies": {
             "Buildalyzer": {
               "target": "Package",
-              "version": "[3.1.0, )"
+              "version": "[3.2.0, )"
             },
             "ICSharpCode.Decompiler": {
               "target": "Package",
@@ -136,7 +136,7 @@
             },
             "MonoMod.Utils": {
               "target": "Package",
-              "version": "[20.11.26.2, )"
+              "version": "[21.1.11.1, )"
             },
             "RazorLight": {
               "target": "Package",
@@ -158,6 +158,71 @@
               "privateAssets": "none"
             },
             "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj",
+        "projectName": "Faultify.Injection",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\obj\\",
+        "projectStyle": "PackageReference",
+        "crossTargeting": true,
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Mono.Cecil": {
+              "target": "Package",
+              "version": "[0.11.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
               "privateAssets": "all"
             }
           },
@@ -232,6 +297,66 @@
         }
       }
     },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj",
+        "projectName": "Faultify.TestRunner.Shared",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Microsoft.TestPlatform.ObjectModel": {
+              "target": "Package",
+              "version": "[16.8.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner\\Faultify.TestRunner.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -262,8 +387,14 @@
               "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj": {
                 "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj"
               },
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj"
+              },
               "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj": {
                 "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj"
+              },
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj"
               }
             }
           }

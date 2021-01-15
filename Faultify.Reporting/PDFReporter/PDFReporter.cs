@@ -8,10 +8,10 @@ namespace Faultify.Reporting.PDFReporter
     public class PdfReporter : IReporter
     {
         private static readonly BasicConverter Converter = new BasicConverter(new PdfTools());
-        private readonly string _template = File.ReadAllText(Path.Combine("Reporters", "PDFReporter", "PDF.cshtml"));
-        public string FileExtension => "pdf";
+        private readonly string _template = File.ReadAllText(Path.Combine("PDFReporter", "PDF.cshtml"));
+        public string FileExtension => ".pdf";
 
-        public async Task<byte[]> CreateReport(MutationProjectReportModel mutationRun)
+        public async Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun)
         {
             var doc = new HtmlToPdfDocument
             {

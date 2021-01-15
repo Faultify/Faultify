@@ -112,7 +112,7 @@
           "dependencies": {
             "Buildalyzer": {
               "target": "Package",
-              "version": "[3.1.0, )"
+              "version": "[3.2.0, )"
             },
             "ICSharpCode.Decompiler": {
               "target": "Package",
@@ -136,7 +136,7 @@
             },
             "MonoMod.Utils": {
               "target": "Package",
-              "version": "[20.11.26.2, )"
+              "version": "[21.1.11.1, )"
             },
             "RazorLight": {
               "target": "Package",
@@ -214,7 +214,7 @@
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
-              "version": "[16.8.0, )"
+              "version": "[16.8.3, )"
             },
             "Mono.Cecil": {
               "target": "Package",
@@ -222,7 +222,7 @@
             },
             "NUnit": {
               "target": "Package",
-              "version": "[3.12.0, )"
+              "version": "[3.13.0, )"
             },
             "NUnit3TestAdapter": {
               "target": "Package",

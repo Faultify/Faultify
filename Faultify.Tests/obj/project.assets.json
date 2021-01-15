@@ -2,10 +2,10 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "Buildalyzer/3.1.0": {
+      "Buildalyzer/3.2.0": {
         "type": "package",
         "dependencies": {
-          "Buildalyzer.Logger": "3.1.0",
+          "Buildalyzer.Logger": "3.2.0",
           "MSBuild.StructuredLogger": "2.1.133",
           "Microsoft.Build": "16.5.0",
           "Microsoft.Build.Framework": "16.5.0",
@@ -24,7 +24,7 @@
           "lib/netstandard2.0/Buildalyzer.dll": {}
         }
       },
-      "Buildalyzer.Logger/3.1.0": {
+      "Buildalyzer.Logger/3.2.0": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.1"
@@ -292,7 +292,7 @@
           "lib/netstandard2.0/Microsoft.CodeAnalysis.Razor.dll": {}
         }
       },
-      "Microsoft.CodeCoverage/16.8.0": {
+      "Microsoft.CodeCoverage/16.8.3": {
         "type": "package",
         "compile": {
           "lib/netcoreapp1.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll": {}
@@ -527,11 +527,11 @@
           "lib/netcoreapp3.1/Microsoft.Extensions.Primitives.dll": {}
         }
       },
-      "Microsoft.NET.Test.Sdk/16.8.0": {
+      "Microsoft.NET.Test.Sdk/16.8.3": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeCoverage": "16.8.0",
-          "Microsoft.TestPlatform.TestHost": "16.8.0"
+          "Microsoft.CodeCoverage": "16.8.3",
+          "Microsoft.TestPlatform.TestHost": "16.8.3"
         },
         "build": {
           "build/netcoreapp2.1/Microsoft.NET.Test.Sdk.props": {},
@@ -657,24 +657,30 @@
           }
         }
       },
-      "Microsoft.TestPlatform.TestHost/16.8.0": {
+      "Microsoft.TestPlatform.TestHost/16.8.3": {
         "type": "package",
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "16.8.0",
+          "Microsoft.TestPlatform.ObjectModel": "16.8.3",
           "Newtonsoft.Json": "9.0.1"
         },
         "compile": {
           "lib/netcoreapp2.1/Microsoft.TestPlatform.CommunicationUtilities.dll": {},
+          "lib/netcoreapp2.1/Microsoft.TestPlatform.CoreUtilities.dll": {},
           "lib/netcoreapp2.1/Microsoft.TestPlatform.CrossPlatEngine.dll": {},
+          "lib/netcoreapp2.1/Microsoft.TestPlatform.PlatformAbstractions.dll": {},
           "lib/netcoreapp2.1/Microsoft.TestPlatform.Utilities.dll": {},
           "lib/netcoreapp2.1/Microsoft.VisualStudio.TestPlatform.Common.dll": {},
+          "lib/netcoreapp2.1/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll": {},
           "lib/netcoreapp2.1/testhost.dll": {}
         },
         "runtime": {
           "lib/netcoreapp2.1/Microsoft.TestPlatform.CommunicationUtilities.dll": {},
+          "lib/netcoreapp2.1/Microsoft.TestPlatform.CoreUtilities.dll": {},
           "lib/netcoreapp2.1/Microsoft.TestPlatform.CrossPlatEngine.dll": {},
+          "lib/netcoreapp2.1/Microsoft.TestPlatform.PlatformAbstractions.dll": {},
           "lib/netcoreapp2.1/Microsoft.TestPlatform.Utilities.dll": {},
           "lib/netcoreapp2.1/Microsoft.VisualStudio.TestPlatform.Common.dll": {},
+          "lib/netcoreapp2.1/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll": {},
           "lib/netcoreapp2.1/testhost.dll": {}
         },
         "resource": {
@@ -852,7 +858,7 @@
           "lib/netstandard2.0/Mono.Cecil.dll": {}
         }
       },
-      "MonoMod.Utils/20.11.26.2": {
+      "MonoMod.Utils/21.1.11.1": {
         "type": "package",
         "dependencies": {
           "Mono.Cecil": "0.11.3",
@@ -956,7 +962,7 @@
           "lib/netstandard2.0/NuGet.Frameworks.dll": {}
         }
       },
-      "NUnit/3.12.0": {
+      "NUnit/3.13.0": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "2.0.0"
@@ -2577,13 +2583,13 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
-          "Buildalyzer": "3.1.0",
+          "Buildalyzer": "3.2.0",
           "ICSharpCode.Decompiler": "6.2.1.6137",
           "Microsoft.CodeAnalysis.CSharp": "3.8.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
           "Microsoft.TestPlatform.ObjectModel": "16.8.3",
           "Mono.Cecil": "0.11.3",
-          "MonoMod.Utils": "20.11.26.2",
+          "MonoMod.Utils": "21.1.11.1",
           "RazorLight": "2.0.0-rc.2"
         },
         "compile": {
@@ -2599,27 +2605,27 @@
     }
   },
   "libraries": {
-    "Buildalyzer/3.1.0": {
-      "sha512": "UrKSM5J0nsOB3dJCOyWwJGeAE/ICr3irTJgVjdwn1jy0Yi0cpX9D1BFI6PZbJ7ZTi+H4KoSkVLawosEZMv7RSQ==",
+    "Buildalyzer/3.2.0": {
+      "sha512": "clK8nODLS0tuvhXi8tLAPsC4dZn2LLpCjmXh8xjDKsNc53JRCNff/KX0gjFtFUCxNfLdqAe4zY5JCREqtgfYiA==",
       "type": "package",
-      "path": "buildalyzer/3.1.0",
+      "path": "buildalyzer/3.2.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "buildalyzer.3.1.0.nupkg.sha512",
+        "buildalyzer.3.2.0.nupkg.sha512",
         "buildalyzer.nuspec",
         "lib/netstandard2.0/Buildalyzer.dll",
         "lib/netstandard2.0/Buildalyzer.xml"
       ]
     },
-    "Buildalyzer.Logger/3.1.0": {
-      "sha512": "0XwI+BSLS8CXzq5Ek3ksgJidfxkNVIpA7zrO2xfnmUrRrHYrqTWo2bPZ1hACgqCzkIjGz1hX5jga9oRTLXT16Q==",
+    "Buildalyzer.Logger/3.2.0": {
+      "sha512": "ag6y+Tu5nOg0U0g1LOwdvV3AXNqu40k0C0qPk5MYlnqP99PEL9+7ypHntJ+jyj25Aps1E0X+B6uAtGEm1qkJ0g==",
       "type": "package",
-      "path": "buildalyzer.logger/3.1.0",
+      "path": "buildalyzer.logger/3.2.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "buildalyzer.logger.3.1.0.nupkg.sha512",
+        "buildalyzer.logger.3.2.0.nupkg.sha512",
         "buildalyzer.logger.nuspec",
         "lib/netstandard1.3/Buildalyzer.Logger.dll",
         "lib/netstandard1.3/Buildalyzer.Logger.xml",
@@ -2962,10 +2968,10 @@
         "microsoft.codeanalysis.razor.nuspec"
       ]
     },
-    "Microsoft.CodeCoverage/16.8.0": {
-      "sha512": "fR7HsWO+jTRhfBPWVl6QJbJSEU98siIKcQIDIo2tOH6nlogcOdScquWzVABR0UUpQlfWwt13vyryOltvLfsHnw==",
+    "Microsoft.CodeCoverage/16.8.3": {
+      "sha512": "pFZAEvmIEkEIKl6WD1wCZ2qkc3f6PLdc2kAjCsUJfaMxVtgq3qxcQd4eZq+ZMt9eSX12VfxtFav2vPy1yiu8bw==",
       "type": "package",
-      "path": "microsoft.codecoverage/16.8.0",
+      "path": "microsoft.codecoverage/16.8.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2994,7 +3000,7 @@
         "build/netstandard1.0/zh-Hant/Microsoft.VisualStudio.TraceDataCollector.resources.dll",
         "lib/net45/Microsoft.VisualStudio.CodeCoverage.Shim.dll",
         "lib/netcoreapp1.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll",
-        "microsoft.codecoverage.16.8.0.nupkg.sha512",
+        "microsoft.codecoverage.16.8.3.nupkg.sha512",
         "microsoft.codecoverage.nuspec"
       ]
     },
@@ -3308,10 +3314,10 @@
         "microsoft.extensions.primitives.nuspec"
       ]
     },
-    "Microsoft.NET.Test.Sdk/16.8.0": {
-      "sha512": "fc8VoTlD9+en13XWT9SW86M9jn4Y0Vns/uHRUJ2B6fevnuYmkilBLL+bIXC9yMELGYrerXIZm+B6Caux8lopfQ==",
+    "Microsoft.NET.Test.Sdk/16.8.3": {
+      "sha512": "E2hDEEHIUmDpGm0LIjVenWhXWWd5lWylzuujz0iPwwxPYUA2Ua6jrxfMNdoKombDSk9hpDDA0M3xnFz6TLh/KQ==",
       "type": "package",
-      "path": "microsoft.net.test.sdk/16.8.0",
+      "path": "microsoft.net.test.sdk/16.8.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3324,7 +3330,7 @@
         "build/netcoreapp2.1/Microsoft.NET.Test.Sdk.targets",
         "build/uap10.0/Microsoft.NET.Test.Sdk.props",
         "buildMultiTargeting/Microsoft.NET.Test.Sdk.props",
-        "microsoft.net.test.sdk.16.8.0.nupkg.sha512",
+        "microsoft.net.test.sdk.16.8.3.nupkg.sha512",
         "microsoft.net.test.sdk.nuspec"
       ]
     },
@@ -3429,17 +3435,20 @@
         "microsoft.testplatform.objectmodel.nuspec"
       ]
     },
-    "Microsoft.TestPlatform.TestHost/16.8.0": {
-      "sha512": "CVXKGIWakPq7UboAlJ7ukcngBFF2UaHwS9pAN3nLyOpOR3yUYbinpd+eVvz6Fm/qRBP4uiwx0lWEZlHOHG1c0w==",
+    "Microsoft.TestPlatform.TestHost/16.8.3": {
+      "sha512": "lF3QPoq7NYs7Xr/j5a44jJvHakRQq5lKyjG9adGNqeN28JmhD2qEogzGOL4GVkofqX1FmmbyUali2jlSVval8A==",
       "type": "package",
-      "path": "microsoft.testplatform.testhost/16.8.0",
+      "path": "microsoft.testplatform.testhost/16.8.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "ThirdPartyNotices.txt",
+        "build/netcoreapp2.1/Microsoft.TestPlatform.PlatformAbstractions.dll",
         "build/netcoreapp2.1/Microsoft.TestPlatform.TestHost.props",
+        "build/netcoreapp2.1/x64/Microsoft.TestPlatform.PlatformAbstractions.dll",
         "build/netcoreapp2.1/x64/testhost.dll",
         "build/netcoreapp2.1/x64/testhost.exe",
+        "build/netcoreapp2.1/x86/Microsoft.TestPlatform.PlatformAbstractions.dll",
         "build/netcoreapp2.1/x86/testhost.x86.dll",
         "build/netcoreapp2.1/x86/testhost.x86.exe",
         "build/uap10.0/Microsoft.TestPlatform.TestHost.props",
@@ -3526,9 +3535,12 @@
         "build/uap10.0/zh-Hant/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll",
         "lib/net45/_._",
         "lib/netcoreapp2.1/Microsoft.TestPlatform.CommunicationUtilities.dll",
+        "lib/netcoreapp2.1/Microsoft.TestPlatform.CoreUtilities.dll",
         "lib/netcoreapp2.1/Microsoft.TestPlatform.CrossPlatEngine.dll",
+        "lib/netcoreapp2.1/Microsoft.TestPlatform.PlatformAbstractions.dll",
         "lib/netcoreapp2.1/Microsoft.TestPlatform.Utilities.dll",
         "lib/netcoreapp2.1/Microsoft.VisualStudio.TestPlatform.Common.dll",
+        "lib/netcoreapp2.1/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll",
         "lib/netcoreapp2.1/cs/Microsoft.TestPlatform.CommunicationUtilities.resources.dll",
         "lib/netcoreapp2.1/cs/Microsoft.TestPlatform.CrossPlatEngine.resources.dll",
         "lib/netcoreapp2.1/cs/Microsoft.VisualStudio.TestPlatform.Common.resources.dll",
@@ -3573,11 +3585,14 @@
         "lib/netcoreapp2.1/zh-Hant/Microsoft.TestPlatform.CrossPlatEngine.resources.dll",
         "lib/netcoreapp2.1/zh-Hant/Microsoft.VisualStudio.TestPlatform.Common.resources.dll",
         "lib/uap10.0/Microsoft.TestPlatform.CommunicationUtilities.dll",
+        "lib/uap10.0/Microsoft.TestPlatform.CoreUtilities.dll",
         "lib/uap10.0/Microsoft.TestPlatform.CrossPlatEngine.dll",
+        "lib/uap10.0/Microsoft.TestPlatform.PlatformAbstractions.dll",
         "lib/uap10.0/Microsoft.TestPlatform.Utilities.dll",
         "lib/uap10.0/Microsoft.VisualStudio.TestPlatform.Common.dll",
+        "lib/uap10.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll",
         "lib/uap10.0/testhost.dll",
-        "microsoft.testplatform.testhost.16.8.0.nupkg.sha512",
+        "microsoft.testplatform.testhost.16.8.3.nupkg.sha512",
         "microsoft.testplatform.testhost.nuspec"
       ]
     },
@@ -3676,10 +3691,10 @@
         "mono.cecil.nuspec"
       ]
     },
-    "MonoMod.Utils/20.11.26.2": {
-      "sha512": "ssPlkRMR6iWrm+8/6omG/LHTEN8i2NPuRHrlsG0Ggz4ddnRIx5gaAcdd9/zAPIWBz3YS/bFOVL9TzH7z7dZSPw==",
+    "MonoMod.Utils/21.1.11.1": {
+      "sha512": "Vn4a0cFj5QqoTtNCbUw9bjbqWYMUxhQJZsTpwnifKEeNpVhvchdm0cqI4gy9LGczcmZP0nn7LctDvxNil+ZSdg==",
       "type": "package",
-      "path": "monomod.utils/20.11.26.2",
+      "path": "monomod.utils/21.1.11.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3689,7 +3704,7 @@
         "lib/net40/MonoMod.Utils.xml",
         "lib/netstandard2.0/MonoMod.Utils.dll",
         "lib/netstandard2.0/MonoMod.Utils.xml",
-        "monomod.utils.20.11.26.2.nupkg.sha512",
+        "monomod.utils.21.1.11.1.nupkg.sha512",
         "monomod.utils.nuspec"
       ]
     },
@@ -3892,10 +3907,10 @@
         "nuget.frameworks.nuspec"
       ]
     },
-    "NUnit/3.12.0": {
-      "sha512": "3oJTrcUcT9wmweBUwgUf0f1XIYy6RZq2ziV+RM95HMKAJGsHPN2i3MKK1dAPvDPMRLz799Llj4eyu/STB9Q7OA==",
+    "NUnit/3.13.0": {
+      "sha512": "G+BOONgJKtNtprjGQ54l0m+Vq2VFCMh/H6ljuHfqrRlX6YkNy0GjMd5Nn0NpJidGpRd4gAOJsBqNuxr7Kgc/5g==",
       "type": "package",
-      "path": "nunit/3.12.0",
+      "path": "nunit/3.13.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3903,22 +3918,16 @@
         "LICENSE.txt",
         "NOTICES.txt",
         "build/NUnit.props",
+        "icon.png",
         "lib/net35/nunit.framework.dll",
-        "lib/net35/nunit.framework.pdb",
         "lib/net35/nunit.framework.xml",
         "lib/net40/nunit.framework.dll",
-        "lib/net40/nunit.framework.pdb",
         "lib/net40/nunit.framework.xml",
         "lib/net45/nunit.framework.dll",
-        "lib/net45/nunit.framework.pdb",
         "lib/net45/nunit.framework.xml",
-        "lib/netstandard1.4/nunit.framework.dll",
-        "lib/netstandard1.4/nunit.framework.pdb",
-        "lib/netstandard1.4/nunit.framework.xml",
         "lib/netstandard2.0/nunit.framework.dll",
-        "lib/netstandard2.0/nunit.framework.pdb",
         "lib/netstandard2.0/nunit.framework.xml",
-        "nunit.3.12.0.nupkg.sha512",
+        "nunit.3.13.0.nupkg.sha512",
         "nunit.nuspec"
       ]
     },
@@ -8234,9 +8243,9 @@
       "Faultify.Analyzers >= 1.0.0",
       "Faultify.Core >= 1.0.0",
       "Microsoft.CodeAnalysis.CSharp >= 3.8.0",
-      "Microsoft.NET.Test.Sdk >= 16.8.0",
+      "Microsoft.NET.Test.Sdk >= 16.8.3",
       "Mono.Cecil >= 0.11.3",
-      "NUnit >= 3.12.0",
+      "NUnit >= 3.13.0",
       "NUnit3TestAdapter >= 3.17.0"
     ]
   },
@@ -8292,7 +8301,7 @@
           },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
-            "version": "[16.8.0, )"
+            "version": "[16.8.3, )"
           },
           "Mono.Cecil": {
             "target": "Package",
@@ -8300,7 +8309,7 @@
           },
           "NUnit": {
             "target": "Package",
-            "version": "[3.12.0, )"
+            "version": "[3.13.0, )"
           },
           "NUnit3TestAdapter": {
             "target": "Package",

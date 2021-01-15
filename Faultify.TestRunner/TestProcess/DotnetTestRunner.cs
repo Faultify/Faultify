@@ -38,10 +38,7 @@ namespace Faultify.TestRunner.TestProcess
             var coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
             {
                 WorkingDirectory = _workingDirectory,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true
+                RedirectStandardOutput = false,
             };
 
             _coverageProcessRunner = new ProcessRunner(coverageProcessStartInfo);
@@ -52,7 +49,7 @@ namespace Faultify.TestRunner.TestProcess
             var testArguments = new DotnetTestArgumentBuilder(testProjectName)
                 .Silent()
                 .WithoutLogo()
-                .WithTimeout(TimeSpan.FromSeconds(5))
+                .WithTimeout(TimeSpan.FromSeconds(5)) // TODO: make dynamic based on initial test run.
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("TestDataCollector")
                 .WithTests(tests)
@@ -61,10 +58,7 @@ namespace Faultify.TestRunner.TestProcess
             var testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
             {
                 WorkingDirectory = _workingDirectory,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true
+                RedirectStandardOutput = false,
             };
 
             return new ProcessRunner(testProcessStartInfo);

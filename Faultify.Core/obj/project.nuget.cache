@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "QCz8V0LawHnxR/ftosy39GEs1gU3qMenj5AIoin0Y4W0dzugOrTEQbJqPp1O+MtkU3WXk3CHY8aZBfFhe0ovxg==",
+  "dgSpecHash": "7yqXQU12p0DgvTsw8Da0Emipy2L64pRn113R7xqS/bwPl3vo0oSaE5u2CDYSOO3yWD+no018okujUW2MQhnIww==",
   "success": true,
   "projectFilePath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Timon\\.nuget\\packages\\buildalyzer\\3.1.0\\buildalyzer.3.1.0.nupkg.sha512",
-    "C:\\Users\\Timon\\.nuget\\packages\\buildalyzer.logger\\3.1.0\\buildalyzer.logger.3.1.0.nupkg.sha512",
+    "C:\\Users\\Timon\\.nuget\\packages\\buildalyzer\\3.2.0\\buildalyzer.3.2.0.nupkg.sha512",
+    "C:\\Users\\Timon\\.nuget\\packages\\buildalyzer.logger\\3.2.0\\buildalyzer.logger.3.2.0.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\humanizer.core\\2.2.0\\humanizer.core.2.2.0.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\icsharpcode.decompiler\\6.2.1.6137\\icsharpcode.decompiler.6.2.1.6137.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\microsoft.aspnetcore.mvc.razor.extensions\\3.1.5\\microsoft.aspnetcore.mvc.razor.extensions.3.1.5.nupkg.sha512",
@@ -39,7 +39,7 @@
     "C:\\Users\\Timon\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\microsoft.win32.registry\\4.3.0\\microsoft.win32.registry.4.3.0.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\mono.cecil\\0.11.3\\mono.cecil.0.11.3.nupkg.sha512",
-    "C:\\Users\\Timon\\.nuget\\packages\\monomod.utils\\20.11.26.2\\monomod.utils.20.11.26.2.nupkg.sha512",
+    "C:\\Users\\Timon\\.nuget\\packages\\monomod.utils\\21.1.11.1\\monomod.utils.21.1.11.1.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\msbuild.structuredlogger\\2.1.133\\msbuild.structuredlogger.2.1.133.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\msbuildpipelogger.server\\1.1.3\\msbuildpipelogger.server.1.1.3.nupkg.sha512",
     "C:\\Users\\Timon\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",

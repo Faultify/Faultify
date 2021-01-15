@@ -2,10 +2,10 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "Buildalyzer/3.1.0": {
+      "Buildalyzer/3.2.0": {
         "type": "package",
         "dependencies": {
-          "Buildalyzer.Logger": "3.1.0",
+          "Buildalyzer.Logger": "3.2.0",
           "MSBuild.StructuredLogger": "2.1.133",
           "Microsoft.Build": "16.5.0",
           "Microsoft.Build.Framework": "16.5.0",
@@ -24,7 +24,7 @@
           "lib/netstandard2.0/Buildalyzer.dll": {}
         }
       },
-      "Buildalyzer.Logger/3.1.0": {
+      "Buildalyzer.Logger/3.2.0": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.1"
@@ -675,7 +675,7 @@
           "lib/netstandard2.0/Mono.Cecil.dll": {}
         }
       },
-      "MonoMod.Utils/20.11.26.2": {
+      "MonoMod.Utils/21.1.11.1": {
         "type": "package",
         "dependencies": {
           "Mono.Cecil": "0.11.3",
@@ -2268,13 +2268,13 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
-          "Buildalyzer": "3.1.0",
+          "Buildalyzer": "3.2.0",
           "ICSharpCode.Decompiler": "6.2.1.6137",
           "Microsoft.CodeAnalysis.CSharp": "3.8.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
           "Microsoft.TestPlatform.ObjectModel": "16.8.3",
           "Mono.Cecil": "0.11.3",
-          "MonoMod.Utils": "20.11.26.2",
+          "MonoMod.Utils": "21.1.11.1",
           "RazorLight": "2.0.0-rc.2"
         },
         "compile": {
@@ -2286,6 +2286,20 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "Faultify.Injection/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Faultify.TestRunner.Shared": "1.0.0",
+          "Mono.Cecil": "0.11.3"
+        },
+        "compile": {
+          "bin/placeholder/Faultify.Injection.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Faultify.Injection.dll": {}
+        }
       },
       "Faultify.Reporting/1.0.0": {
         "type": "project",
@@ -2303,31 +2317,44 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "Faultify.TestRunner.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Microsoft.TestPlatform.ObjectModel": "16.8.3"
+        },
+        "compile": {
+          "bin/placeholder/Faultify.TestRunner.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Faultify.TestRunner.Shared.dll": {}
+        }
       }
     }
   },
   "libraries": {
-    "Buildalyzer/3.1.0": {
-      "sha512": "UrKSM5J0nsOB3dJCOyWwJGeAE/ICr3irTJgVjdwn1jy0Yi0cpX9D1BFI6PZbJ7ZTi+H4KoSkVLawosEZMv7RSQ==",
+    "Buildalyzer/3.2.0": {
+      "sha512": "clK8nODLS0tuvhXi8tLAPsC4dZn2LLpCjmXh8xjDKsNc53JRCNff/KX0gjFtFUCxNfLdqAe4zY5JCREqtgfYiA==",
       "type": "package",
-      "path": "buildalyzer/3.1.0",
+      "path": "buildalyzer/3.2.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "buildalyzer.3.1.0.nupkg.sha512",
+        "buildalyzer.3.2.0.nupkg.sha512",
         "buildalyzer.nuspec",
         "lib/netstandard2.0/Buildalyzer.dll",
         "lib/netstandard2.0/Buildalyzer.xml"
       ]
     },
-    "Buildalyzer.Logger/3.1.0": {
-      "sha512": "0XwI+BSLS8CXzq5Ek3ksgJidfxkNVIpA7zrO2xfnmUrRrHYrqTWo2bPZ1hACgqCzkIjGz1hX5jga9oRTLXT16Q==",
+    "Buildalyzer.Logger/3.2.0": {
+      "sha512": "ag6y+Tu5nOg0U0g1LOwdvV3AXNqu40k0C0qPk5MYlnqP99PEL9+7ypHntJ+jyj25Aps1E0X+B6uAtGEm1qkJ0g==",
       "type": "package",
-      "path": "buildalyzer.logger/3.1.0",
+      "path": "buildalyzer.logger/3.2.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "buildalyzer.logger.3.1.0.nupkg.sha512",
+        "buildalyzer.logger.3.2.0.nupkg.sha512",
         "buildalyzer.logger.nuspec",
         "lib/netstandard1.3/Buildalyzer.Logger.dll",
         "lib/netstandard1.3/Buildalyzer.Logger.xml",
@@ -3122,10 +3149,10 @@
         "mono.cecil.nuspec"
       ]
     },
-    "MonoMod.Utils/20.11.26.2": {
-      "sha512": "ssPlkRMR6iWrm+8/6omG/LHTEN8i2NPuRHrlsG0Ggz4ddnRIx5gaAcdd9/zAPIWBz3YS/bFOVL9TzH7z7dZSPw==",
+    "MonoMod.Utils/21.1.11.1": {
+      "sha512": "Vn4a0cFj5QqoTtNCbUw9bjbqWYMUxhQJZsTpwnifKEeNpVhvchdm0cqI4gy9LGczcmZP0nn7LctDvxNil+ZSdg==",
       "type": "package",
-      "path": "monomod.utils/20.11.26.2",
+      "path": "monomod.utils/21.1.11.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3135,7 +3162,7 @@
         "lib/net40/MonoMod.Utils.xml",
         "lib/netstandard2.0/MonoMod.Utils.dll",
         "lib/netstandard2.0/MonoMod.Utils.xml",
-        "monomod.utils.20.11.26.2.nupkg.sha512",
+        "monomod.utils.21.1.11.1.nupkg.sha512",
         "monomod.utils.nuspec"
       ]
     },
@@ -7296,17 +7323,29 @@
       "path": "../Faultify.Core/Faultify.Core.csproj",
       "msbuildProject": "../Faultify.Core/Faultify.Core.csproj"
     },
+    "Faultify.Injection/1.0.0": {
+      "type": "project",
+      "path": "../Faultify.Injection/Faultify.Injection.csproj",
+      "msbuildProject": "../Faultify.Injection/Faultify.Injection.csproj"
+    },
     "Faultify.Reporting/1.0.0": {
       "type": "project",
       "path": "../Faultify.Reporting/Faultify.Reporting.csproj",
       "msbuildProject": "../Faultify.Reporting/Faultify.Reporting.csproj"
+    },
+    "Faultify.TestRunner.Shared/1.0.0": {
+      "type": "project",
+      "path": "../Faultify.TestRunner.Shared/Faultify.TestRunner.Shared.csproj",
+      "msbuildProject": "../Faultify.TestRunner.Shared/Faultify.TestRunner.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "Faultify.Analyzers >= 1.0.0",
       "Faultify.Core >= 1.0.0",
-      "Faultify.Reporting >= 1.0.0"
+      "Faultify.Injection >= 1.0.0",
+      "Faultify.Reporting >= 1.0.0",
+      "Faultify.TestRunner.Shared >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -7342,8 +7381,14 @@
             "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj": {
               "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj"
             },
+            "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj": {
+              "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj"
+            },
             "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj": {
               "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj"
+            },
+            "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+              "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj"
             }
           }
         }

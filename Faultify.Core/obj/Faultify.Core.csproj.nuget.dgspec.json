@@ -45,7 +45,7 @@
           "dependencies": {
             "Buildalyzer": {
               "target": "Package",
-              "version": "[3.1.0, )"
+              "version": "[3.2.0, )"
             },
             "ICSharpCode.Decompiler": {
               "target": "Package",
@@ -69,7 +69,7 @@
             },
             "MonoMod.Utils": {
               "target": "Package",
-              "version": "[20.11.26.2, )"
+              "version": "[21.1.11.1, )"
             },
             "RazorLight": {
               "target": "Package",

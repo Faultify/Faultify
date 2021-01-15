@@ -4,6 +4,73 @@
     "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Cli\\Faultify.Cli.csproj": {}
   },
   "projects": {
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Analyzers\\Faultify.Analyzers.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Analyzers\\Faultify.Analyzers.csproj",
+        "projectName": "Faultify.Analyzers",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Analyzers\\Faultify.Analyzers.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Analyzers\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Mono.Cecil": {
+              "target": "Package",
+              "version": "[0.11.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Cli\\Faultify.Cli.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -12,6 +79,263 @@
         "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Cli\\Faultify.Cli.csproj",
         "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
         "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Cli\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Collector\\Faultify.TestRunner.Collector.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Collector\\Faultify.TestRunner.Collector.csproj"
+              },
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner\\Faultify.TestRunner.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner\\Faultify.TestRunner.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "CommandLineParser": {
+              "target": "Package",
+              "version": "[2.8.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Binder": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.UserSecrets": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Console": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj",
+        "projectName": "Faultify.Core",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "noWarn": [
+            "NU1701"
+          ],
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Buildalyzer": {
+              "target": "Package",
+              "version": "[3.2.0, )"
+            },
+            "ICSharpCode.Decompiler": {
+              "target": "Package",
+              "version": "[6.2.1.6137, )"
+            },
+            "Microsoft.CodeAnalysis.CSharp": {
+              "target": "Package",
+              "version": "[3.8.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.TestPlatform.ObjectModel": {
+              "target": "Package",
+              "version": "[16.8.3, )"
+            },
+            "Mono.Cecil": {
+              "target": "Package",
+              "version": "[0.11.3, )"
+            },
+            "MonoMod.Utils": {
+              "target": "Package",
+              "version": "[21.1.11.1, )"
+            },
+            "RazorLight": {
+              "target": "Package",
+              "version": "[2.0.0-rc.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj",
+        "projectName": "Faultify.Injection",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\obj\\",
+        "projectStyle": "PackageReference",
+        "crossTargeting": true,
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Mono.Cecil": {
+              "target": "Package",
+              "version": "[0.11.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj",
+        "projectName": "Faultify.Reporting",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,33 +364,13 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
-            "Microsoft.Extensions.Configuration.Binder": {
+            "Haukcode.WkHtmlToPdfDotNet": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[1.3.0, )"
             },
-            "Microsoft.Extensions.Configuration.Json": {
+            "RazorLight": {
               "target": "Package",
-              "version": "[5.0.0, )"
-            },
-            "Microsoft.Extensions.Configuration.UserSecrets": {
-              "target": "Package",
-              "version": "[3.1.0, )"
-            },
-            "Microsoft.Extensions.DependencyInjection": {
-              "target": "Package",
-              "version": "[5.0.0, )"
-            },
-            "Microsoft.Extensions.DependencyInjection.Abstractions": {
-              "target": "Package",
-              "version": "[5.0.0, )"
-            },
-            "Microsoft.Extensions.Logging": {
-              "target": "Package",
-              "version": "[5.0.0, )"
-            },
-            "Microsoft.Extensions.Logging.Console": {
-              "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[2.0.0-rc.2, )"
             }
           },
           "imports": [
@@ -80,6 +384,207 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Collector\\Faultify.TestRunner.Collector.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Collector\\Faultify.TestRunner.Collector.csproj",
+        "projectName": "Faultify.TestRunner.Collector",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Collector\\Faultify.TestRunner.Collector.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Collector\\obj\\",
+        "projectStyle": "PackageReference",
+        "crossTargeting": true,
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Microsoft.TestPlatform.ObjectModel": {
+              "target": "Package",
+              "version": "[16.8.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj",
+        "projectName": "Faultify.TestRunner.Shared",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Microsoft.TestPlatform.ObjectModel": {
+              "target": "Package",
+              "version": "[16.8.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner\\Faultify.TestRunner.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner\\Faultify.TestRunner.csproj",
+        "projectName": "Faultify.TestRunner",
+        "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner\\Faultify.TestRunner.csproj",
+        "packagesPath": "C:\\Users\\Timon\\.nuget\\packages\\",
+        "outputPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Timon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Analyzers\\Faultify.Analyzers.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Analyzers\\Faultify.Analyzers.csproj"
+              },
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Core\\Faultify.Core.csproj"
+              },
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Injection\\Faultify.Injection.csproj"
+              },
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.Reporting\\Faultify.Reporting.csproj"
+              },
+              "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj": {
+                "projectPath": "E:\\programming\\FaultifyNew\\Faultify\\Faultify.TestRunner.Shared\\Faultify.TestRunner.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
