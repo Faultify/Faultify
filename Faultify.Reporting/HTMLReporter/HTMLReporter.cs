@@ -7,10 +7,10 @@ namespace Faultify.Reporting.HTMLReporter
 {
     public class HtmlReporter : IReporter
     {
-        private readonly string _template = File.ReadAllText(Path.Combine("Reporters", "HTMLReporter", "Page.cshtml"));
-        public string FileExtension { get; } = "HTML";
+        private readonly string _template = File.ReadAllText(Path.Combine("HTMLReporter", "Page.cshtml"));
+        public string FileExtension { get; } = ".html";
 
-        public async Task<byte[]> CreateReport(MutationProjectReportModel mutationRun)
+        public async Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun)
         {
             return Encoding.UTF8.GetBytes(await Template(mutationRun));
         }
