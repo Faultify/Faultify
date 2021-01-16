@@ -39,8 +39,7 @@ namespace Faultify.TestRunner.TestRun
                 // Execute mutation and flush it to the files.
                 ExecuteMutation(mutationCoverageInfo, projectInfo);
             }
-
-
+            
             // Create decompilers
             var decompilers = new Dictionary<AssemblyMutator, CodeDecompiler>();
             foreach (var mutationVariant in MutationCoverageInfos)
@@ -59,7 +58,7 @@ namespace Faultify.TestRunner.TestRun
             var runningTests = MutationCoverageInfos.Where(y => !y.CausesTimeOut).SelectMany(x => x.TestCoverage);
 
             var testResults =
-                await dotnetTestRunner.RunTests(CancellationToken.None, sessionProgressTracker, runningTests);
+                await dotnetTestRunner.RunTests(token, sessionProgressTracker, runningTests);
 
             return new List<TestRunResult>
             {

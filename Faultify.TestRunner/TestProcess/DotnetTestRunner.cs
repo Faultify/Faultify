@@ -17,12 +17,14 @@ namespace Faultify.TestRunner.TestProcess
         private readonly ProcessRunner _coverageProcessRunner;
         private readonly string _testAdapterPath;
         private readonly string _testProjectPath;
+        private readonly TimeSpan _timeout;
 
         private readonly string _workingDirectory;
 
-        public DotnetTestRunner(string testProjectPath)
+        public DotnetTestRunner(string testProjectPath, TimeSpan timeout)
         {
             _testProjectPath = testProjectPath;
+            _timeout = timeout;
             _workingDirectory = Path.GetDirectoryName(testProjectPath);
             _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var testProjectName = Path.GetFileName(testProjectPath);
@@ -30,7 +32,7 @@ namespace Faultify.TestRunner.TestProcess
             var coverageArguments = new DotnetTestArgumentBuilder(testProjectName)
                 .Silent()
                 .WithoutLogo()
-                .WithTimeout(TimeSpan.FromSeconds(3))
+                .WithTimeout(_timeout)
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("CoverageDataCollector")
                 .Build();
@@ -50,7 +52,7 @@ namespace Faultify.TestRunner.TestProcess
             var testArguments = new DotnetTestArgumentBuilder(testProjectName)
                 .Silent()
                 .WithoutLogo()
-                .WithTimeout(TimeSpan.FromSeconds(3)) // TODO: make dynamic based on initial test run.
+                .WithTimeout(_timeout) // TODO: make dynamic based on initial test run.
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("TestDataCollector")
                 .WithTests(tests)

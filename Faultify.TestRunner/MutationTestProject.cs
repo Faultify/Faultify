@@ -45,23 +45,31 @@ namespace Faultify.TestRunner
         {
             var progressTracker = new MutationSessionProgressTracker(progress);
 
+            // Build project
             progressTracker.LogBeginPreBuilding();
             var testProjectInfo = await GetTestProjectInfo(progressTracker, cancellationToken);
             progressTracker.LogEndPreBuilding();
 
+            // Measure the test coverage 
             progressTracker.LogBeginCoverage();
             InjectAssembliesWithCodeCoverage(testProjectInfo, progressTracker);
             testProjectInfo.Dispose();
+
+            Stopwatch coverageTimer = new Stopwatch();
+            coverageTimer.Start();
             var coverage = await RunCoverage(testProjectInfo.ProjectInfo.AssemblyPath, cancellationToken);
+            coverageTimer.Stop();
             progressTracker.LogEndCoverage();
 
+            // Clean injection code.
             progressTracker.LogBeginCleanBuilding();
             testProjectInfo = await GetTestProjectInfo(progressTracker, cancellationToken);
             progressTracker.LogEndCleanBuilding();
 
+            // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
             return await StartMutationTestSession(testProjectInfo, testsPerMutation, progressTracker,
-                cancellationToken);
+                cancellationToken, coverageTimer.Elapsed);
         }
 
         /// <summary>
@@ -156,7 +164,7 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
-            var dotnetTestRunner = new DotnetTestRunner(testAssemblyPath);
+            var dotnetTestRunner = new DotnetTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12));
             return await dotnetTestRunner.RunCodeCoverage(cancellationToken);
         }
 
@@ -191,16 +199,20 @@ namespace Faultify.TestRunner
         /// <param name="testsPerMutation"></param>
         /// <param name="sessionProgressTracker"></param>
         /// <param name="cancellationToken"></param>
+        /// <param name="coverageTestRunTime"></param>
         /// <returns></returns>
         private async Task<TestProjectReportModel> StartMutationTestSession(TestProjectInfo testProjectInfo,
             Dictionary<int, HashSet<string>> testsPerMutation, MutationSessionProgressTracker sessionProgressTracker,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken, TimeSpan coverageTestRunTime)
         {
             // Generate the mutation test runs for the mutation session.
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
             var runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(testsPerMutation, testProjectInfo, _mutationLevel);
 
-            var dotnetTestRunner = new DotnetTestRunner(testProjectInfo.ProjectInfo.AssemblyPath);
+            // Double the time the code coverage took such that test runs have some time run their tests (needs to be in seconds).
+            var maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
+
+            var dotnetTestRunner = new DotnetTestRunner(testProjectInfo.ProjectInfo.AssemblyPath, maxTestDuration);
             var reportBuilder = new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);
 
             var allRunsStopwatch = new Stopwatch();
