@@ -30,7 +30,7 @@ namespace Faultify.TestRunner.TestProcess
             var coverageArguments = new DotnetTestArgumentBuilder(testProjectName)
                 .Silent()
                 .WithoutLogo()
-                .WithTimeout(TimeSpan.FromSeconds(5))
+                .WithTimeout(TimeSpan.FromSeconds(3))
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("CoverageDataCollector")
                 .Build();
@@ -49,7 +49,7 @@ namespace Faultify.TestRunner.TestProcess
             var testArguments = new DotnetTestArgumentBuilder(testProjectName)
                 .Silent()
                 .WithoutLogo()
-                .WithTimeout(TimeSpan.FromSeconds(5)) // TODO: make dynamic based on initial test run.
+                .WithTimeout(TimeSpan.FromSeconds(3)) // TODO: make dynamic based on initial test run.
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("TestDataCollector")
                 .WithTests(tests)

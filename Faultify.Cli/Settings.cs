@@ -10,7 +10,7 @@ namespace Faultify.Cli
         public string TestProjectPath { get; set; }
 
         [Option('r', "reportPath", Required = false, HelpText = "The path were the report will be saved.")]
-        public string ReportPath { get; set; } = Path.Combine("FaultifyOutput", Directory.GetCurrentDirectory());
+        public string ReportPath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "FaultifyOutput");
 
         [Option('t', "reportType", Required = false, HelpText = "Type of report to be generated, options: 'pdf', 'html', 'json'")]
         public string ReportType { get; set; } = "json";

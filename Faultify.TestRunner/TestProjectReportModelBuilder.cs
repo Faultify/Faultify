@@ -26,7 +26,7 @@ namespace Faultify.TestRunner
             _testGroupings = new Dictionary<TestCaseReportModel, Dictionary<string, MutationGroupingReportModel>>();
         }
 
-        public void AddTestResult(TestResults testResults, MutationVariant mutation)
+        public void AddTestResult(TestResults testResults, MutationVariant mutation, TimeSpan testRunDuration)
         {
             foreach (var testResult in testResults.Tests.Where(x => mutation.TestCoverage.Contains(x.Name)))
             {
@@ -68,11 +68,12 @@ namespace Faultify.TestRunner
             }
         }
 
-        public TestProjectReportModel Build()
+        public TestProjectReportModel Build(TimeSpan testDuration)
         {
             foreach (var (key, value) in _testGroupings) key.Mutations = value.Values.ToList();
 
             _testProjectReportModel.Tests = _testCases.Values.ToList();
+            _testProjectReportModel.Duration = testDuration;
 
             return _testProjectReportModel;
         }
