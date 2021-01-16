@@ -236,7 +236,7 @@ namespace Faultify.TestRunner
 
                     foreach (var mutation in testResult.Mutations)
                         // For each mutation add it to the report builder.
-                        reportBuilder.AddTestResult(testResult.TestResults, mutation);
+                        reportBuilder.AddTestResult(testResult.TestResults, mutation, singRunsStopwatch.Elapsed);
                 }
 
                 testRunsExecutedCount += 1;
@@ -249,7 +249,7 @@ namespace Faultify.TestRunner
             sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed);
             allRunsStopwatch.Stop();
 
-            return reportBuilder.Build();
+            return reportBuilder.Build(allRunsStopwatch.Elapsed);
         }
     }
 }

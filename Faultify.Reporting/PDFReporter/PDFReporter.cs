@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using RazorLight;
 using WkHtmlToPdfDotNet;
@@ -8,7 +9,7 @@ namespace Faultify.Reporting.PDFReporter
     public class PdfReporter : IReporter
     {
         private static readonly BasicConverter Converter = new BasicConverter(new PdfTools());
-        private readonly string _template = File.ReadAllText(Path.Combine("PDFReporter", "PDF.cshtml"));
+        private readonly string _template = File.ReadAllText(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, "PDFReporter", "PDF.cshtml"));
         public string FileExtension => ".pdf";
 
         public async Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun)

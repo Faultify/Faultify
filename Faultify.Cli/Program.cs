@@ -39,6 +39,8 @@ namespace Faultify.Cli
 
             Console.WriteLine(settings.TestProjectPath);
 
+            Console.WriteLine(settings.ReportPath);
+
             var configurationRoot = BuildConfigurationRoot();
             var services = new ServiceCollection();
             services.Configure<Settings>(options => configurationRoot.GetSection("settings").Bind(options));
@@ -95,12 +97,10 @@ namespace Faultify.Cli
             if (string.IsNullOrEmpty(settings.ReportPath))
                 settings.ReportPath = Directory.GetCurrentDirectory();
 
-            settings.ReportPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
             var mprm = new MutationProjectReportModel();
             mprm.TestProjects.Add(testResult);
-
-            testResult.TestResultSurvivedAndKilled();
+            mprm.TotalKilledAndSurvived();
+            mprm.Duration = testResult.Duration;
 
             IReporter reporter = ReportFactory(settings.ReportType);
             var reportBytes = await reporter.CreateReportAsync(mprm);

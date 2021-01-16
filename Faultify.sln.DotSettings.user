@@ -1,12 +1,8 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=32a3a768_002Db6da_002D4330_002D8cc9_002D95f92b9fb31e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Arithmetic_PostMutation_MinToPlus" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Or&gt;&#xD;
-    &lt;Project Location="E:\programming\Faultify\Source\Faultify\Faultify.Tests" Presentation="&amp;lt;Faultify.Tests&amp;gt;" /&gt;&#xD;
-    &lt;TestAncestor&gt;&#xD;
-      &lt;TestId&gt;NUnit3x::4D790638-A2BF-4D1C-8244-785E9E68DE2B::.NETCoreApp,Version=v3.1::Faultify.Tests.UnitTests.MethodMutationQueue&lt;/TestId&gt;&#xD;
-    &lt;/TestAncestor&gt;&#xD;
-    &lt;Project Location="E:\programming\Faultify\Source\Faultify\Faultify.Target.Tests" Presentation="&amp;lt;Faultify.Target.Tests&amp;gt;" /&gt;&#xD;
-  &lt;/Or&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::CBF4B950-7AA2-47A1-852E-A31A175E1114::.NETCoreApp,Version=v3.1::Faultify.Benchmark.Nunit.BenchmarkNUnit&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=cb050727_002Dc0ea_002D48a4_002D8178_002D166995f6c472/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="HasTwoMethodMutations_False" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Project Location="E:\programming\FaultifyNew\Faultify\Faultify.Tests" Presentation="&amp;lt;Faultify.Tests&amp;gt;" /&gt;&#xD;

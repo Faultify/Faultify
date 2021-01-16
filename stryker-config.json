@@ -1,0 +1,18 @@
+{
+  "stryker-config": {
+    "reporters": [
+      "html"
+    ],
+    "log-level": "debug",
+    "log-file": true,
+    "timeout-ms": 10000,
+    "project-file": ".\\Faultify.Benchmark\\Faultify.Benchmark.csproj",
+    "max-concurrent-test-runners": 1,
+    "threshold-high": 80,
+    "threshold-low": 70,
+    "threshold-break": 60,
+    "mutate": [
+      "BenchmarkTarget.cs"
+    ]
+  }
+}

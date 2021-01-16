@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using RazorLight;
@@ -7,7 +8,7 @@ namespace Faultify.Reporting.HTMLReporter
 {
     public class HtmlReporter : IReporter
     {
-        private readonly string _template = File.ReadAllText(Path.Combine("HTMLReporter", "Page.cshtml"));
+        private readonly string _template = File.ReadAllText(Path.Combine(new FileInfo( Assembly.GetExecutingAssembly().Location).DirectoryName, "HTMLReporter", "Page.cshtml"));
         public string FileExtension { get; } = ".html";
 
         public async Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun)
