@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using RazorLight;
@@ -9,7 +10,6 @@ namespace Faultify.Reporting.PDFReporter
     public class PdfReporter : IReporter
     {
         private static readonly BasicConverter Converter = new BasicConverter(new PdfTools());
-        private readonly string _template = File.ReadAllText(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, "PDFReporter", "PDF.cshtml"));
         public string FileExtension => ".pdf";
 
         public async Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun)
@@ -39,6 +39,14 @@ namespace Faultify.Reporting.PDFReporter
 
         private async Task<string> Template(MutationProjectReportModel model)
         {
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            string resourceName = currentAssembly
+                .GetManifestResourceNames()
+                .Single(str => str.EndsWith("PDF.cshtml"));
+
+            using var streamReader = new StreamReader(currentAssembly.GetManifestResourceStream(resourceName));
+            var template = await streamReader.ReadToEndAsync();
+
             var engine = new RazorLightEngineBuilder()
                 // required to have a default RazorLightProject type,
                 // but not required to create a template from string.
@@ -46,7 +54,7 @@ namespace Faultify.Reporting.PDFReporter
                 .UseMemoryCachingProvider()
                 .Build();
 
-            var result = await engine.CompileRenderStringAsync("templateKey", _template, model);
+            var result = await engine.CompileRenderStringAsync("templateKey", template, model);
             return result;
         }
     }

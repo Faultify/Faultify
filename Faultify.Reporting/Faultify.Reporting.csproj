@@ -5,17 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="HTMLReporter\Page.cshtml" />
+    <None Remove="HTMLReporter\HTML.cshtml" />
     <None Remove="PDFReporter\PDF.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="HTMLReporter\Page.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PDFReporter\PDF.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="HTMLReporter\HTML.cshtml" />
+    <EmbeddedResource Include="PDFReporter\PDF.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

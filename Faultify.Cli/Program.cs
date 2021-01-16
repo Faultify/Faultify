@@ -31,16 +31,11 @@ namespace Faultify.Cli
             _settings = settings;
             _logger = logger;
         }
-
-        // dotnet Faultify.Cli.dll -t 'E:\programming\FaultifyNew\Faultify\Faultify.Tests\Faultify.Tests.csproj'
+        
         private static async Task Main(string[] args)
         {
             var settings = ParseCommandlineArguments(args);
-
-            Console.WriteLine(settings.TestProjectPath);
-
-            Console.WriteLine(settings.ReportPath);
-
+            
             var configurationRoot = BuildConfigurationRoot();
             var services = new ServiceCollection();
             services.Configure<Settings>(options => configurationRoot.GetSection("settings").Bind(options));
