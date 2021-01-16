@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Faultify.Analyzers.Mutation;
 using Mono.Cecil.Cil;
@@ -12,9 +13,9 @@ namespace Faultify.Analyzers.OpcodeAnalyzer
     public abstract class
         OpCodeMutationAnalyzer : IMutationAnalyzer<OpCodeMutation, Instruction>
     {
-        private readonly Dictionary<OpCode, IEnumerable<OpCode>> _mappedOpCodes;
+        private readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> _mappedOpCodes;
 
-        protected OpCodeMutationAnalyzer(Dictionary<OpCode, IEnumerable<OpCode>> mappedOpCodes)
+        protected OpCodeMutationAnalyzer(Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> mappedOpCodes)
         {
             _mappedOpCodes = mappedOpCodes;
         }
@@ -23,15 +24,17 @@ namespace Faultify.Analyzers.OpcodeAnalyzer
 
         public abstract string Name { get; }
 
-        public IEnumerable<OpCodeMutation> AnalyzeMutations(Instruction scope)
+        public IEnumerable<OpCodeMutation> AnalyzeMutations(Instruction scope, MutationLevel mutationLevel)
         {
             // Store original opcode for a reset later on.
             var original = scope.OpCode;
 
             // Try to get the instruction opcode from the mapped mappedOpCodes.
             return _mappedOpCodes.TryGetValue(original, out var mutations)
-                ? mutations.Select(mutant => new OpCodeMutation
-                    {Original = original, Replacement = mutant, Instruction = scope})
+                ? mutations
+                    .Where(mutant => mutationLevel.HasFlag(mutant.Item1))
+                    .Select(mutant => new OpCodeMutation
+                    {Original = original, Replacement = mutant.Item2, Instruction = scope})
                 : Enumerable.Empty<OpCodeMutation>();
         }
     }

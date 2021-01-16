@@ -28,53 +28,53 @@ namespace Faultify.Analyzers.OpcodeAnalyzer
     /// </summary>
     public class ComparisonMutationAnalyzer : OpCodeMutationAnalyzer
     {
-        private static readonly Dictionary<OpCode, IEnumerable<OpCode>> Branch =
-            new Dictionary<OpCode, IEnumerable<OpCode>>
+        private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Branch =
+            new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
             {
                 // Opcodes for mutating Comparison operator: '==' to '!='(or unordered).
-                {OpCodes.Beq, new[] {OpCodes.Bne_Un}},
+                {OpCodes.Beq, new[] { (MutationLevel.Simple, OpCodes.Bne_Un)}},
 
                 // Opcodes for mutating Comparison operator: '>=' to '<'.
-                {OpCodes.Bge, new[] {OpCodes.Blt}},
+                {OpCodes.Bge, new[] { (MutationLevel.Simple, OpCodes.Blt)}},
 
                 // Opcodes for mutating Comparison operator: '>=' (unsigned or unordered) to '<' (unsigned or unordered).
-                {OpCodes.Bge_Un, new[] {OpCodes.Blt_Un}},
+                {OpCodes.Bge_Un, new[] { (MutationLevel.Simple, OpCodes.Blt_Un)}},
 
                 // Opcodes for mutating Comparison operator: '>' to '<='.
-                {OpCodes.Bgt, new[] {OpCodes.Ble}},
+                {OpCodes.Bgt, new[] { (MutationLevel.Simple, OpCodes.Ble)}},
 
                 // Opcodes for mutating Comparison operator: '>' (unsigned or unordered) to '<=' (unsigned or unordered).
-                {OpCodes.Bgt_Un, new[] {OpCodes.Ble_Un}},
+                {OpCodes.Bgt_Un, new[] { (MutationLevel.Simple, OpCodes.Ble_Un)}},
 
                 // Opcodes for mutating Comparison operator: '<=' to '>'.
-                {OpCodes.Ble, new[] {OpCodes.Bgt}},
+                {OpCodes.Ble, new[] { (MutationLevel.Simple, OpCodes.Bgt)}},
 
                 // Opcodes for mutating Comparison operator: '<=' (unsigned or unordered) to '>' (unsigned or unordered).
-                {OpCodes.Ble_Un, new[] {OpCodes.Bgt_Un}},
+                {OpCodes.Ble_Un, new[] { (MutationLevel.Simple, OpCodes.Bgt_Un)}},
 
                 // Opcodes for mutating Comparison operator: '<' to '>='.
-                {OpCodes.Blt, new[] {OpCodes.Bge}},
+                {OpCodes.Blt, new[] { (MutationLevel.Simple, OpCodes.Bge)}},
 
                 // Opcodes for mutating Comparison operator: '<' (unsigned or unordered) to '>=' (unsigned or unordered).
-                {OpCodes.Blt_Un, new[] {OpCodes.Bge_Un}},
+                {OpCodes.Blt_Un, new[] { (MutationLevel.Simple, OpCodes.Bge_Un)}},
 
                 // Opcodes for mutating Comparison operator: '!='(or unordered) to '=='. 
-                {OpCodes.Bne_Un, new[] {OpCodes.Beq}},
+                {OpCodes.Bne_Un, new[] { (MutationLevel.Simple, OpCodes.Beq)}},
 
                 // Opcodes for mutating Comparison operator: '==' to '<'  without branch redirection.
-                {OpCodes.Ceq, new[] {OpCodes.Clt}},
+                {OpCodes.Ceq, new[] { (MutationLevel.Simple, OpCodes.Clt)}},
 
                 // Opcodes for mutating Comparison operator: '<' to '>'  without branch redirection.
-                {OpCodes.Clt, new[] {OpCodes.Cgt}},
+                {OpCodes.Clt, new[] { (MutationLevel.Simple, OpCodes.Cgt)}},
 
                 // Opcodes for mutating Comparison operator: '<' (unsigned or unordered) to '>' (unsigned or unordered)  without branch redirection.
-                {OpCodes.Clt_Un, new[] {OpCodes.Cgt_Un}},
+                {OpCodes.Clt_Un, new[] { (MutationLevel.Simple, OpCodes.Cgt_Un)}},
 
                 // Opcodes for mutating Comparison operator: '>' to '<'  without branch redirection.
-                {OpCodes.Cgt, new[] {OpCodes.Clt}},
+                {OpCodes.Cgt, new[] { (MutationLevel.Simple, OpCodes.Clt)}},
 
                 // Opcodes for mutating Comparison operator: '>' (unsigned or unordered) to '<' (unsigned or unordered)  without branch redirection.
-                {OpCodes.Cgt_Un, new[] {OpCodes.Clt_Un}}
+                {OpCodes.Cgt_Un, new[] { (MutationLevel.Simple, OpCodes.Clt_Un)}}
             };
 
         public ComparisonMutationAnalyzer() : base(Branch)

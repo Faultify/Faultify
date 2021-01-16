@@ -9,23 +9,53 @@ namespace Faultify.Analyzers.OpcodeAnalyzer
     /// </summary>
     public class ArithmeticMutationAnalyzer : OpCodeMutationAnalyzer
     {
-        private static readonly Dictionary<OpCode, IEnumerable<OpCode>> Arithmetic =
-            new Dictionary<OpCode, IEnumerable<OpCode>>
+        private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Arithmetic =
+            new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
             {
                 // Opcodes for mutating arithmetic operation: '+' to '-' ,  '*',  '/' , and '%'.
-                {OpCodes.Add, new[] {OpCodes.Sub, OpCodes.Mul, OpCodes.Div, OpCodes.Rem}},
+                {OpCodes.Add, new[]
+                {
+                    (MutationLevel.Simple, OpCodes.Sub), 
+                    (MutationLevel.Medium, OpCodes.Mul), 
+                    (MutationLevel.Detailed, OpCodes.Div), 
+                    (MutationLevel.Detailed, OpCodes.Rem)
+                }},
 
                 // Opcodes for mutating arithmetic operation: '-' to '+' ,  '*',  '/' , and '%'.
-                {OpCodes.Sub, new[] {OpCodes.Add, OpCodes.Mul, OpCodes.Div, OpCodes.Rem}},
+                {OpCodes.Sub, new[]
+                {
+                    (MutationLevel.Simple, OpCodes.Add),
+                    (MutationLevel.Medium, OpCodes.Mul),
+                    (MutationLevel.Detailed, OpCodes.Div),
+                    (MutationLevel.Detailed, OpCodes.Rem)
+                }},
 
                 // Opcodes for mutating arithmetic operation: '*' to '+' ,  '-',  '/' , and '%'.
-                {OpCodes.Mul, new[] {OpCodes.Add, OpCodes.Sub, OpCodes.Div, OpCodes.Rem}},
+                {OpCodes.Mul, new[]
+                {
+                    (MutationLevel.Simple, OpCodes.Add),
+                    (MutationLevel.Medium, OpCodes.Mul),
+                    (MutationLevel.Detailed, OpCodes.Div),
+                    (MutationLevel.Detailed, OpCodes.Rem)
+                }},
 
                 // Opcodes for mutating arithmetic operation: '/' to '+' ,  '-',  '*' , and '%'.
-                {OpCodes.Div, new[] {OpCodes.Add, OpCodes.Sub, OpCodes.Mul, OpCodes.Rem}},
+                {OpCodes.Div, new[]
+                {
+                    (MutationLevel.Simple, OpCodes.Add),
+                    (MutationLevel.Medium, OpCodes.Mul),
+                    (MutationLevel.Detailed, OpCodes.Div),
+                    (MutationLevel.Detailed, OpCodes.Rem)
+                }},
 
                 // Opcodes for mutating arithmetic operation: '%' to '+' ,  '-',  '*' , and '/'.
-                {OpCodes.Rem, new[] {OpCodes.Add, OpCodes.Sub, OpCodes.Mul, OpCodes.Div}}
+                {OpCodes.Rem, new[]
+                {
+                    (MutationLevel.Simple, OpCodes.Add),
+                    (MutationLevel.Medium, OpCodes.Mul),
+                    (MutationLevel.Detailed, OpCodes.Div),
+                    (MutationLevel.Detailed, OpCodes.Rem)
+                }}
             };
 
         public ArithmeticMutationAnalyzer() : base(Arithmetic)

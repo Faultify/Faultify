@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using Faultify.Analyzers;
 using Faultify.Analyzers.AssemblyMutator;
 using Faultify.Analyzers.ConstantAnalyzer;
 using Faultify.Analyzers.OpcodeAnalyzer;
@@ -102,7 +103,7 @@ namespace Faultify.Tests.UnitTests
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget1);
             var method1 = target1.Methods.FirstOrDefault(x => x.Name == "TestMethod1");
-            var mutations = method1.OpCodeMutations().Select(x => x).ToList();
+            var mutations = method1.OpCodeMutations(MutationLevel.Detailed).Select(x => x).ToList();
 
             var arithmeticMutations =
                 mutations.FirstOrDefault(x => x.AnalyzerName == new ArithmeticMutationAnalyzer().Name);
@@ -122,7 +123,7 @@ namespace Faultify.Tests.UnitTests
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget1);
             var field = target1.Fields.FirstOrDefault(x => x.Name == "Constant");
-            var mutations = field.ConstantFieldMutations();
+            var mutations = field.ConstantFieldMutations(MutationLevel.Detailed);
 
             var arithmeticMutations =
                 mutations.FirstOrDefault(x => x.AnalyzerName == new BooleanConstantMutationAnalyzer().Name);

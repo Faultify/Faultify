@@ -23,6 +23,7 @@ namespace Faultify.TestRunner
 
         public void LogBeginPreBuilding()
         {
+            _currentPercentage = 5;
             Log("Starting Building test project...");
         }
 
@@ -61,18 +62,18 @@ namespace Faultify.TestRunner
 
         public void LogEndTestSession(TimeSpan elapsed)
         {
-            Log($"Finished Mutation Test Session in {elapsed} time.");
+            Log($"Finished Mutation Test Session in {elapsed.ToString("hh\\:mm\\:ss")} time.");
         }
 
         public void LogBeginTestRun(int index, int max)
         {
-            Log($"Starting Mutation Run [{DateTime.Now.TimeOfDay}]: {index}/{max}...");
+            Log($"Starting Mutation Run [{DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss")}]: {index}/{max}...");
         }
 
         public void LogEndTestRun(int index, int max, TimeSpan elapsedSinceStart)
         {
             _currentPercentage = (int) Map(index, 0f, max, 35f, 95f);
-            Log($"Finished Mutation Run [{DateTime.Now.TimeOfDay}] elapsed: [{elapsedSinceStart}]: {index}/{max}...");
+            Log($"Finished Mutation Run, elapsed: [{elapsedSinceStart.ToString("hh\\:mm\\:ss")}]: {index}/{max}...");
         }
 
         public void LogBeginGeneratingReport()

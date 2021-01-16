@@ -30,7 +30,7 @@ namespace Faultify.Analyzers
 
         public string Name => "Variable Mutation Analyzer";
 
-        public IEnumerable<VariableMutation> AnalyzeMutations(MethodDefinition method)
+        public IEnumerable<VariableMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel)
         {
             //TODO Check Quick fix
             if (method?.Body == null)

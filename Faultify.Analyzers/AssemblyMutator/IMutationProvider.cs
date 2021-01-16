@@ -13,6 +13,6 @@ namespace Faultify.Analyzers.AssemblyMutator
         ///     Returns all possible mutations.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<IMutationGrouping<IMutation>> AllMutations();
+        IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel);
     }
 }

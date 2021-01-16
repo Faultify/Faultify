@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Faultify.Analyzers;
 using Faultify.Analyzers.AssemblyMutator;
 using Faultify.Core.ProjectAnalyzing;
 using Faultify.Injection;
@@ -19,10 +20,11 @@ namespace Faultify.TestRunner
     public class MutationTestProject
     {
         private readonly string _testProjectPath;
-
-        public MutationTestProject(string testProjectPath)
+        private readonly MutationLevel _mutationLevel;
+        public MutationTestProject(string testProjectPath, MutationLevel mutationLevel)
         {
             _testProjectPath = testProjectPath;
+            _mutationLevel = mutationLevel;
         }
 
         /// <summary>
@@ -196,7 +198,7 @@ namespace Faultify.TestRunner
         {
             // Generate the mutation test runs for the mutation session.
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
-            var runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(testsPerMutation, testProjectInfo);
+            var runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(testsPerMutation, testProjectInfo, _mutationLevel);
 
             var dotnetTestRunner = new DotnetTestRunner(testProjectInfo.ProjectInfo.AssemblyPath);
             var reportBuilder = new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);

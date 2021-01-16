@@ -16,7 +16,7 @@ namespace Faultify.Analyzers.ConstantAnalyzer
 
         public override string Name => "String ConstantMutation Analyzer";
 
-        public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field)
+        public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field, MutationLevel mutationLevel)
         {
             if (field.Constant is string original)
                 yield return new ConstantMutation

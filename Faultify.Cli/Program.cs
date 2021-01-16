@@ -83,7 +83,7 @@ namespace Faultify.Cli
                 Console.WriteLine($"[{s.Progress}%] {s.Message}");
             };
 
-            MutationTestProject mutationTestProject = new MutationTestProject(settings.TestProjectPath);
+            MutationTestProject mutationTestProject = new MutationTestProject(settings.TestProjectPath, settings.MutationLevel);
             return await mutationTestProject.Test(progress, CancellationToken.None);
         }
 

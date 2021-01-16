@@ -22,7 +22,7 @@ namespace Faultify.Reporting.HTMLReporter
             var currentAssembly = Assembly.GetExecutingAssembly();
             string resourceName = currentAssembly
                 .GetManifestResourceNames()
-                .Single(str => str.EndsWith("PDF.cshtml"));
+                .Single(str => str.EndsWith("HTML.cshtml"));
 
             using var streamReader = new StreamReader(currentAssembly.GetManifestResourceStream(resourceName));
             var template = await streamReader.ReadToEndAsync();

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Faultify.Analyzers;
 using Faultify.Analyzers.AssemblyMutator;
 using Faultify.Core.ProjectAnalyzing;
 
@@ -9,9 +10,9 @@ namespace Faultify.TestRunner.TestRun
     public class DefaultMutationTestRunGenerator : IMutationTestRunGenerator
     {
         public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(Dictionary<int, HashSet<string>> testsPerMethod,
-            TestProjectInfo testProjectInfo)
+            TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
-            var allMutations = GetMutationsForCoverage(testsPerMethod, testProjectInfo);
+            var allMutations = GetMutationsForCoverage(testsPerMethod, testProjectInfo, mutationLevel);
             var mutations = GetTestGroups(allMutations);
 
             return mutations.Select(x => new DefaultMutationTestRun
@@ -52,7 +53,7 @@ namespace Faultify.TestRunner.TestRun
         }
 
         private IList<MutationVariant> GetMutationsForCoverage(Dictionary<int, HashSet<string>> coverage,
-            TestProjectInfo testProjectInfo)
+            TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
             var allMutations = new List<MutationVariant>();
 
@@ -72,7 +73,7 @@ namespace Faultify.TestRunner.TestRun
             foreach (var type in assembly.Types)
             foreach (var method in type.Methods)
                 if (coverage.TryGetValue(method.IntHandle, out var tests))
-                    foreach (var group in method.AllMutations())
+                    foreach (var group in method.AllMutations(mutationLevel))
                     foreach (var mutation in group)
                     {
                         var originalSource = decompilers[assembly].Decompile(method.Handle);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Faultify.Analyzers;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -15,6 +16,6 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="testProjectInfo"></param>
         /// <returns></returns>
         public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(Dictionary<int, HashSet<string>> testsPerMethod,
-            TestProjectInfo testProjectInfo);
+            TestProjectInfo testProjectInfo, MutationLevel mutationLevel);
     }
 }

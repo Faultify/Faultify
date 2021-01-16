@@ -38,7 +38,8 @@ namespace Faultify.TestRunner.TestProcess
             var coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
             {
                 WorkingDirectory = _workingDirectory,
-                RedirectStandardOutput = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
             };
 
             _coverageProcessRunner = new ProcessRunner(coverageProcessStartInfo);
@@ -58,7 +59,8 @@ namespace Faultify.TestRunner.TestProcess
             var testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
             {
                 WorkingDirectory = _workingDirectory,
-                RedirectStandardOutput = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
             };
 
             return new ProcessRunner(testProcessStartInfo);
@@ -70,21 +72,21 @@ namespace Faultify.TestRunner.TestProcess
             var testResultOutputPath = Path.Combine(_workingDirectory, TestRunnerConstants.TestsFileName);
 
             var results = new List<TestResult>();
-            var testsHasmap = new HashSet<string>(tests);
+            var testsHashmap = new HashSet<string>(tests);
 
             try
             {
-                while (testsHasmap.Any())
+                while (testsHashmap.Any())
                 {
-                    var testProcessRunner = BuildTestProcessRunner(_testProjectPath, testsHasmap);
+                    var testProcessRunner = BuildTestProcessRunner(_testProjectPath, testsHashmap);
 
-                    var t = await testProcessRunner.RunAsync(CancellationToken.None);
+                    await testProcessRunner.RunAsync(cancellationToken);
 
                     var testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath, cancellationToken);
 
                     var testResults = TestResults.Deserialize(testResultsBinary);
 
-                    testsHasmap.RemoveWhere(x => testResults.Tests.Any(y => y.Name == x));
+                    testsHashmap.RemoveWhere(x => testResults.Tests.Any(y => y.Name == x));
 
                     foreach (var testResult in testResults.Tests)
                     {

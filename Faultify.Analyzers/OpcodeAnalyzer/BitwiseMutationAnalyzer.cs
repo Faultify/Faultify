@@ -9,17 +9,17 @@ namespace Faultify.Analyzers.OpcodeAnalyzer
     /// </summary>
     public class BitwiseMutationAnalyzer : OpCodeMutationAnalyzer
     {
-        private static readonly Dictionary<OpCode, IEnumerable<OpCode>> Bitwise =
-            new Dictionary<OpCode, IEnumerable<OpCode>>
+        private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Bitwise =
+            new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
             {
                 // Opcodes for mutation bitwise operator: '|' to '&' , and '^'. 
-                {OpCodes.Or, new[] {OpCodes.And, OpCodes.Xor}},
+                {OpCodes.Or, new[] { (MutationLevel.Simple, OpCodes.And), (MutationLevel.Medium, OpCodes.Xor)}},
 
                 // Opcodes for mutation bitwise operator: '&' to '|' , and '^'. 
-                {OpCodes.And, new[] {OpCodes.Or, OpCodes.Xor}},
+                {OpCodes.And, new[] {(MutationLevel.Simple, OpCodes.Or), (MutationLevel.Medium, OpCodes.And)}},
 
                 // Opcodes for mutation bitwise operator: '^' to '|' , and '&'. 
-                {OpCodes.Xor, new[] {OpCodes.Or, OpCodes.And}}
+                {OpCodes.Xor, new[] {(MutationLevel.Simple, OpCodes.Or), (MutationLevel.Medium, OpCodes.And)}}
             };
 
         public BitwiseMutationAnalyzer() : base(Bitwise)

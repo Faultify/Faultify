@@ -10,16 +10,16 @@ namespace Faultify.Analyzers
     /// </summary>
     public class BooleanBranchMutationAnalyzer : OpCodeMutationAnalyzer
     {
-        private static readonly Dictionary<OpCode, IEnumerable<OpCode>> Bitwise =
-            new Dictionary<OpCode, IEnumerable<OpCode>>
+        private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Bitwise =
+            new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
             {
                 // Opcodes for mutating 'if(condition)' to 'if(!condition)' or unconditional conditions.
-                {OpCodes.Brtrue, new[] {OpCodes.Brfalse}},
-                {OpCodes.Brtrue_S, new[] {OpCodes.Brfalse_S}},
+                {OpCodes.Brtrue, new[] { (MutationLevel.Simple, OpCodes.Brfalse)}},
+                {OpCodes.Brtrue_S, new[] { (MutationLevel.Simple,OpCodes.Brfalse_S)}},
 
                 // Opcodes for mutating 'if(!condition)' to 'if(condition)' or unconditional conditions.
-                {OpCodes.Brfalse, new[] {OpCodes.Brtrue}},
-                {OpCodes.Brfalse_S, new[] {OpCodes.Brtrue_S}}
+                {OpCodes.Brfalse, new[] { (MutationLevel.Simple,OpCodes.Brtrue)}},
+                {OpCodes.Brfalse_S, new[] { (MutationLevel.Simple,OpCodes.Brtrue_S)}}
             };
 
         public BooleanBranchMutationAnalyzer() : base(Bitwise)

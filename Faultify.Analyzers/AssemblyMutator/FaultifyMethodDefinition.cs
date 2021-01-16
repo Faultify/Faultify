@@ -47,11 +47,11 @@ namespace Faultify.Analyzers.AssemblyMutator
 
         public EntityHandle Handle => MetadataTokens.EntityHandle(IntHandle);
 
-        public IEnumerable<IMutationGrouping<IMutation>> AllMutations()
+        public IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
-            IEnumerable<IMutationGrouping<IMutation>> opcodeMutations = OpCodeMutations();
-            IEnumerable<IMutationGrouping<IMutation>> variableMutations = VariableMutations();
-            IEnumerable<IMutationGrouping<IMutation>> arrayMutations = ArrayMutations();
+            IEnumerable<IMutationGrouping<IMutation>> opcodeMutations = OpCodeMutations(mutationLevel);
+            IEnumerable<IMutationGrouping<IMutation>> variableMutations = VariableMutations(mutationLevel);
+            IEnumerable<IMutationGrouping<IMutation>> arrayMutations = ArrayMutations(mutationLevel);
 
             return opcodeMutations.Concat(variableMutations).Concat(arrayMutations);
         }
@@ -60,13 +60,13 @@ namespace Faultify.Analyzers.AssemblyMutator
         ///     Returns all possible mutations from the method its instructions.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<OpCodeGrouping> OpCodeMutations()
+        public IEnumerable<OpCodeGrouping> OpCodeMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _opcodeMethodAnalyzers)
                 if (_methodDefinition.Body?.Instructions != null)
                     foreach (var instruction in _methodDefinition.Body?.Instructions)
                     {
-                        var mutations = analyzer.AnalyzeMutations(instruction).ToList();
+                        var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel).ToList();
 
                         if (mutations.Any())
                             yield return new OpCodeGrouping
@@ -79,22 +79,22 @@ namespace Faultify.Analyzers.AssemblyMutator
                     }
         }
 
-        public IEnumerable<VariableMutationGrouping> VariableMutations()
+        public IEnumerable<VariableMutationGrouping> VariableMutations(MutationLevel mutationLevel)
         {
             return _variableMutationAnalyzers.Select(analyzer => new VariableMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(_methodDefinition),
+                Mutations = analyzer.AnalyzeMutations(_methodDefinition, mutationLevel),
                 Key = _methodDefinition.Name,
                 AnalyzerName = analyzer.Name,
                 AnalyzerDescription = analyzer.Description
             });
         }
 
-        public IEnumerable<ArrayMutationGrouping> ArrayMutations()
+        public IEnumerable<ArrayMutationGrouping> ArrayMutations(MutationLevel mutationLevel)
         {
             return _arrayMutationAnalyzers.Select(analyzer => new ArrayMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(_methodDefinition),
+                Mutations = analyzer.AnalyzeMutations(_methodDefinition, mutationLevel),
                 Key = _methodDefinition.Name,
                 AnalyzerName = analyzer.Name,
                 AnalyzerDescription = analyzer.Description

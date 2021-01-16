@@ -36,7 +36,7 @@ namespace Faultify.Analyzers
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IEnumerable<ArrayMutation> AnalyzeMutations(MethodDefinition method)
+        public IEnumerable<ArrayMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel)
         {
             foreach (var instruction in method.Body.Instructions)
                 // Call the corresponding strategy based on the result
