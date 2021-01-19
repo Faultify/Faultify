@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Faultify.Analyzers.AssemblyMutator;
+using Faultify.Analyze.AssemblyMutator;
 using Faultify.Core.ProjectAnalyzing;
 using Faultify.TestRunner.TestProcess;
 

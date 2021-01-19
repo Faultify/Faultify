@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Faultify.Analyzers.AssemblyMutator;
-using Faultify.Analyzers.Groupings;
-using Faultify.Analyzers.Mutation;
+using Faultify.Analyze.AssemblyMutator;
+using Faultify.Analyze.Groupings;
+using Faultify.Analyze.Mutation;
 
 namespace Faultify.TestRunner.TestRun
 {

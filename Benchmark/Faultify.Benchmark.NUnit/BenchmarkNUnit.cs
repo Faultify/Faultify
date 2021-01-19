@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Faultify.Benchmark.Nunit
+namespace Faultify.Benchmark.NUnit
 {
     public class BenchmarkNUnit
     {

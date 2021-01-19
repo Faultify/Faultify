@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <PackageVersion>0.0.1</PackageVersion>
+	  <PackageId>Faultify.Report</PackageId>
+	  <Description>Fualtify Mutation Reports</Description>
+
+	  <Authors>Timon, Janfokke</Authors>
+	  <ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
+	  <PackageTags>Test;Mutation;Mutation Testing;Testing</PackageTags>
+	  <RepositoryUrl>https://github.com/Faultify/Faultify.git</RepositoryUrl>
+	  <Title>Dotnet, byte level, mutation test utility</Title>
+
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HTMLReporter\HTML.cshtml" />
+    <None Remove="PDFReporter\PDF.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HTMLReporter\HTML.cshtml" />
+    <EmbeddedResource Include="PDFReporter\PDF.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Haukcode.WkHtmlToPdfDotNet" Version="1.3.0" />
+    <PackageReference Include="RazorLight" Version="2.0.0-rc.2" />
+  </ItemGroup>
+
+</Project>

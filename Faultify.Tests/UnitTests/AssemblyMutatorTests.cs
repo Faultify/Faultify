@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
-using Faultify.Analyzers;
-using Faultify.Analyzers.AssemblyMutator;
-using Faultify.Analyzers.ConstantAnalyzer;
-using Faultify.Analyzers.OpcodeAnalyzer;
+using Faultify.Analyze;
+using Faultify.Analyze.AssemblyMutator;
+using Faultify.Analyze.ConstantAnalyzer;
+using Faultify.Analyze.OpcodeAnalyzer;
 using Faultify.Tests.UnitTests.Utils;
 using NUnit.Framework;
 

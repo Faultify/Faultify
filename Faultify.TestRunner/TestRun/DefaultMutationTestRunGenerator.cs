@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Faultify.Analyzers;
-using Faultify.Analyzers.AssemblyMutator;
+using Faultify.Analyze;
+using Faultify.Analyze.AssemblyMutator;
 using Faultify.Core.ProjectAnalyzing;
 
 namespace Faultify.TestRunner.TestRun

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using CommandLine;
-using Faultify.Analyzers;
+using Faultify.Analyze;
 
 namespace Faultify.Cli
 {
@@ -16,7 +16,7 @@ namespace Faultify.Cli
         [Option('t', "reportType", Required = false, Default = "json" , HelpText = "Type of report to be generated, options: 'pdf', 'html', 'json'")]
         public string ReportType { get; set; } 
 
-        [Option('l', "mutationLevel", Required = false, Default = Analyzers.MutationLevel.Detailed,  HelpText = "The mutation level indicating the test depth. ")]
+        [Option('l', "mutationLevel", Required = false, Default = MutationLevel.Detailed,  HelpText = "The mutation level indicating the test depth. ")]
         public MutationLevel MutationLevel { get; set; }
     }
 }

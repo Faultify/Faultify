@@ -1,5 +1,5 @@
 using System.IO;
-using Faultify.Analyzers.OpcodeAnalyzer;
+using Faultify.Analyze.OpcodeAnalyzer;
 using Faultify.Tests.UnitTests.Utils;
 using Mono.Cecil.Cil;
 using NUnit.Framework;

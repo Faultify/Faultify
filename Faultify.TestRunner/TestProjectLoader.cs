@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Faultify.Analyzers.AssemblyMutator;
+using Faultify.Analyze.AssemblyMutator;
 using Faultify.Core.ProjectAnalyzing;
 using Mono.Cecil;
 

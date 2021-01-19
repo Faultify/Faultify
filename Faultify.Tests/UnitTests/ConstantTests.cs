@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Faultify.Analyzers.ConstantAnalyzer;
+using Faultify.Analyze.ConstantAnalyzer;
 using Faultify.Tests.UnitTests.Utils;
 using NUnit.Framework;
 

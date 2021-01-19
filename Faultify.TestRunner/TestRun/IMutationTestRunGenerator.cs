@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Faultify.Analyzers;
+using Faultify.Analyze;
 
 namespace Faultify.TestRunner.TestRun
 {

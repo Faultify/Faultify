@@ -1,14 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <PackageVersion>0.0.1</PackageVersion>
+	  <PackageId>Faultify.TestRunner</PackageId>
+	  <Description>Fualtify Mutation Test Runner</Description>
+
+	  <Authors>Timon, Janfokke</Authors>
+	  <ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
+	  <PackageTags>Test;Mutation;Mutation Testing;Testing</PackageTags>
+	  <RepositoryUrl>https://github.com/Faultify/Faultify.git</RepositoryUrl>
+	  <Title>Dotnet, byte level, mutation test utility</Title>
+
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Faultify.Analyzers\Faultify.Analyzers.csproj" />
+    <ProjectReference Include="..\Faultify.Analyze\Faultify.Analyze.csproj" />
     <ProjectReference Include="..\Faultify.Core\Faultify.Core.csproj" />
     <ProjectReference Include="..\Faultify.Injection\Faultify.Injection.csproj" />
-    <ProjectReference Include="..\Faultify.Reporting\Faultify.Reporting.csproj" />
+    <ProjectReference Include="..\Faultify.Report\Faultify.Report.csproj" />
     <ProjectReference Include="..\Faultify.TestRunner.Shared\Faultify.TestRunner.Shared.csproj" />
   </ItemGroup>
 

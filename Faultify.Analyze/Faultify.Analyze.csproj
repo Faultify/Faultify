@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <PackageVersion>0.0.1</PackageVersion>
+	  <PackageId>Faultify.Analyze</PackageId>
+	  <Description>Fualtify Mutation Analyzers</Description>
+
+	  <Authors>Timon, Janfokke</Authors>
+	  <ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
+	  <PackageTags>Test;Mutation;Mutation Testing;Testing</PackageTags>
+	  <RepositoryUrl>https://github.com/Faultify/Faultify.git</RepositoryUrl>
+	  <Title>Dotnet, byte level, mutation test utility</Title>
+	  <Product>Mutation Testing</Product>
+
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="0.11.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Faultify.Core\Faultify.Core.csproj" />
+  </ItemGroup>
+
+</Project>

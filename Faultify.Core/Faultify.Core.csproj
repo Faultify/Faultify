@@ -1,9 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
-    <NoWarn>NU1701</NoWarn><!--To dissable html to pdf lib warning-->
+	<PackageVersion>0.0.1</PackageVersion>
+	<Description>Core logic that is used in Faultify. This package should not be used directly.</Description>
+
+	<Authors>Timon, Janfokke</Authors>
+	<ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
+
+	<PackageTags>Test;Mutation;Mutation Testing;Testing</PackageTags>
+	<RepositoryUrl>
+	  https://github.com/Faultify/Faultify.git
+	</RepositoryUrl>
+	<Title>Dotnet byte level mutation testing utility</Title>
+
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<PreserveCompilationContext>true</PreserveCompilationContext>
+	<NoWarn>NU1701</NoWarn><!--To dissable html to pdf lib warning-->
   </PropertyGroup>
 
   <ItemGroup>

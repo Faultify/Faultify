@@ -2,7 +2,7 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Faultify.Tests.UnitTests
+namespace Faultify.Tests.UnitTests.Utils
 {
     /// <summary>
     ///     Generator for a conditional branch statement.

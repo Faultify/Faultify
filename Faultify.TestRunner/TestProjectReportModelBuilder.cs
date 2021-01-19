@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Faultify.Reporting;
+using Faultify.Report;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
