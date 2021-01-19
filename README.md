@@ -1,3 +1,6 @@
+[![Nuget](https://img.shields.io/nuget/v/dotnet-stryker.svg?color=blue&label=dotnet-stryker&style=flat-square)](https://www.nuget.org/packages/dotnet-stryker/)
+[![Nuget](https://img.shields.io/nuget/dt/dotnet-stryker.svg?style=flat-square)](https://www.nuget.org/packages/dotnet-stryker/)
+
 # Faultify
 Faultify is a fast and simpel dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
 Basicly, it imitates the bad programmer by introducing mistakes on purpose. 
@@ -9,19 +12,22 @@ A test is supposed to fail after a mutation, if that is not the case the test is
 
 ```
   -p, --testProjectName    Required. The path pointing to the test project project file.
+  
   -r, --reportPath         The path were the report will be saved.
-  -t, --reportType         Type of report to be generated, options: 'pdf', 'html', 'json'
+  -t, --reportType         (Default: json) Type of report to be generated, options: 'pdf', 'html', 'json'
+  -l, --mutationLevel      (Default: Detailed) The mutation level indicating the test depth.
   --help                   Display this help screen.
   --version                Display version information.
 ```
 
-**Example**
+**Install / Run**
 
 ```
-dotnet Faultify.Cli.dll -p TestProject.csproj -t pdf
+dotnet tool install --global faultify --version 0.0.3
+faultify -p YourTestProject.csproj -t html
 ```
 
-Report will be writen to executable location '/FaultifyOutput'.
+The default location for the report is at the executable location in folder '/FaultifyOutput'.
 
 ## Features
 
@@ -43,6 +49,16 @@ Report will be writen to executable location '/FaultifyOutput'.
 - [X] Crossplatform .net core compitability. 
 - [X] Nunit/Xunit/Msunit support via `dotnet test`.
 - [X] Runnable from console. 
+
+## Solution Projects
+
+| Project | Description |
+| :----- | :----- |
+| `Faultify.Cli` | `Contains the faultify executable mutation dotnet utility.`|
+| `Faultify.Analyze` | `Contains the code that analyzes and searches for mutations`|
+| `Faultify.TestRunner` | `Contains the code that runs the mutation test process`|
+| `Faultify.Report` | `Contains the code that generates a report`|
+| `/Bechmarks` | `Contains a benchmark project and tests that can be used for mutation testing with faultify/stryker.`|
 
 ## Operation
 Faultify mutates IL code with `Mono.Cecil`. For arithmetic, assigment, equivalence, logical, bitwise, branching mutations, this is relatively easy. In these cases, only the opcode needs to be changed. With array mutations there is more complexity involved since defining arrays is not done one way in IL code but there are many edge cases.
