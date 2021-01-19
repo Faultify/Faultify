@@ -3,12 +3,12 @@
 [![Nuget](https://img.shields.io/nuget/v/faultify.svg?color=blue&label=faultify&style=flat-square)](https://www.nuget.org/packages/faultify/)
 [![Nuget](https://img.shields.io/nuget/dt/faultify.svg?style=flat-square)](https://www.nuget.org/packages/faultify/)
 
-# Byte Code Dotnet Mutation Utility
+## Byte Code Dotnet Mutation Utility
 Faultify is a fast and simpel dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
 Basicly, it imitates the bad programmer by introducing mistakes on purpose. 
 A test is supposed to fail after a mutation, if that is not the case the test is probable error-prone.
 
-## How to use
+### How to use
 
 **Commandline Options**
 
@@ -31,7 +31,7 @@ faultify -p YourTestProject.csproj -t html
 
 The default location for the report is at the executable location in folder '/FaultifyOutput'.
 
-## Features
+### Features
 
 **Funnctional Features**
 - [X] Mutate Arithmetic (+, -, /, *, %) Operators.
@@ -52,9 +52,9 @@ The default location for the report is at the executable location in folder '/Fa
 - [X] Nunit/Xunit/Msunit support via `dotnet test`.
 - [X] Runnable from console. 
 
-## Solution Projects
+### Solution Projects
 
-| Project | Description |
+| Solution Item | Description |
 | :----- | :----- |
 | `Faultify.Cli` | `Contains the faultify executable mutation dotnet utility.`|
 | `Faultify.Analyze` | `Contains the code that analyzes and searches for mutations`|
@@ -62,8 +62,8 @@ The default location for the report is at the executable location in folder '/Fa
 | `Faultify.Report` | `Contains the code that generates a report`|
 | `/Bechmarks` | `Contains a benchmark project and tests that can be used for mutation testing with faultify/stryker.`|
 
-## Operation
+### Operation
 Faultify mutates IL code with `Mono.Cecil`. For arithmetic, assigment, equivalence, logical, bitwise, branching mutations, this is relatively easy. In these cases, only the opcode needs to be changed. With array mutations there is more complexity involved since defining arrays is not done one way in IL code but there are many edge cases.
 
-## Alternative
+### Alternative
 - Source code mutation with mutation switching to speed up compile speed (stryker). 
