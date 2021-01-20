@@ -34,9 +34,6 @@ namespace Faultify.Cli
         
         private static async Task Main(string[] args)
         {
-            // await ToHTML("test.json");
-            // return;
-
             var settings = ParseCommandlineArguments(args);
             
             var configurationRoot = BuildConfigurationRoot();
@@ -49,21 +46,7 @@ namespace Faultify.Cli
 
             await program.Run(settings);
         }
-
-        private static async Task ToHTML(string file)
-        {
-            MutationProjectReportModel mptm = JsonSerializer.Deserialize<MutationProjectReportModel>(File.ReadAllText(file));
-
-            foreach (var VARIABLE in mptm.TestProjects)
-            {
-                VARIABLE.InitializeMetrics(5, TimeSpan.MaxValue);
-            }
-            
-            HtmlReporter htmlReporter = new HtmlReporter();
-            var report = await htmlReporter.CreateReportAsync(mptm);
-            await File.WriteAllBytesAsync("result.html", report);
-        }
-
+        
         private static Settings ParseCommandlineArguments(string[] args)
         {
             Settings settings = new Settings();
