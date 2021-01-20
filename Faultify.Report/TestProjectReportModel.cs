@@ -5,31 +5,50 @@ namespace Faultify.Report
 {
     public class TestProjectReportModel
     {
-        public string Name { get; set; }
-        public IList<TestCaseReportModel> Tests { get; set; } = new List<TestCaseReportModel>();
-        public TimeSpan Duration { get; set; }
-
-        public int MutationsSurvived { get; set; }
-        public int MutationsKilled { get; set; }
-        public int MutationsNoCoverage { get; set; }
-        public int MutationsTimedOut { get; set; }
-        public int TotalMutationsSurvivedProject { get; set; }
-        public int TotalMutationsKilledProject { get; set; }
-        public int TotalProject { get; set; }
-
-        public void TestResultSurvivedAndKilled()
+        public TestProjectReportModel(string testProjectName, TimeSpan testSessionDuration)
         {
-            foreach (var tr in Tests)
-            {
-                tr.TestMutationSurvivedAndKilled();
-                MutationsSurvived += tr.MutationsSurvived;
-                MutationsKilled += tr.MutationsKilled;
-                MutationsNoCoverage += tr.MutationsNoCoverage;
-                MutationsTimedOut += tr.MutationsTimedOut;
-                TotalMutationsSurvivedProject += tr.TotalMutationsSurvivedResult;
-                TotalMutationsKilledProject += tr.TotalMutationsKilledResult;
-                TotalProject += tr.TotalResult;
-            }
+            TestProjectName = testProjectName;
+            TestSessionDuration = testSessionDuration;
+        }
+
+        public IList<MutationVariantReportModel> Mutations { get; set; } = new List<MutationVariantReportModel>();
+        public string TestProjectName { get; }
+        public TimeSpan TestSessionDuration { get; private set; }
+
+        public int MutationsSurvived { get; private set; }
+        public int MutationsKilled { get; private set; }
+        public int MutationsNoCoverage { get; private set; }
+        public int MutationsTimedOut { get; private set; }
+
+        public int TotalMutations { get; private set; }
+        public int TotalTestRuns { get; private set; }
+
+        public float ScorePercentage { get; set; }
+
+        public void InitializeMetrics(int totalTestRuns, TimeSpan testSessionDuration)
+        {
+            TotalTestRuns = totalTestRuns;
+            TestSessionDuration = testSessionDuration;
+
+            foreach (var mutation in Mutations)
+                switch (mutation.TestStatus)
+                {
+                    case MutationStatus.Survived:
+                        MutationsSurvived++;
+                        break;
+                    case MutationStatus.NoCoverage:
+                        MutationsNoCoverage++;
+                        break;
+                    case MutationStatus.Killed:
+                        MutationsKilled++;
+                        break;
+                    case MutationStatus.Timeout:
+                        MutationsTimedOut++;
+                        break;
+                }
+
+            TotalMutations = MutationsKilled + MutationsSurvived + MutationsTimedOut + MutationsNoCoverage;
+            ScorePercentage = (int)((100.0 / TotalMutations) * MutationsKilled);
         }
     }
 }

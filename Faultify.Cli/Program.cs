@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
@@ -11,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Cli
 {
@@ -30,6 +34,9 @@ namespace Faultify.Cli
         
         private static async Task Main(string[] args)
         {
+            // await ToHTML("test.json");
+            // return;
+
             var settings = ParseCommandlineArguments(args);
             
             var configurationRoot = BuildConfigurationRoot();
@@ -41,6 +48,20 @@ namespace Faultify.Cli
             var program = serviceProvider.GetService<Program>();
 
             await program.Run(settings);
+        }
+
+        private static async Task ToHTML(string file)
+        {
+            MutationProjectReportModel mptm = JsonSerializer.Deserialize<MutationProjectReportModel>(File.ReadAllText(file));
+
+            foreach (var VARIABLE in mptm.TestProjects)
+            {
+                VARIABLE.InitializeMetrics(5, TimeSpan.MaxValue);
+            }
+            
+            HtmlReporter htmlReporter = new HtmlReporter();
+            var report = await htmlReporter.CreateReportAsync(mptm);
+            await File.WriteAllBytesAsync("result.html", report);
         }
 
         private static Settings ParseCommandlineArguments(string[] args)
@@ -90,8 +111,6 @@ namespace Faultify.Cli
 
             var mprm = new MutationProjectReportModel();
             mprm.TestProjects.Add(testResult);
-            mprm.TotalKilledAndSurvived();
-            mprm.Duration = testResult.Duration;
 
             IReporter reporter = ReportFactory(settings.ReportType);
             var reportBytes = await reporter.CreateReportAsync(mprm);

@@ -1,5 +1,5 @@
 ﻿@using Faultify.Report
-@model Faultify.Report.MutationProjectReportModel
+@model MutationProjectReportModel
 
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -57,8 +57,6 @@
     <h1 id="TopTitle">@Model.Name</h1>
 </div>
 <div>
-
-
     <div class="accordion" id="accordionExample">
         @for (var i = 0; i < Model.TestProjects.Count; i++)
         {
@@ -67,18 +65,18 @@
                 <div class="card-header" id="headingproj@(i)" style="padding: 0%;">
                     <h5 class="mb-0">
                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseproj@(i)" aria-expanded="true" aria-controls="collapseproj@(i)" style="color: black; height: 100%; text-align: left; width: 100%;">
-                            @testProject.Name
-                            @if (testProject.TotalMutationsKilledProject == testProject.TotalProject)
+                            @testProject.TestProjectName
+                            @if (testProject.MutationsKilled == testProject.TotalMutations)
                             {
-                                <label class="text-success" style="float: right;">Mutants killed: @testProject.TotalMutationsKilledProject / @testProject.TotalProject</label>
+                                <label class="text-success" style="float: right;">Mutants killed: @testProject.MutationsKilled / @testProject.TotalMutations </label>
                             }
-                            else if (testProject.TotalMutationsSurvivedProject == testProject.TotalProject)
+                            else if (testProject.MutationsSurvived == testProject.TotalMutations)
                             {
-                                <label class="text-danger" style="float: right;">Mutants killed: @testProject.TotalMutationsKilledProject / @testProject.TotalProject</label>
+                                <label class="text-danger" style="float: right;">Mutants killed: @testProject.MutationsKilled / @testProject.TotalMutations</label>
                             }
                             else
                             {
-                                <label class="text-warning" style="float: right;">Mutants killed: @testProject.TotalMutationsKilledProject / @testProject.TotalProject</label>
+                                <label class="text-warning" style="float: right;">Mutants killed: @testProject.MutationsKilled / @testProject.TotalMutations</label>
                             }
 
                         </button>
@@ -88,106 +86,44 @@
                 <div id="collapseproj@(i)" class="collapse" aria-labelledby="headingproj@(i)" data-parent="#accordionExample">
                     <div class="card-body">
                         <div class="accordion" id="AccordionTestProject@(i)">
-                            @for (var y = 0; y < testProject.Tests.Count; y++)
+                            @for (var y = 0; y < testProject.Mutations.Count; y++)
                             {
-                                var test = testProject.Tests[y];
+                                var mutation = testProject.Mutations[y];
+
                                 <div class="card">
-                                    <div class="card-header" id="headingcase@(i)@(y)" style="padding: 0%;">
+                                    <div class="card-header" id="headingmutatie@(i)@(y)" style="padding: 0%;">
                                         <h5 class="mb-0">
-                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsecase@(i)@(y)" aria-expanded="true" aria-controls="collapsecase@(i)@(y)" style="color: black; height: 100%; text-align: left; width: 100%;">
-                                                @test.Name
-                                                @if (test.TotalMutationsKilledResult == test.TotalResult)
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie@(i)@(y)" aria-expanded="true" aria-controls="collapsemutatie@(i)@(y)" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                @mutation.Name -
+                                                @if (mutation.TestStatus == MutationStatus.Killed)
                                                 {
-                                                    <label class="text-success" style="float: right;">Mutants killed: @test.TotalMutationsKilledResult / @test.TotalResult</label>
+                                                    <label class="text-success" style="float: right;">Killed</label>
                                                 }
-                                                else if (test.TotalMutationsSurvivedResult == test.TotalResult)
+                                                else if (mutation.TestStatus == MutationStatus.Timeout)
                                                 {
-                                                    <label class="text-danger" style="float: right;">Mutants killed: @test.TotalMutationsKilledResult / @test.TotalResult</label>
+                                                    <label class="text-success" style="float: right;">Timeout</label>
+                                                }
+                                                else if (mutation.TestStatus == MutationStatus.NoCoverage)
+                                                {
+                                                    <label class="text-danger" style="float: right;">NoCoverage</label>
                                                 }
                                                 else
                                                 {
-                                                    <label class="text-warning" style="float: right;">Mutants killed: @test.TotalMutationsKilledResult / @test.TotalResult</label>
+                                                    <label class="text-danger" style="float: right;">Survived</label>
                                                 }
                                             </button>
                                         </h5>
                                     </div>
 
-                                    <div id="collapsecase@(i)@(y)" class="collapse" aria-labelledby="headingcase@(i)@(y)" data-parent="#AccordionTestProject@(i)">
+                                    <div id="collapsemutatie@(i)@(y)" class="collapse" aria-labelledby="headingmutatie@(i)@(y)" data-parent="#collapsemutatie@(i)@(y)">
                                         <div class="card-body">
-                                            <div class="accordion" id="AccordionTest@(i)@(y)">
-                                                @for (var x = 0; x < test.Mutations.Count; x++)
-                                                {
-                                                    var mutationsGroupingReportModel = test.Mutations[x];
-                                                    <div class="card">
-                                                        <div class="card-header" id="headinggroup@(i)@(y)@(x)" style="padding: 0%;">
-                                                            <h5 class="mb-0">
-                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsegroup@(i)@(y)@(x)" aria-expanded="true" aria-controls="collapsegroup@(i)@(y)@(x)" style="color: black; height: 100%; text-align: left; width: 100%;">
-                                                                    @mutationsGroupingReportModel.Name
-                                                                    @if (mutationsGroupingReportModel.TotalMutationsKilledMutation == mutationsGroupingReportModel.TotalMutation)
-                                                                    {
-                                                                        <label class="text-success" style="float: right;">Mutants killed: @mutationsGroupingReportModel.TotalMutationsKilledMutation / @mutationsGroupingReportModel.TotalMutation</label>
-                                                                    }
-                                                                    else if (mutationsGroupingReportModel.TotalMutationsSurvivedMutation == mutationsGroupingReportModel.TotalMutation)
-                                                                    {
-                                                                        <label class="text-danger" style="float: right;">Mutants killed: @mutationsGroupingReportModel.TotalMutationsKilledMutation / @mutationsGroupingReportModel.TotalMutation</label>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <label class="text-warning" style="float: right;">Mutants killed: @mutationsGroupingReportModel.TotalMutationsKilledMutation / @mutationsGroupingReportModel.TotalMutation</label>
-                                                                    }
-                                                                </button>
-                                                            </h5>
-                                                        </div>
+                                            @mutation.Description
 
-                                                        <div id="collapsegroup@(i)@(y)@(x)" class="collapse" aria-labelledby="headinggroup@(i)@(y)@(x)" data-parent="#AccordionTest@(i)@(y)">
-                                                            <div class="card-body">
-                                                                <div class="accordion" id="AccordionMutation@(i)@(y)@(x)">
-                                                                    @for (var z = 0; z < mutationsGroupingReportModel.MutationResults.Count; z++)
-                                                                    {
-                                                                        var mutationReportModel = mutationsGroupingReportModel.MutationResults[z];
-                                                                        <div class="card">
-                                                                            <div class="card-header" id="headingmutatie@(i)@(y)@(x)@(z)" style="padding: 0%;">
-                                                                                <h5 class="mb-0">
-                                                                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie@(i)@(y)@(x)@(z)" aria-expanded="true" aria-controls="collapsemutatie@(i)@(y)@(x)@(z)" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
-                                                                                        @mutationReportModel.Name
-                                                                                        @if (mutationReportModel.Status == MutationReportModel.MutationStatus.Killed)
-                                                                                        {
-                                                                                            <label class="text-success" style="float: right;">Killed</label>
-                                                                                        }
-                                                                                        else if (mutationReportModel.Status == MutationReportModel.MutationStatus.Timeout)
-                                                                                        {
-                                                                                            <label class="text-success" style="float: right;">Timeout</label>
-                                                                                        }
-                                                                                        else if (mutationReportModel.Status == MutationReportModel.MutationStatus.NoCoverage)
-                                                                                        {
-                                                                                            <label class="text-danger" style="float: right;">NoCoverage</label>
-                                                                                        }
-                                                                                        else
-                                                                                        {
-                                                                                            <label class="text-danger" style="float: right;">Survived</label>
-                                                                                        }
-                                                                                    </button>
-                                                                                </h5>
-                                                                            </div>
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">@mutation.OriginalSource</code></pre>
 
-                                                                            <div id="collapsemutatie@(i)@(y)@(x)@(z)" class="collapse" aria-labelledby="headingmutatie@(i)@(y)@(x)@(z)" data-parent="#AccordionMutation@(i)@(y)@(x)">
-                                                                                <div class="card-body">
-                                                                                    @mutationReportModel.Description
-                                                                                    <h6>Original Source</h6>
-                                                                                    <pre><code class="language-csharp">@mutationReportModel.OriginalSource</code></pre>
-
-                                                                                    <h6>Mutated Source</h6>
-                                                                                    <pre><code class="language-csharp">@mutationReportModel.MutatedSource</code></pre>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            </div>
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">@mutation.MutatedSource</code></pre>
                                         </div>
                                     </div>
                                 </div>
@@ -200,40 +136,40 @@
     </div>
     <div class="card-header infopanel">
         <ul>
-            # Test Session Duration: @Model.Duration
+            # Test Session TestTestSessionDuration: @Model.TestDuration
         </ul>
         <ul>
-            Total amount of possible mutations: @Model.Total
+            Total amount of possible mutations: @Model.TotalMutations
         </ul>
         <ul>
-            # Mutants killed: @Model.TotalKilled
+            # Mutants killed: @Model.TotalMutationsKilled,
         </ul>
         <ul>
-            # Mutants survived: @Model.TotalSurvived
+            # Mutants survived: @Model.TotalMutationsSurvived,
         </ul>
         <ul>
-            # Mutants timed out: @Model.TotalTimedOut
+            # Mutants timed out: @Model.TotalMutationsTimedOut,
         </ul>
         <ul>
-            # Mutations without coverage: @Model.TotalNoCoverage
+            # Mutations without coverage: @Model.TotalMutationsNoCoverage
         </ul>
         <ul>
             <label>
-                Mutation Score:
+                Mutation ScorePercentage:
             </label>
             <div class="progress">
 
-                @if (Model.ScoreAsInt == 100)
+                @if (Model.ScorePercentage == 100)
                 {
-                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-success" role="progressbar" style="width: @Model.ScoreString" aria-valuenow="@Model.ScoreAsInt" aria-valuemin="0" aria-valuemax="100">@Model.ScoreString</div>
+                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-success" role="progressbar" style="width: @Model.ScorePercentage%" aria-valuenow="@Model.ScorePercentage" aria-valuemin="0" aria-valuemax="100">@Model.ScorePercentage%</div>
                 }
-                else if (Model.ScoreAsInt > 50 && Model.ScoreAsInt < 100)
+                else if (Model.ScorePercentage > 50 && Model.ScorePercentage < 80)
                 {
-                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-warning" role="progressbar" style="width: @Model.ScoreString" aria-valuenow="@Model.ScoreAsInt" aria-valuemin="0" aria-valuemax="100">@Model.ScoreString</div>
+                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-warning" role="progressbar" style="width: @Model.ScorePercentage%" aria-valuenow="@Model.ScorePercentage" aria-valuemin="0" aria-valuemax="100">@Model.ScorePercentage%</div>
                 }
                 else
                 {
-                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-danger" role="progressbar" style="width: @Model.ScoreString" aria-valuenow="@Model.ScoreAsInt" aria-valuemin="0" aria-valuemax="100">@Model.ScoreString</div>
+                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-danger" role="progressbar" style="width: @Model.ScorePercentage%" aria-valuenow="@Model.ScorePercentage" aria-valuemin="0" aria-valuemax="100">@Model.ScorePercentage%</div>
                 }
             </div>
         </ul>
