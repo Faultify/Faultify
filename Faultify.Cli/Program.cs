@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
@@ -11,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Cli
 {
@@ -42,7 +46,7 @@ namespace Faultify.Cli
 
             await program.Run(settings);
         }
-
+        
         private static Settings ParseCommandlineArguments(string[] args)
         {
             Settings settings = new Settings();
@@ -90,8 +94,6 @@ namespace Faultify.Cli
 
             var mprm = new MutationProjectReportModel();
             mprm.TestProjects.Add(testResult);
-            mprm.TotalKilledAndSurvived();
-            mprm.Duration = testResult.Duration;
 
             IReporter reporter = ReportFactory(settings.ReportType);
             var reportBytes = await reporter.CreateReportAsync(mprm);

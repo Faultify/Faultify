@@ -263,7 +263,7 @@ namespace Faultify.TestRunner
             sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed);
             allRunsStopwatch.Stop();
 
-            return reportBuilder.Build(allRunsStopwatch.Elapsed);
+            return reportBuilder.Build(allRunsStopwatch.Elapsed, totalRunsCount);
         }
     }
 }

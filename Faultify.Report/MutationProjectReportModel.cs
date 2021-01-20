@@ -1,42 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Faultify.Report
 {
     public class MutationProjectReportModel
     {
-        public string Name { get; set; } = "MyMutationProject";
-        public IList<TestProjectReportModel> TestProjects { get; set; } = new List<TestProjectReportModel>();
-        public TimeSpan Duration { get; set; }
-        public int TotalKilled { get; set; }
-        public int TotalSurvived { get; set; }
-        public int TotalNoCoverage { get; set; }
-        public int TotalTimedOut { get; set; }
-        public int TotalMutationsKilledRunResult { get; set; }
-        public int TotalMutationsSurvivedRunResult { get; set; }
-        public float Total { get; set; }
-        public float Score { get; set; }
-        public int ScoreAsInt { get; set; }
-        public string ScoreString { get; set; }
+        public List<TestProjectReportModel> TestProjects { get; set; } = new List<TestProjectReportModel>();
+        public string  Name { get; set; }
 
-        public void TotalKilledAndSurvived()
-        {
-            foreach (var tpr in TestProjects)
-            {
-                tpr.TestResultSurvivedAndKilled();
-                TotalKilled += tpr.MutationsKilled;
-                TotalSurvived += tpr.MutationsSurvived;
-                TotalNoCoverage += tpr.MutationsNoCoverage;
-                TotalTimedOut += tpr.MutationsTimedOut;
-                TotalMutationsKilledRunResult += tpr.TotalMutationsKilledProject;
-                TotalMutationsSurvivedRunResult += tpr.TotalMutationsSurvivedProject;
-                Total += tpr.TotalProject;
-            }
+        public TimeSpan TestDuration => new TimeSpan(TestProjects.Sum(x => x.TestSessionDuration.Ticks));
 
-            float killed = TotalKilled + TotalTimedOut;
-            Score = killed / Total * 100;
-            ScoreAsInt = (int) Score;
-            ScoreString = $"{(int) Score}%";
-        }
+        public int TotalMutationsSurvived => TestProjects.Sum(x => x.MutationsSurvived);
+        public int TotalMutationsKilled => TestProjects.Sum(x => x.MutationsKilled);
+        public int TotalMutationsNoCoverage => TestProjects.Sum(x => x.MutationsNoCoverage);
+        public int TotalMutationsTimedOut => TestProjects.Sum(x => x.MutationsTimedOut);
+        public int TotalMutations => TestProjects.Sum(x => x.TotalMutations);
+
+        public float ScorePercentage => TestProjects.Average(x => x.ScorePercentage);
     }
 }
