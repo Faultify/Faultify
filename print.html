@@ -1,0 +1,518 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Faultify</title>
+        
+        <meta name="robots" content="noindex" />
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="mutation.html"><strong aria-hidden="true">2.</strong> Mutations</a></li><li class="chapter-item expanded "><a href="analyzers.html"><strong aria-hidden="true">3.</strong> Analyzers</a></li><li class="chapter-item expanded "><a href="test-runner.html"><strong aria-hidden="true">4.</strong> Test Runner</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Faultify</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <p>Fault Insertion, Fault Injection, Mutation Testing, Mutation Injection are terms that refer to the same subject. 
+With mutation injection, one introduces changes to the logic of a codebase. 
+If a logic mutation (change) is introduced and a test still succeeds then the test may not be fully reliable. 
+This fact can be used to calculate determine the unit test quality.</p>
+<p>Thanks for having interest to contribute to Faultify!
+This book goes into some technical implementation details of this library.
+Feel free to join the Discord server if you have any questions.</p>
+<h1><a class="header" href="#il-inspectors" id="il-inspectors">IL-Inspectors</a></h1>
+<p>Those tools can be used to inspect IL-code.</p>
+<ul>
+<li>https://github.com/icsharpcode/ILSpy</li>
+<li>https://github.com/dnSpy/dnSpy (allows manual editing of IL)</li>
+</ul>
+<h1><a class="header" href="#testing" id="testing">Testing</a></h1>
+<p>All mutations are tested in <a href="https://github.com/Faultify/Faultify/tree/main/Faultify.Tests">Faultify.Tests</a>. 
+Code that is to be mutated has to be compiled such that this compiled assembly can be read by <code>Mono.Cecil</code>.
+There is a folder <a href="https://github.com/Faultify/Faultify/tree/main/Faultify.Tests/UnitTests/TestSource">TestSource</a> that contains 
+various targets whom are compiled at run time by the unit tests. </p>
+<p>For new mutations:</p>
+<ul>
+<li>Add a test target or update an existing one.</li>
+<li>Write a unit test that loads this target and mutates it (see the existing unit tests)</li>
+</ul>
+<h1><a class="header" href="#what-is-a-mutation" id="what-is-a-mutation">What Is a Mutation</a></h1>
+<p>A mutation is a change in operators, constant values, or variable declinations. Examples of possible mutations are:</p>
+<ul>
+<li>Arithmetic (+, -, /, *, %) Operators.</li>
+<li>Assignment Expressions (+=, -=, /=, *=, %=, — , ++).</li>
+<li>Equivalence Operators (==, !=).</li>
+<li>Logical Operators (&amp;&amp;, ||).</li>
+<li>Bitwise Operators (^,|, &amp;).</li>
+<li>Branching Statements (if(condition), if(!condition)).</li>
+<li>Variable Literals (true, false).</li>
+<li>Mutate Constant Fields (string, number, boolean).</li>
+</ul>
+<p>The operators above should be mutated to a variant that invalidates the logic. 
+For example, a ‘+’ can be changed to a ‘-’, ‘&lt;’ to a ‘&gt;’, ‘true’ to a ‘false’ etc… 
+With some types of mutations, it may be possible that the mutation results in the same value such as ‘1 + 1’ to ‘1*1’, 
+therefore for these mutations all variants ‘+, -, *, /’ should be performed for the best result.</p>
+<pre><code class="language-csharp">// Original
+public int Add(a, b) {
+   return a + b;
+}
+// Mutation 1
+public int Add(a, b) {
+   return a - b;
+}
+// Mutation 2
+public int Add(a, b) {
+   return a * b;
+}
+</code></pre>
+<h2><a class="header" href="#infinite-loop-mutation" id="infinite-loop-mutation">Infinite Loop Mutation</a></h2>
+<p>A mutation, such that you get ‘while(true)’, is able to cause an infinite loop.
+This is an issue because it will cause the test session to run infinitely. 
+This can be tackled in several ways:</p>
+<ol>
+<li>An initial test run is performed to calculate the run time of all unit tests without mutations, then this metric is used as a process timeout value.</li>
+<li>Before the test run is performed, it is validated whether a mutation can cause an infinite loop. 
+This is a faster solution because you do not have to interrupt a test process and start it again if an infinite loop mutation occurs.
+However, this can be very difficult to detect in advance for the following reasons:
+<ul>
+<li>A loop can contain many conditions that can potentially interrupt the loop using a return or break. All conditions have to be checked in order to know whether a mutation causes an infinite loop.</li>
+<li>There can be various loops with different mutations. It is relatively easy to detect that a <code>while(false)</code> to <code>while(true)</code> mutation results in an infinite loop. However, this is way more difficult for a <code>while(a &lt; b)</code> to a <code>while(a &gt; b)</code> mutation.
+Besides infinite loops, pseudo-infinite is also an edge case that should be taken into account. A pseudo-infinite loop means that a loop takes some time to run however it is finite. The for loop mutation ‘++’ to ‘- -’ will flip the iteration direction which can take a long time (usually int.Max times) before it completes.</li>
+</ul>
+</li>
+</ol>
+<h1><a class="header" href="#mutation-technique" id="mutation-technique">Mutation Technique</a></h1>
+<p>There are two main ways to mutate code logic:</p>
+<ul>
+<li>At the source code level (modifying syntax trees and compile the mutations)</li>
+<li>At the byte code level (modifying the byte code/CIL in the compiled assembly).</li>
+</ul>
+<h2><a class="header" href="#byte-code-vs-source-code" id="byte-code-vs-source-code">Byte-code vs Source-code</a></h2>
+<p>I think that these two methods both have advantages as disadvantages. 
+And that they are both valid ways to implement mutation testing. 
+I did some Benchmark on a small project, both Stryker and Faultify seem to be performing equally well.
+Though there is still optimizing work to be done for Faultify.</p>
+<h3><a class="header" href="#sourcecode-with-mutation-switching" id="sourcecode-with-mutation-switching">Sourcecode with Mutation Switching:</a></h3>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Recompilation is not required when using mutant switching though this implies that for any new mutations or edits to current mutations the entire assembly is to be recompiled.</li>
+<li>The exact mutation location/line can be shown to users.</li>
+<li>Mutation coverage can be easily calculated.</li>
+<li>Its easier to run mutation test runs in parallel compared to byte-code.</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Control over individual mutations is limited since mutations can not be injected without recompilation at runtime.</li>
+<li>Constant, Method Names, Access modifiers mutations are impossible.</li>
+<li>With some mutations compile errors can be generated.</li>
+</ul>
+<h2><a class="header" href="#byte-code" id="byte-code">Byte-Code</a></h2>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Recompilation is not required.</li>
+<li>Integrates with all .NET languages working on CIL.</li>
+<li>More flexibility and control over mutations since mutations can be injected without recompilation at runtime.</li>
+<li>Constant, Method Names, Access modifiers mutations are possible.</li>
+<li>Detailed control since only required mutations can be injected; This is useful when inspecting it with ‘ILSPY’ of ‘DNSPY’.</li>
+<li>There is a lot of flexibility in having access to IL-code.</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>It is more difficult (not impossible) to show the exact mutation location/line since IL-code does not have code-lines.</li>
+<li>Some mutations like array mutations require complex IL-structures.</li>
+<li>It's more difficult (not impossible) to run mutation test runs in parallel compared to source-code.</li>
+<li>Calculating code coverage for individual mutations is next to impossible, therefore something like method-based coverage is sued in Faultify.</li>
+</ul>
+<h2><a class="header" href="#source-code-mutations" id="source-code-mutations">Source Code Mutations</a></h2>
+<p>This technique modifies source code and compiles mutations into the binary. 
+This is often accomplished with the C# syntax tree.</p>
+<h3><a class="header" href="#mutation-switching" id="mutation-switching">Mutation Switching</a></h3>
+<p>If mutations are performed at the source code level then the code must be compiled to a binary before the test can be run with those mutations. 
+In a large codebase, there can easily be thousands of mutations. 
+If the source code is to be recompiled for each mutation the process will become extremely slow.
+Therefore, the source code technique is often used with ‘Mutation Switching’/’Mutant schemata’. 
+In short, this means that all mutations are compiled into the binary. The test process will then turn the mutations on or off with, for example, an environment variable. 
+This is an example of how a ‘+’ is mutated to a ‘-’ and ‘*’ looks like:</p>
+<pre><code class="language-csharp">public int Add(int a, int b) {
+   if (Environment.GetEnvironmentVariable(&quot;ActiveMutant&quot;) == 0) { 
+     return a - b;
+   } else { 
+     return a * b;        
+   } 
+}
+</code></pre>
+<p>Thus, the test process can set the ‘ActiveMutant’ environment variable to ‘0’ to execute the ‘-’ and to 1 for ‘*’.</p>
+<h2><a class="header" href="#byte-code-mutations" id="byte-code-mutations">Byte Code Mutations</a></h2>
+<p>The advantage of byte code manipulation is that the mutated source code does not need to be recompiled and not all mutations need to be injected ahead of time. For Faultify we use ‘Mono.Cecil’. This is an excellent library for manipulating ‘IL-CODE (CIL)’. A major drawback I have encountered is that the library is very poorly documented which makes it difficult to get started.
+‘Mono.Cecil’ is made up of the following structure:</p>
+<p><img src="./img/mono.cecil.PNG" alt="Cecil" /></p>
+<p>A module is a compiled assembly, the types are classes for example, and these classes have methods, properties, and fields. 
+On these levels, as described earlier, mutations can be performed.
+Let’s mutate the following method:</p>
+<pre><code class="language-csharp">public int Addition(int lhs, int rhs)
+{
+    return lhs + rhs;
+}
+</code></pre>
+<h2><a class="header" href="#code-mutation-example" id="code-mutation-example">Code Mutation Example</a></h2>
+<p><img src="./img/il-code-addition.png" alt="Cecil" /></p>
+<p>You can see the IL code of the ‘Addition’ method inspected with ‘Il-Spy’.
+Instruction IL_0003 has the ‘add’ opcode. If we change this to ‘sub’ then the operation here becomes a subtraction instead of addition (dn-spy can be used for editing IL-code manually). 
+The following image shows the ‘add’ to ‘sub’ motion with ‘Mono.Cecil’:</p>
+<p><img src="./img/code-il-mutation.png" alt="Cecil" /></p>
+<p>Here you can see that a <code>ModuleDefinition</code> has many <code>TypeDefinitions</code> and that the type has many <code>MethodDefinitions</code> who on its turn has <code>Instructions</code>. 
+We want to mutate the ‘add’ opcode to ‘sub’ opcode.</p>
+<p>For an extensive view on the meaning and edge cases of opcodes checkout the <a href="https://en.wikipedia.org/wiki/List_of_CIL_instructions">Wikipedia</a> and <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.bgt?view=net-5.0">Microsoft</a> pages.</p>
+<p><strong>Edge Case Comparison Operators</strong></p>
+<p>There are many paths leading to Rome. This is the same for comparing values in IL-Code. 
+This is demonstrated in the following list with the branching comparison variant and the comparison only variant (see Wikipedia for their meaning).</p>
+<ul>
+<li><strong>blt:</strong> The effect is identical to performing a <strong>clt</strong> instruction followed by a <strong>brtrue</strong> branch to the specific target instruction.</li>
+<li><strong>bgt:</strong> The effect is identical to performing a <strong>cgt</strong> instruction followed by a <strong>brtrue</strong> branch to the specific target instruction</li>
+<li><strong>bge:</strong> The effect is identical to performing a <strong>clt</strong> instruction (clt.un for floats) followed by a <strong>brfalse</strong> branch to the specific target instruction.</li>
+<li><strong>beq:</strong> The effect is the same as performing a <strong>ceq</strong> instruction followed by a <strong>brtrue</strong> branch to the specific target instruction.</li>
+</ul>
+<p>It turns out that the compiler will usually optimize control flow by translating a boolean operator like ‘&lt;’ into its IL complement branching instruction (clt). 
+Hence it can be the case that different compilers generate different IL-code.
+My compiler will always generate the comparison operator (clt) however on another PC it might as well use the branching variant (blt). 
+This scenario might confuse one if certain mutations don't seem to be working. This Microsoft article goes into this issue deeper.</p>
+<p>Faultify supports any mapping and will handle this edge-case. 
+For testing purposes there is a <a href="https://github.com/Faultify/Faultify/blob/main/Faultify.Tests/UnitTests/Utils/ConditionalBranchGenerator.cs">utility</a> written 
+that is able to force the branching or comparison variant.</p>
+<h1><a class="header" href="#analyzers" id="analyzers">Analyzers</a></h1>
+<p>An <code>analyzer</code> looks at the bytecode, checks what kind of mutations can take place, 
+and returns the possible mutations (see next section) to the caller.</p>
+<p><img src="./img/analyzers.PNG" alt="Analyzers" /></p>
+<p>An analyzer has two generics: <code>TMutation</code> and <code>TInput</code>. 
+<code>TMutation</code> is the mutation type which contains metadata about the possible mutation and can execute and/or undo itself. 
+<code>TInput</code> is the scope where the mutation check will be made. </p>
+<p>The scope is a type of <code>Mono.Cecil</code> and can for example be a <code>Method/FieldDefinition</code> or <code>Instruction</code>.</p>
+<ul>
+<li>In the case of opcode mutations, the scope is an 'Instruction' (e.g. return 1 + 1) , </li>
+<li>in the case of an array mutation, the scope is an integer 'Method Definition',</li>
+<li>in the case of a constant field mutation, the scope is a 'FieldDefinition'.</li>
+</ul>
+<p><strong>Mutation Level</strong>: This level determines what mutations are executed during a test run.</p>
+<h2><a class="header" href="#opcode-mutation-analyzer" id="opcode-mutation-analyzer">OpCode Mutation Analyzer</a></h2>
+<p>This mutation analyzer looks at what possible mutations there are in the opcode of an instruction. 
+An instruction is a statement like 'a = 1 + 2'. 
+On this instruction the '+' can be changed to '-, /, *, %'. 
+There are 4 different opcode mutation analyzers. 
+Namely an analyzer for arithmetic operations (/, *), bitwise operations (^, |), branch (if) operations and comparison operations (&lt;, &gt;). 
+For many opcodes, one or more mutations are possible, therefore an 'IEnumerable<TMutation>' is returned.</p>
+<h3><a class="header" href="#constant-mutation-analyzer" id="constant-mutation-analyzer">Constant Mutation Analyzer</a></h3>
+<p>This mutation analyzer looks at what possible mutations can be performed on a constant field. 
+There are different types of constant fields with different ways of mutation. 
+An integer can be mutated with a random number, a string with a random string and a boolean should be inverted. </p>
+<h3><a class="header" href="#array-mutation-analyzer" id="array-mutation-analyzer">Array Mutation Analyzer</a></h3>
+<p>This mutation analyzer looks at the possible mutations on arrays in a method body. 
+There are different arrays, different ways to declare and modify them. 
+An array can be:</p>
+<ul>
+<li>Modified</li>
+<li>Emptied</li>
+<li>Resized</li>
+</ul>
+<p>There are:</p>
+<ul>
+<li>Arrays passed as parameters</li>
+<li>Inline initialized arrays (<code>new {1, 2, 3 }</code>)</li>
+<li>Index initialized arrays </li>
+<li>Index changes</li>
+</ul>
+<h3><a class="header" href="#variable-analyzer" id="variable-analyzer">Variable Analyzer</a></h3>
+<p>The variable analyzer is able to mutate literal variables such as <code>false</code> to <code>true</code>, <code>1</code> to <code>2</code> etc.. </p>
+<h2><a class="header" href="#test-process-overview" id="test-process-overview">Test Process Overview</a></h2>
+<p><strong>The main test process overview looks like this:</strong></p>
+<img src="./img/test-process-overview.PNG" alt="drawing" width="500"/>
+<p><strong>The test process from Faultily looks like this:</strong></p>
+<img src="./img/test-process.PNG" alt="drawing" width="500"/>
+<ol>
+<li><strong>Build:</strong> This is the initial project build to determine if the project compiles and make sure all assemblies are on their place. </li>
+<li><strong>Inject Coverage:</strong> Here the test coverage functions are injected. </li>
+<li><strong>Coverage Test Session:</strong> This initial test session determines: 1) Which tests cover what mutations 2) Test duration used for the real test runs.</li>
+<li><strong>Rebuild:</strong> Rebuilds the project to remove all injected test code.</li>
+<li><strong>Generate Test Session:</strong> Generate the test runs and binpack the testruns to run multiple mutations at once.</li>
+<li><strong>Run Test Sessions:</strong> Run the test sessions in serial (un the future this will be parallel).</li>
+<li><strong>Generate Report:</strong> Generate a report from all test results.</li>
+</ol>
+<h2><a class="header" href="#optimisation" id="optimisation">Optimisation</a></h2>
+<p>Dotnet test is used for executing tests.
+Dotnet test has a process startup/shutdown overhead time of about 1 second. 
+For example, take 2000 mutations, this will take 2000 seconds (33 minutes) for the process management only. 
+Therefore optimizations are essential for a well-functioning mutation tool.</p>
+<p>Faultily Has Implemented:</p>
+<ul>
+<li>Mutation Bin Packing</li>
+<li>Mutation Levels</li>
+</ul>
+<p>Faultily Will Support:</p>
+<ul>
+<li>Memory Mapped Files</li>
+<li>Run Mutations in Parallel</li>
+</ul>
+<p><strong>Run Tests from Memory</strong></p>
+<p>‘dotnet test’ is a wrapper over ‘vs-test-console’ which are both external processes. 
+In an ideal scenario, you would want to be able to load unit tests into memory and then run them from code. 
+This can save about 1 second per test run. As far I was able to find out vsconsole can only be used as an external process (<code>VsConsoleWrapper</code>).
+However, it might be possible for Nunit to be run directly from code. 
+Though that will limit the support for other test frameworks. </p>
+<p><strong>Memory Mapped Files and or Ramdisk</strong></p>
+<p>Memory-mapped files (a really amazing undervalued technique) and/or a ramdisk makes use of RAM memory allowing for very fast file reading/writing. 
+The ramdisk can be used to run the entire test process and the memory-mapped files can be used for the assemblies under mutation.</p>
+<p><strong>Mutation Bin Packing</strong></p>
+<p>A mutation can cause a test to fail or to succeed, so it is impossible to mutate two mutations that are covered by a test at the same time. 
+If you did, there is no way to tell which mutation caused the test to fail. This scenario is a perfect bin-packing problem. 
+The test is the bin and the mutation is the packet. Each test can have only one mutation at a time and you can run one test within a test session. 
+Following that algorithm, multiple mutations can be performed at the same time.
+In order to implement this algorithm, one has to measure code coverage.</p>
+<p><strong>Run Mutations in Parallel</strong></p>
+<p>An assembly is mutated and the tests have a reference to this assembly. 
+It is not possible to run multiple test sessions because they would mutate the same assembly. 
+In addition, the CLR locks the assemblies of a test process. 
+To use multiple processes, the tests and assemblies under test should be duplicated so that each test process has its own assembly files. 
+Thus, this implies that the number of threads is equal to the number of duplications of the binaries.</p>
+<p><strong>Mutation Level</strong></p>
+<p>With some types of mutations, it may be possible that the mutation results in the same value such as ‘1 + 1’ to ‘1*1’, 
+therefore for these mutations all variants ‘+, -, *, /’ should be performed for the best result.
+Though for large projects testing all variants is time consuming and maybe not worth it. 
+Therefore the test session could use mutation levels like: Detailed, Medium, Simple to indicate which depth to use for testintg.</p>
+<h2><a class="header" href="#coverage" id="coverage">Coverage</a></h2>
+<p>Faultify measures code coverage by injecting a static register function in both the unit test and all methods from the assembly under test. 
+When the code coverage test run is performed those static functions are called. First, the unit test that runs registers its name after that all methods called by this unit test will register their ‘Entity Handle’. After this run, we can exactly see what unit tests covered which methods. 
+Difficulties are:</p>
+<ul>
+<li>Since unit tests can cover code behind interfaces it's impossible to use reflection to test code coverage.</li>
+<li>To know whether a mutation is covered we need to somehow identify this mutation. We had complications doing so, instead, we register only the method entity handle. 
+This entails that test coverage is method based not mutation-based which implies that more mutations will be performed.</li>
+</ul>
+<p><img src="./img/coverage.PNG" alt="Analyzers" /></p>
+<p>When running the test process the code will do something like the following:</p>
+<ol>
+<li>Run Unit Test</li>
+<li>Register name from unit test</li>
+<li>Run method that is tested by unit test.</li>
+<li>Register method name.</li>
+</ol>
+<p>Those results are written to: <code>coverage.json</code>.
+At the end of the test process this data is used by faultify to binpack the tests with mutations (see above).</p>
+<h2><a class="header" href="#datacollector" id="datacollector">DataCollector</a></h2>
+<p>The test data collectors are used to handle events from the test host.
+With those events Faultify can do useful things. </p>
+<ul>
+<li><code>TestDataCollector</code>: Collects the test status from running tests and writes them to <code>test_results.json</code>.</li>
+<li><code>CoverageDataCollector</code>: Filters the <code>coverage.json</code> such that only the tests it saw will remain in the file.  </li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>
