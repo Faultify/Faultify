@@ -14,8 +14,8 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore Source/Faultify/Faultify.sln
+      run: dotnet restore ./Faultify.sln
     - name: Build
-      run: dotnet build Source/Faultify/Faultify.sln
+      run: dotnet build ./Faultify.sln
     - name: Test
-      run: dotnet test Source/Faultify/Faultify.Tests/Faultify.Tests.csproj --no-restore --verbosity normal
+      run: dotnet test ./Faultify.Tests/Faultify.Tests.csproj --no-restore --verbosity normal
