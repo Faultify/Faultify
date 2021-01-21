@@ -1,14 +1,17 @@
-<h1 align="center"><img width="500" src="Docs/full-logo.png" /></h1>
+<h1 align="center"><img width="500" src="docs/full-logo.png" /></h1>
 
 [![Nuget](https://img.shields.io/nuget/v/faultify.svg?color=blue&label=faultify&style=flat-square)](https://www.nuget.org/packages/faultify/)
 [![Nuget](https://img.shields.io/nuget/dt/faultify.svg?style=flat-square)](https://www.nuget.org/packages/faultify/)
+![Tester](https://github.com/Faultify/Faultify/workflows/Tester/badge.svg?branch=main)
 
 ## Byte Code Dotnet Mutation Utility
-Faultify is a fast and simpel dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
+Faultify is a fast, small, simpel dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
 Basicly, it imitates the bad programmer by introducing mistakes on purpose. 
 A test is supposed to fail after a mutation, if that is not the case the test is probable error-prone.
 
-### How to use
+### Getting Started
+
+- Read the [Technical Book](https://faultify.github.io/Faultify/index.html)
 
 **Commandline Options**
 
