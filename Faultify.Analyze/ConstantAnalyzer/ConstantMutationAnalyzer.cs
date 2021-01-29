@@ -14,6 +14,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
 
         public abstract string Name { get; }
 
-        public abstract IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field, MutationLevel mutationLevel);
+        public abstract IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
+            MutationLevel mutationLevel);
     }
 }

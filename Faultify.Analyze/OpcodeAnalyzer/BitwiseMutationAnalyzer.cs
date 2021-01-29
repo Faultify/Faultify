@@ -13,7 +13,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
             new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
             {
                 // Opcodes for mutation bitwise operator: '|' to '&' , and '^'. 
-                {OpCodes.Or, new[] { (MutationLevel.Simple, OpCodes.And), (MutationLevel.Medium, OpCodes.Xor)}},
+                {OpCodes.Or, new[] {(MutationLevel.Simple, OpCodes.And), (MutationLevel.Medium, OpCodes.Xor)}},
 
                 // Opcodes for mutation bitwise operator: '&' to '|' , and '^'. 
                 {OpCodes.And, new[] {(MutationLevel.Simple, OpCodes.Or), (MutationLevel.Medium, OpCodes.Xor)}},

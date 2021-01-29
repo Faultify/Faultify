@@ -50,7 +50,7 @@ namespace Faultify.TestRunner.Collector
                 var outputJson = mutationCoverage.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.CoverageFileName, outputJson);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // ignored
             }

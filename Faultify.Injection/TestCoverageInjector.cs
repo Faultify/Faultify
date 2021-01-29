@@ -135,6 +135,10 @@ namespace Faultify.Injection
                     continue;
 
                 var processor = method.Body.GetILProcessor();
+
+                // Insert instruction that loads the meta data token as parameter for the register method.
+                var assemblyName = processor.Create(OpCodes.Ldstr, method.Module.Assembly.Name.Name);
+
                 // Insert instruction that loads the meta data token as parameter for the register method.
                 var entityHandle = processor.Create(OpCodes.Ldc_I4, method.MetadataToken.ToInt32());
 
@@ -143,6 +147,7 @@ namespace Faultify.Injection
 
                 method.Body.Instructions.Insert(0, callInstruction);
                 method.Body.Instructions.Insert(0, entityHandle);
+                method.Body.Instructions.Insert(0, assemblyName);
             }
         }
 

@@ -23,36 +23,39 @@ namespace Faultify.TestRunner
 
         public void LogBeginPreBuilding()
         {
-            _currentPercentage = 5;
+            _currentPercentage = 0;
             Log("Starting Building test project...");
         }
 
         public void LogEndPreBuilding()
         {
-            _currentPercentage = 15;
+            _currentPercentage = 10;
             Log("Finished Building test project...");
         }
 
+        public void LogBeginProjectDuplication()
+        {
+            _currentPercentage = 15;
+            Log("Starting duplicating test projects...");
+        }
+
+        public void LogEndProjectDuplication()
+        {
+            _currentPercentage = 20;
+            Log("End duplication test project...");
+        }
+
+
         public void LogBeginCoverage()
         {
+            _currentPercentage = 22;
             Log("Starting Coverage...");
         }
 
         public void LogEndCoverage()
         {
-            _currentPercentage = 20;
+            _currentPercentage = 25;
             Log("Finished Coverage...");
-        }
-
-        public void LogBeginCleanBuilding()
-        {
-            Log("Starting Clean Building test project...");
-        }
-
-        public void LogEndCleanBuilding()
-        {
-            _currentPercentage = 35;
-            Log("Finished Clean Building test project...");
         }
 
         public void LogBeginTestSession(int totalTestRounds)
@@ -60,31 +63,21 @@ namespace Faultify.TestRunner
             Log($"Start Mutation Test Session. This takes {totalTestRounds} test rounds");
         }
 
-        public void LogEndTestSession(TimeSpan elapsed)
+        public void LogBeginTestRun(int runId)
         {
-            Log($"Finished Mutation Test Session in {elapsed.ToString("hh\\:mm\\:ss")} time.");
+            Log($"Starting Mutation Run: '{runId}' [{DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss")}]:...");
         }
 
-        public void LogBeginTestRun(int index, int max)
-        {
-            Log($"Starting Mutation Run [{DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss")}]: {index}/{max}...");
-        }
-
-        public void LogEndTestRun(int index, int max, TimeSpan elapsedSinceStart)
+        public void LogEndTestRun(int index, int max, int runId, TimeSpan elapsedSinceStart)
         {
             _currentPercentage = (int) Map(index, 0f, max, 35f, 95f);
-            Log($"Finished Mutation Run, elapsed: [{elapsedSinceStart.ToString("hh\\:mm\\:ss")}]: {index}/{max}...");
+            Log($"Finished Mutation Run '{runId}', elapsed: [{elapsedSinceStart.ToString("hh\\:mm\\:ss")}]: ...");
         }
 
-        public void LogBeginGeneratingReport()
-        {
-            Log("Starting generating Report...");
-        }
-
-        public void LogEndGeneratingReport()
+        public void LogEndTestSession(TimeSpan elapsed)
         {
             _currentPercentage = 100;
-            Log("Finnish generating Report...");
+            Log($"Finished Mutation Test Session in {elapsed.ToString("hh\\:mm\\:ss")} time.");
         }
 
         public void Log(string message)

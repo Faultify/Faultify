@@ -40,7 +40,7 @@ namespace Faultify.Report.PDFReporter
         private async Task<string> Template(MutationProjectReportModel model)
         {
             var currentAssembly = Assembly.GetExecutingAssembly();
-            string resourceName = currentAssembly
+            var resourceName = currentAssembly
                 .GetManifestResourceNames()
                 .Single(str => str.EndsWith("PDF.cshtml"));
 

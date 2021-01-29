@@ -24,13 +24,14 @@ namespace Faultify.TestRunner.TestRun
         ///     Returns mutations that timed out during the test run.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<MutationVariant> GetTimedOutTests()
+        public IEnumerable<MutationVariantIdentifier> GetTimedOutTests()
         {
             var nonResultTests = TestResults.Tests.Where(x => x.Outcome == TestOutcome.None);
 
-            var timedOutTests = new List<MutationVariant>();
+            var timedOutTests = new List<MutationVariantIdentifier>();
             foreach (var nonResult in nonResultTests)
-                timedOutTests.AddRange(Mutations.Where(x => x.TestCoverage.Contains(nonResult.Name)));
+                timedOutTests.AddRange(Mutations.Where(x => x.MutationIdentifier.TestCoverage.Contains(nonResult.Name))
+                    .Select(x => x.MutationIdentifier));
 
             return timedOutTests;
         }

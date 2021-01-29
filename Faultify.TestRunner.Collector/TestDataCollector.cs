@@ -43,13 +43,13 @@ namespace Faultify.TestRunner.Collector
             }
         }
 
-        private void EventsOnTestCaseStart(object sender, TestCaseStartEventArgs args)
+        private void EventsOnTestCaseStart(object sender, TestCaseStartEventArgs e)
         {
             try
             {
                 // Register this test because there is a possibility for the test host to crash before the end event. 
                 _testResults.Tests.Add(new TestResult
-                    {Outcome = TestOutcome.None, Name = args.TestElement.FullyQualifiedName});
+                    {Outcome = TestOutcome.None, Name = e.TestElement.FullyQualifiedName});
             }
             catch (Exception)
             {

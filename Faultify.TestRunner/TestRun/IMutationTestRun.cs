@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Faultify.TestRunner.ProjectDuplication;
 using Faultify.TestRunner.TestProcess;
 
 namespace Faultify.TestRunner.TestRun
@@ -10,22 +11,27 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     public interface IMutationTestRun
     {
+        public int RunId { get; set; }
+
         /// <summary>
         ///     Runs the mutation test and returns the test run results.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="sessionProgressTracker"></param>
         /// <param name="dotnetTestRunner"></param>
-        /// <param name="projectInfo"></param>
+        /// <param name="projectDuplication"></param>
         /// <returns></returns>
         Task<IEnumerable<TestRunResult>> RunMutationTestAsync(CancellationToken token,
             MutationSessionProgressTracker sessionProgressTracker, DotnetTestRunner dotnetTestRunner,
-            TestProjectInfo projectInfo);
+            TestProjectDuplication projectDuplication);
+
 
         /// <summary>
-        ///     Flags mutations as timedout such that they can be excluded from test run.
+        ///     Initializes the mutation and filter out those who have had a time out.
         /// </summary>
+        /// <param name="testProject"></param>
         /// <param name="timedOutMutationVariants"></param>
-        void FlagTimedOutMutations(IEnumerable<MutationVariant> timedOutMutationVariants);
+        void InitializeMutations(TestProjectDuplication testProject,
+            IEnumerable<MutationVariantIdentifier> timedOutMutationVariants);
     }
 }

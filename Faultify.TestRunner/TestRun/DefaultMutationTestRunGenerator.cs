@@ -1,48 +1,59 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Faultify.Analyze;
-using Faultify.Analyze.AssemblyMutator;
-using Faultify.Core.ProjectAnalyzing;
+using Faultify.TestRunner.Shared;
 
 namespace Faultify.TestRunner.TestRun
 {
     public class DefaultMutationTestRunGenerator : IMutationTestRunGenerator
     {
-        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(Dictionary<int, HashSet<string>> testsPerMethod,
+        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(
+            Dictionary<RegisteredCoverage, HashSet<string>> testsPerMethod,
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
-            var allMutations = GetMutationsForCoverage(testsPerMethod, testProjectInfo, mutationLevel);
-            var mutations = GetTestGroups(allMutations);
+            var mutationTestRuns = new List<IMutationTestRun>();
 
-            return mutations.Select(x => new DefaultMutationTestRun
+            var allMutations = GetMutationsForCoverage(testsPerMethod, testProjectInfo, mutationLevel);
+            var mutationGroups = GetTestGroups(allMutations).ToArray();
+
+            for (var i = 0; i < mutationGroups.Length; i++)
             {
-                MutationCoverageInfos = x
-            });
+                var mutationGroup = mutationGroups[i];
+
+                mutationTestRuns.Add(new DefaultMutationTestRun
+                {
+                    MutationIdentifiers = mutationGroup,
+                    RunId = i,
+                    MutationLevel = mutationLevel
+                });
+            }
+
+            return mutationTestRuns;
         }
 
-        private static IEnumerable<IList<MutationVariant>> GetTestGroups(IList<MutationVariant> coverage)
+        private static IEnumerable<IList<MutationVariantIdentifier>> GetTestGroups(
+            IList<MutationVariantIdentifier> coverage)
         {
             // Get all MutationsInfo
-            var allMutations = new List<MutationVariant>(coverage);
+            var allMutations = new List<MutationVariantIdentifier>(coverage);
 
             while (allMutations.Count > 0)
             {
                 // Mark all tests as free slots
                 var testSlots = new HashSet<string>(coverage.SelectMany(x => x.TestCoverage));
 
-                var mutationsForThisRun = new List<MutationVariant>();
+                var mutationsForThisRun = new List<MutationVariantIdentifier>();
 
-                foreach (var mutationCoverageInfo in allMutations.ToArray())
+                foreach (var mutationVariant in allMutations.ToArray())
                 {
                     // If all tests of slot are free
-                    if (testSlots.IsSupersetOf(mutationCoverageInfo.TestCoverage))
+                    if (testSlots.IsSupersetOf(mutationVariant.TestCoverage))
                     {
                         // Remove all free slots
-                        foreach (var test in mutationCoverageInfo.TestCoverage) testSlots.Remove(test);
+                        foreach (var test in mutationVariant.TestCoverage) testSlots.Remove(test);
 
-                        mutationsForThisRun.Add(mutationCoverageInfo);
-                        allMutations.Remove(mutationCoverageInfo);
+                        mutationsForThisRun.Add(mutationVariant);
+                        allMutations.Remove(mutationVariant);
                     }
 
                     if (testSlots.Count == 0) break;
@@ -52,34 +63,35 @@ namespace Faultify.TestRunner.TestRun
             }
         }
 
-        private IList<MutationVariant> GetMutationsForCoverage(Dictionary<int, HashSet<string>> coverage,
+        private IList<MutationVariantIdentifier> GetMutationsForCoverage(
+            Dictionary<RegisteredCoverage, HashSet<string>> coverage,
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
-            var allMutations = new List<MutationVariant>();
-
-            var decompilers = new Dictionary<AssemblyMutator, ICodeDecompiler>();
-
-            foreach (var dependencyAssembly in testProjectInfo.DependencyAssemblies)
-            {
-                var dependencyInjectionPath =
-                    Path.Combine(
-                        new DirectoryInfo(testProjectInfo.ProjectInfo.AssemblyPath).Parent.FullName,
-                        new FileInfo(dependencyAssembly.Module.Name).Name
-                    );
-                decompilers.Add(dependencyAssembly, new CodeDecompiler(dependencyInjectionPath));
-            }
+            var allMutations = new List<MutationVariantIdentifier>();
 
             foreach (var assembly in testProjectInfo.DependencyAssemblies)
             foreach (var type in assembly.Types)
             foreach (var method in type.Methods)
-                if (coverage.TryGetValue(method.IntHandle, out var tests))
+            {
+                var methodMutationId = 0;
+                var registeredMutation = coverage.FirstOrDefault(x =>
+                    x.Key.AssemblyName == assembly.Module.Assembly.Name.Name && x.Key.EntityHandle == method.IntHandle);
+                var mutationGroupId = 0;
+
+                if (registeredMutation.Key != null)
                     foreach (var group in method.AllMutations(mutationLevel))
-                    foreach (var mutation in group)
                     {
-                        var originalSource = decompilers[assembly].Decompile(method.Handle);
-                        allMutations.Add(new MutationVariant(mutation, tests, group, assembly, method)
-                            {OriginalSource = originalSource});
+                        foreach (var mutation in group)
+                        {
+                            allMutations.Add(new MutationVariantIdentifier(registeredMutation.Value, method.Name,
+                                methodMutationId, mutationGroupId));
+
+                            methodMutationId++;
+                        }
+
+                        mutationGroupId += 1;
                     }
+            }
 
             return allMutations;
         }

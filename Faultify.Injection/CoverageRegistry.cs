@@ -25,14 +25,17 @@ namespace Faultify.Injection
 
         private static void OnCurrentDomain_ProcessExit(object sender, EventArgs e)
         {
+            File.AppendAllText("debug.txt", "\n\n registery exit");
             try
             {
                 // Flush the coverage before process end.
                 var serialized = MutationCoverage.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
+                File.AppendAllText("debug.txt", "\n\n registery flush file");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                File.AppendAllText("debug.txt", $"\n\n registery exception {ex}");
                 // ignored
             }
         }
@@ -41,7 +44,7 @@ namespace Faultify.Injection
         ///     Registers the given method entity handle as 'covered' by the last registered 'test'
         /// </summary>
         /// <param name="entityHandle"></param>
-        public static void RegisterTargetCoverage(int entityHandle)
+        public static void RegisterTargetCoverage(string assemblyName, int entityHandle)
         {
             lock (RegisterMutex)
             {
@@ -49,11 +52,12 @@ namespace Faultify.Injection
                 {
                     if (!MutationCoverage.Coverage.TryGetValue(_currentTestCoverage, out var targetHandles))
                     {
-                        targetHandles = new List<int>();
+                        targetHandles = new List<RegisteredCoverage>();
                         MutationCoverage.Coverage[_currentTestCoverage] = targetHandles;
                     }
 
-                    targetHandles.Add(entityHandle);
+                    targetHandles.Add(new RegisteredCoverage
+                        {EntityHandle = entityHandle, AssemblyName = assemblyName});
                 }
                 catch (Exception)
                 {

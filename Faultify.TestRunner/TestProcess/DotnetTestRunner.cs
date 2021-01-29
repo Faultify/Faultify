@@ -7,97 +7,108 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Faultify.TestRunner.Shared;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.TestProcess
 {
+    /// <summary>
+    ///     Runs the mutation test with 'dotnet test'.
+    /// </summary>
     public class DotnetTestRunner
     {
         private readonly ProcessRunner _coverageProcessRunner;
         private readonly string _testAdapterPath;
-        private readonly string _testProjectPath;
+        private readonly DirectoryInfo _testDirectoryInfo;
+
+        private readonly FileInfo _testFileInfo;
         private readonly TimeSpan _timeout;
 
-        private readonly string _workingDirectory;
-
-        public DotnetTestRunner(string testProjectPath, TimeSpan timeout)
+        public DotnetTestRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
-            _testProjectPath = testProjectPath;
-            _timeout = timeout;
-            _workingDirectory = Path.GetDirectoryName(testProjectPath);
-            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var testProjectName = Path.GetFileName(testProjectPath);
+            _testFileInfo = new FileInfo(testProjectAssemblyPath);
+            _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName);
 
-            var coverageArguments = new DotnetTestArgumentBuilder(testProjectName)
+            _timeout = timeout;
+            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var coverageArguments = new DotnetTestArgumentBuilder(Path.GetFileName(testProjectAssemblyPath))
                 .Silent()
                 .WithoutLogo()
                 .WithTimeout(_timeout)
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("CoverageDataCollector")
+                .DisableDump()
                 .Build();
 
-            var coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
+            var coverageProcessStartInfo = new ProcessStartInfo("dotnet ", coverageArguments)
             {
-                WorkingDirectory = _workingDirectory,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+                WorkingDirectory = _testDirectoryInfo.FullName
             };
 
             _coverageProcessRunner = new ProcessRunner(coverageProcessStartInfo);
         }
 
-        private ProcessRunner BuildTestProcessRunner(string testProjectName, IEnumerable<string> tests)
+        /// <summary>
+        ///     Constructs an instance of a <see cref="ProcessRunner" /> for the test process.
+        /// </summary>
+        /// <param name="tests"></param>
+        /// <returns></returns>
+        private ProcessRunner BuildTestProcessRunner(IEnumerable<string> tests)
         {
-            var testArguments = new DotnetTestArgumentBuilder(testProjectName)
+            var testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
-                .WithTimeout(_timeout) // TODO: make dynamic based on initial test run.
+                .WithTimeout(_timeout)
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("TestDataCollector")
                 .WithTests(tests)
+                .DisableDump()
                 .Build();
 
-            var testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
+            var testProcessStartInfo = new ProcessStartInfo("dotnet ", testArguments)
             {
-                WorkingDirectory = _workingDirectory,
+                // UseShellExecute = true,
+                // CreateNoWindow = false,
+                WorkingDirectory = _testDirectoryInfo.FullName,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                RedirectStandardError = true
             };
 
             return new ProcessRunner(testProcessStartInfo);
         }
 
+        /// <summary>
+        ///     Runs the given tests and returns the results.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <param name="progress"></param>
+        /// <param name="tests"></param>
+        /// <returns></returns>
         public async Task<TestResults> RunTests(CancellationToken cancellationToken, IProgress<string> progress,
             IEnumerable<string> tests)
         {
-            var testResultOutputPath = Path.Combine(_workingDirectory, TestRunnerConstants.TestsFileName);
+            var testResultOutputPath = Path.Combine(_testDirectoryInfo.FullName, TestRunnerConstants.TestsFileName);
 
-            var results = new List<TestResult>();
-            var testsHashmap = new HashSet<string>(tests);
+            var testResults = new List<TestResult>();
+            var remainingTests = new HashSet<string>(tests);
 
             try
             {
-                while (testsHashmap.Any())
+                while (remainingTests.Any())
                 {
-                    var testProcessRunner = BuildTestProcessRunner(_testProjectPath, testsHashmap);
+                    var testProcessRunner = BuildTestProcessRunner(remainingTests);
 
-                    await testProcessRunner.RunAsync(cancellationToken);
+                    var process = await testProcessRunner.RunAsync(cancellationToken);
+                    process.Dispose();
 
                     var testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath, cancellationToken);
 
-                    var testResults = TestResults.Deserialize(testResultsBinary);
+                    var deserializedTestResults = TestResults.Deserialize(testResultsBinary);
 
-                    testsHashmap.RemoveWhere(x => testResults.Tests.Any(y => y.Name == x));
+                    remainingTests.RemoveWhere(x => deserializedTestResults.Tests.Any(y => y.Name == x));
 
-                    foreach (var testResult in testResults.Tests)
-                    {
-                        if (testResult.Outcome == TestOutcome.None)
-                            progress.Report(
-                                $"Test {testResult.Name} crashed, this test will be excluded in future runs. Rerunning the test session...");
-
-                        results.Add(testResult);
-                    }
+                    foreach (var testResult in deserializedTestResults.Tests) testResults.Add(testResult);
                 }
             }
             finally
@@ -105,12 +116,18 @@ namespace Faultify.TestRunner.TestProcess
                 if (File.Exists(testResultOutputPath)) File.Delete(testResultOutputPath);
             }
 
-            return new TestResults {Tests = results};
+            return new TestResults {Tests = testResults};
         }
 
+        /// <summary>
+        ///     Run the code coverage process.
+        ///     This process finds out which tests cover which mutations.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
         {
-            var coverageOutputPath = Path.Combine(_workingDirectory, TestRunnerConstants.CoverageFileName);
+            var coverageOutputPath = Path.Combine(_testDirectoryInfo.FullName, TestRunnerConstants.CoverageFileName);
 
             try
             {
@@ -119,8 +136,7 @@ namespace Faultify.TestRunner.TestProcess
                 if (process.ExitCode != 0) throw new ExitCodeException(process.ExitCode);
 
                 var coverageBinary = await File.ReadAllBytesAsync(coverageOutputPath, cancellationToken);
-                var coverage = MutationCoverage.Deserialize(coverageBinary);
-                return coverage;
+                return MutationCoverage.Deserialize(coverageBinary);
             }
             finally
             {

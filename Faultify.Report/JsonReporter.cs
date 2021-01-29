@@ -10,7 +10,7 @@ namespace Faultify.Report
 
         public async Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun)
         {
-            using MemoryStream ms = new MemoryStream();
+            using var ms = new MemoryStream();
             await JsonSerializer.SerializeAsync(ms, mutationRun);
             return ms.ToArray();
         }

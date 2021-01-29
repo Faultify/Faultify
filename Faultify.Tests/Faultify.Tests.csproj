@@ -72,6 +72,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Faultify.Analyze\Faultify.Analyze.csproj" />
     <ProjectReference Include="..\Faultify.Core\Faultify.Core.csproj" />
+    <ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
   </ItemGroup>
 
 </Project>

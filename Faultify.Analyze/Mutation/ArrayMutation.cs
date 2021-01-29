@@ -10,10 +10,9 @@ namespace Faultify.Analyze.Mutation
     /// </summary>
     public class ArrayMutation : IMutation
     {
+        private readonly IArrayMutationStrategy _arrayMutationStrategy;
         private readonly MethodDefinition _methodDefClone;
         private readonly MethodDefinition _methodDefinitionToMutate;
-
-        private readonly IArrayMutationStrategy _arrayMutationStrategy;
 
         public ArrayMutation(IArrayMutationStrategy mutationStrategy, MethodDefinition methodDef)
         {
