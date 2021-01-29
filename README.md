@@ -18,11 +18,13 @@ A test is supposed to fail after a mutation, if that is not the case the test is
 **Commandline Options**
 
 ```
-  -p, --testProjectName    Required. The path pointing to the test project project file.
+  -t, --testProjectName    Required. The path pointing to the test project project file.
   
-  -r, --reportPath         The path were the report will be saved.
-  -t, --reportType         (Default: json) Type of report to be generated, options: 'pdf', 'html', 'json'
+  -r, --reportPath         (Default: ./FaultifyOutput) The path were the report will be saved.
+  -f, --reportFormat       (Default: json) Type of report to be generated, options: 'pdf', 'html', 'json'
+  -p, --parallel           (Default: 1) Defines how many test sessions are ran at the same time.
   -l, --mutationLevel      (Default: Detailed) The mutation level indicating the test depth.
+  
   --help                   Display this help screen.
   --version                Display version information.
 ```
@@ -67,8 +69,6 @@ The default location for the report is at the executable location in folder '/Fa
 | `Faultify.Report` | `Contains the code that generates a report`|
 | `/Bechmarks` | `Contains a benchmark project and tests that can be used for mutation testing with faultify/stryker.`|
 
-### Operation
-Faultify mutates IL code with `Mono.Cecil`. For arithmetic, assigment, equivalence, logical, bitwise, branching mutations, this is relatively easy. In these cases, only the opcode needs to be changed. With array mutations there is more complexity involved since defining arrays is not done one way in IL code but there are many edge cases.
 
 ### Alternative
 - Source code mutation with mutation switching to speed up compile speed (stryker). 
