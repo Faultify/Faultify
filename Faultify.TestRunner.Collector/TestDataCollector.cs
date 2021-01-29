@@ -35,7 +35,6 @@ namespace Faultify.TestRunner.Collector
             try
             {
                 var serialized = _testResults.Serialize();
-                File.AppendAllText("debug.txt", $"\n\n file name: {TestRunnerConstants.TestsFileName}");
                 File.WriteAllBytes(TestRunnerConstants.TestsFileName, serialized);
             }
             catch (Exception)
@@ -46,7 +45,6 @@ namespace Faultify.TestRunner.Collector
 
         private void EventsOnTestCaseStart(object sender, TestCaseStartEventArgs e)
         {
-            File.AppendAllText("debug.txt", $"\n\n test case start {e.TestElement.DisplayName}");
             try
             {
                 // Register this test because there is a possibility for the test host to crash before the end event. 
@@ -61,8 +59,6 @@ namespace Faultify.TestRunner.Collector
 
         private void EventsOnTestCaseEnd(object sender, TestCaseEndEventArgs e)
         {
-            File.AppendAllText("debug.txt", $"\n\n test case end {e.TestElement.DisplayName}: {e.TestOutcome.ToString()} {e.TestElement.Source}");
-            
             try
             {
                 // Find the test and set the correct test outcome.

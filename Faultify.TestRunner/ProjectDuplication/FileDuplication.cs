@@ -6,10 +6,10 @@ namespace Faultify.TestRunner.ProjectDuplication
 {
     /// <summary>
     /// Wrapper over duplicated testproject files.
+    /// TODO: Implement memory mapped files.
     /// </summary>
     public class FileDuplication : IDisposable
     {
-        private readonly int _size = 0;
         private FileStream _fileStream;
 
         public FileDuplication(string directory, string name)
@@ -23,11 +23,6 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// </summary>
         public string Name { get; set; }
         
-        /// <summary>
-        /// Reference to the file.
-        /// </summary>
-        public MemoryMappedFile File { get; set; }
-
         /// <summary>
         /// Directory in which the file is located.
         /// </summary>
@@ -71,7 +66,6 @@ namespace Faultify.TestRunner.ProjectDuplication
                 EnableReadWriteOnly();
             }
             return _fileStream;
-            //return File.CreateViewStream(0, _fileStream.Length, MemoryMappedFileAccess.ReadWrite);
         }
 
 
@@ -87,8 +81,6 @@ namespace Faultify.TestRunner.ProjectDuplication
             }
 
             return _fileStream;
-
-            //return File.CreateViewStream(0, _fileStream.Length, MemoryMappedFileAccess.Read);
         }
 
         /// <summary>
@@ -99,14 +91,6 @@ namespace Faultify.TestRunner.ProjectDuplication
             this.Dispose();
 
             _fileStream = new FileStream(FullFilePath(), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-
-            // File = MemoryMappedFile.CreateFromFile(
-            //     _fileStream,
-            //     null,
-            //     _size,
-            //     MemoryMappedFileAccess.ReadWrite,
-            //     HandleInheritability.Inheritable,
-            //     true);
         }
 
         /// <summary>
@@ -117,23 +101,11 @@ namespace Faultify.TestRunner.ProjectDuplication
             this.Dispose();
 
             _fileStream = new FileStream(FullFilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-            // File = MemoryMappedFile.CreateFromFile(
-            //     _fileStream,
-            //     null,
-            //     _size,
-            //     MemoryMappedFileAccess.Read,
-            //     HandleInheritability.Inheritable,
-            //     true);
         }
 
         public void Dispose()
         {
-            _fileStream?.Dispose();
-            File?.Dispose();
-
             _fileStream = null;
-            File = null;
         }
     }
 }

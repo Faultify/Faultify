@@ -12,10 +12,6 @@ Mutation score is 60.98 %
 
 Stryker is running single threaded becasue faultify does not support multithreading yet.
 
-## Run Ninja Turtles
-
-E:\programming\NinjaTurtlesMutation\NinjaTurtlesMutation.Console\bin\Debug\ntm.exe run -o mutation_report.xml -N BenchmarkTarget  PrimeFinder.UTest.dll
-
 ## Run Faultify
 ```
 dotnet tool install --global faultify --version 0.0.3

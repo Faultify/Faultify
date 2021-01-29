@@ -31,14 +31,10 @@ namespace Faultify.TestRunner.Collector
         {
             events.TestCaseEnd += EventsOnTestCaseEnd;
             events.SessionEnd += EventsOnSessionEnd;
-
-            File.AppendAllText("debug.txt", $"\n\n Test coverage start");
         }
 
         private void EventsOnSessionEnd(object sender, SessionEndEventArgs e)
         {
-            File.AppendAllText("debug.txt", $"\n\n Test coverage end {e.Context.TestCase.Source}");
-
             try
             {
                 // Read coverage that was registered by: `Faultify.Injection.CoverageRegistry.RegisterTestCoverage()`.
@@ -56,14 +52,12 @@ namespace Faultify.TestRunner.Collector
             }
             catch (Exception ex)
             {
-                File.AppendAllText("debug.txt", $"\n\ncoverage exception {ex}");
                 // ignored
             }
         }
 
         private void EventsOnTestCaseEnd(object sender, TestCaseEndEventArgs e)
         {
-            File.AppendAllText("debug.txt", $"\n\n Test case end");
             _testNames.Add(e.TestElement.FullyQualifiedName);
         }
     }
