@@ -1,53 +1,9 @@
 ﻿using System;
 
-namespace Faultify.Benchmark
+namespace Faultify.Benchmark_1
 {
-    public class BenchmarkTarget
+    public class BenchmarkTarget1
     {
-        private const bool Constant = 1 < 2;
-        public static bool TestStaticField = 1 < 2;
-        public bool TestLocalField = 1 < 2;
-
-        public int[] ConstructArray()
-        {
-            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
-        }
-
-        public int Addition(int lhs, int rhs)
-        {
-            return lhs + rhs;
-        }
-
-        public int Subtraction(int lhs, int rhs)
-        {
-            return lhs - rhs;
-        }
-
-        public int Multiplication(int lhs, int rhs)
-        {
-            return lhs * rhs;
-        }
-
-        public int Division(int lhs, int rhs)
-        {
-            return lhs / rhs;
-        }
-
-        public int Modulo(int lhs, int rhs)
-        {
-            return lhs / rhs;
-        }
-
-        public bool If(bool condition)
-        {
-            if (condition)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public int WhileLoop(int loops)
         {
             var i = 0;

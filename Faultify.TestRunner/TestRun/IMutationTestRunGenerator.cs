@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze;
+using Faultify.TestRunner.Shared;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -15,7 +16,7 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="testsPerMethod"></param>
         /// <param name="testProjectInfo"></param>
         /// <returns></returns>
-        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(Dictionary<int, HashSet<string>> testsPerMethod,
+        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(Dictionary<RegisteredCoverage, HashSet<string>> testsPerMethod,
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel);
     }
 }

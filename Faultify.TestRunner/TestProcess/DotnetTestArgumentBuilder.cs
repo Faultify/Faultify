@@ -14,7 +14,7 @@ namespace Faultify.TestRunner.TestProcess
 
         public DotnetTestArgumentBuilder(string projectReference)
         {
-            _arguments.Append($"test {projectReference}");
+            _arguments.Append($" test {projectReference}");
         }
 
         public DotnetTestArgumentBuilder WithoutLogo()
@@ -50,6 +50,12 @@ namespace Faultify.TestRunner.TestProcess
         public DotnetTestArgumentBuilder WithTests(IEnumerable<string> testNames)
         {
             _arguments.Append($" --filter \"{string.Join("|", testNames.Select(x => x))}\"");
+            return this;
+        }
+
+        public DotnetTestArgumentBuilder DisableDump()
+        {
+            _arguments.Append($"  --blame-hang-dump-type none");
             return this;
         }
 

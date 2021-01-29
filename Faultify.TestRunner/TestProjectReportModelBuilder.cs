@@ -18,21 +18,42 @@ namespace Faultify.TestRunner
             _testProjectReportModel = new TestProjectReportModel(testProjectName, TimeSpan.MaxValue);
         }
 
-        public void AddTestResult(TestResults testResults, MutationVariant mutation, TimeSpan testRunDuration)
+        public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations, TimeSpan testRunDuration)
         {
-            foreach (var testResult in testResults.Tests.Where(x => mutation.TestCoverage.Contains(x.Name)))
+            lock (this)
             {
-                var mutationStatus = GetMutationStatus(testResult);
+                foreach (var testResult in testResults.Tests)
+                {
+                    var mutation = mutations.SingleOrDefault(x => x.MutationIdentifier.TestCoverage.Contains(testResult.Name));
 
-                _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
-                    mutation.Mutation.ToString(), "",
-                    new MutationAnalyzerReportModel(mutation.ParentGroup.AnalyzerName,
-                        mutation.ParentGroup.AnalyzerDescription),
-                    mutationStatus,
-                    testRunDuration, 
-                    mutation.OriginalSource,
-                    mutation.MutatedSource
-                ));
+                    if (mutation?.Mutation == null)
+                        continue;
+
+                    var mutationStatus = GetMutationStatus(testResult);
+
+                    if (!_testProjectReportModel.Mutations.Any(x => x.MutationId == mutation.MutationIdentifier.MutationId && mutation.MutationIdentifier.MemberName == x.MemberName))
+                    {
+                        _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
+                            mutation.Mutation.ToString(), "",
+                            new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
+                                mutation.MutationAnalyzerInfo.AnalyzerDescription),
+                            mutationStatus,
+                            testRunDuration,
+                            mutation.OriginalSource,
+                            mutation.MutatedSource,
+                            mutation.MutationIdentifier.MutationId,
+                            mutation.MutationIdentifier.MemberName
+                        ));
+                    }
+                    else
+                    {
+                        var mut = _testProjectReportModel.Mutations.FirstOrDefault(x =>
+                            x.MutationId == mutation.MutationIdentifier.MutationId && mutation.MutationIdentifier.MemberName == x.MemberName);
+
+                        mut.TestStatus = mutationStatus;
+                        Console.WriteLine($"Duplicate {mutation.MutationIdentifier.MemberName}.{mutation.MutationIdentifier.MutationId}.{mutation.Mutation.ToString()}; status {mutationStatus} is duplicated");
+                    }
+                }
             }
         }
 
