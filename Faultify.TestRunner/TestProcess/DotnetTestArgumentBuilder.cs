@@ -55,7 +55,7 @@ namespace Faultify.TestRunner.TestProcess
 
         public DotnetTestArgumentBuilder DisableDump()
         {
-            _arguments.Append($"  --blame-hang-dump-type none");
+            _arguments.Append("  --blame-hang-dump-type none");
             return this;
         }
 

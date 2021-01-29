@@ -30,7 +30,8 @@ namespace Faultify.TestRunner.TestRun
 
             var timedOutTests = new List<MutationVariantIdentifier>();
             foreach (var nonResult in nonResultTests)
-                timedOutTests.AddRange(Mutations.Where(x => x.MutationIdentifier.TestCoverage.Contains(nonResult.Name)).Select(x=>x.MutationIdentifier));
+                timedOutTests.AddRange(Mutations.Where(x => x.MutationIdentifier.TestCoverage.Contains(nonResult.Name))
+                    .Select(x => x.MutationIdentifier));
 
             return timedOutTests;
         }

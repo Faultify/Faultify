@@ -1,31 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
-using Faultify.Analyze.AssemblyMutator;
 
 namespace Faultify.TestRunner.ProjectDuplication
 {
     /// <summary>
-    /// A pool that grands access to a test project that can be used for mutation testing.
+    ///     A pool that grands access to a test project that can be used for mutation testing.
     /// </summary>
     public class TestProjectDuplicationPool
     {
-        private readonly List<TestProjectDuplication> _testProjectDuplications;
+        private static readonly object Lock = new object();
         private readonly AutoResetEvent _signalEvent = new AutoResetEvent(false);
+        private readonly List<TestProjectDuplication> _testProjectDuplications;
 
         public TestProjectDuplicationPool(List<TestProjectDuplication> duplications)
         {
             _testProjectDuplications = duplications;
 
             foreach (var testProjectDuplication in _testProjectDuplications)
-            {
                 testProjectDuplication.TestProjectFreed += OnTestProjectFreed;
-            }
         }
 
         /// <summary>
-        /// Takes and removes a test project from the pool 
+        ///     Takes and removes a test project from the pool
         /// </summary>
         /// <returns></returns>
         public TestProjectDuplication TakeTestProject()
@@ -35,14 +32,11 @@ namespace Faultify.TestRunner.ProjectDuplication
 
             _testProjectDuplications.RemoveAt(0);
             return first;
-
         }
 
-        static readonly object Lock = new object();
-
         /// <summary>
-        /// Acquire a test project or wait until one is released.
-        /// This will hang until test projects are freed.
+        ///     Acquire a test project or wait until one is released.
+        ///     This will hang until test projects are freed.
         /// </summary>
         /// <returns></returns>
         public TestProjectDuplication AcquireTestProject()
@@ -52,46 +46,36 @@ namespace Faultify.TestRunner.ProjectDuplication
             {
                 var freeProject = GetFreeProject();
 
-                if (freeProject != null)
-                {
-                    return freeProject;
-                }
+                if (freeProject != null) return freeProject;
 
                 _signalEvent.WaitOne();
 
                 freeProject = GetFreeProject();
 
                 if (freeProject != null)
-                {
                     return freeProject;
-                }
-                else
-                {
-                    return AcquireTestProject();
-                }
+                return AcquireTestProject();
             }
         }
 
         /// <summary>
-        /// Returns a free project or null if none exit.
+        ///     Returns a free project or null if none exit.
         /// </summary>
         /// <returns></returns>
         public TestProjectDuplication GetFreeProject()
         {
             foreach (var testProjectDuplication in _testProjectDuplications)
-            {
                 if (!testProjectDuplication.IsInUse)
                 {
                     testProjectDuplication.IsInUse = true;
                     return testProjectDuplication;
                 }
-            }
 
             return null;
         }
 
         /// <summary>
-        /// Signal that a test test project is freed.
+        ///     Signal that a test test project is freed.
         /// </summary>
         /// <param name="e"></param>
         /// <param name="_"></param>

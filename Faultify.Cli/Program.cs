@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
@@ -13,8 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
 
 namespace Faultify.Cli
 {
@@ -31,11 +27,11 @@ namespace Faultify.Cli
             _settings = settings;
             _logger = logger;
         }
-        
+
         private static async Task Main(string[] args)
         {
             var settings = ParseCommandlineArguments(args);
-            
+
             var configurationRoot = BuildConfigurationRoot();
             var services = new ServiceCollection();
             services.Configure<Settings>(options => configurationRoot.GetSection("settings").Bind(options));
@@ -46,16 +42,13 @@ namespace Faultify.Cli
 
             await program.Run(settings);
         }
-        
+
         private static Settings ParseCommandlineArguments(string[] args)
         {
-            Settings settings = new Settings();
+            var settings = new Settings();
 
             var result = Parser.Default.ParseArguments<Settings>(args)
-                .WithParsed<Settings>(o =>
-                {
-                    settings = o;
-                });
+                .WithParsed(o => { settings = o; });
 
             if (result.Tag == ParserResultType.NotParsed) Environment.Exit(0);
 
@@ -65,9 +58,7 @@ namespace Faultify.Cli
         private async Task Run(Settings settings)
         {
             if (!File.Exists(settings.TestProjectPath))
-            {
                 throw new Exception($"Test project '{settings.TestProjectPath}' can not be found.");
-            }
 
             var testResult = await RunMutationTest(settings);
             await GenerateReport(testResult, settings);
@@ -77,13 +68,11 @@ namespace Faultify.Cli
 
         private async Task<TestProjectReportModel> RunMutationTest(Settings settings)
         {
-            Progress<MutationRunProgress> progress = new Progress<MutationRunProgress>();
-            progress.ProgressChanged += (sender, s) =>
-            {
-                Console.WriteLine($"[{s.Progress}%] {s.Message}");
-            };
+            var progress = new Progress<MutationRunProgress>();
+            progress.ProgressChanged += (sender, s) => { Console.WriteLine($"[{s.Progress}%] {s.Message}"); };
 
-            MutationTestProject mutationTestProject = new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel);
+            var mutationTestProject =
+                new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel);
             return await mutationTestProject.Test(progress, CancellationToken.None);
         }
 
@@ -95,11 +84,11 @@ namespace Faultify.Cli
             var mprm = new MutationProjectReportModel();
             mprm.TestProjects.Add(testResult);
 
-            IReporter reporter = ReportFactory(settings.ReportType);
+            var reporter = ReportFactory(settings.ReportType);
             var reportBytes = await reporter.CreateReportAsync(mprm);
 
-            string outputPath = settings.ReportPath;
-            string reportFileName = DateTime.Now.ToString("yy-MM-dd-H-mm") + reporter.FileExtension;
+            var outputPath = settings.ReportPath;
+            var reportFileName = DateTime.Now.ToString("yy-MM-dd-H-mm") + reporter.FileExtension;
             Directory.CreateDirectory(outputPath);
 
             await File.WriteAllBytesAsync(Path.Combine(outputPath, reportFileName), reportBytes);
@@ -114,7 +103,7 @@ namespace Faultify.Cli
                 _ => new JsonReporter()
             };
         }
-        
+
         private static IConfigurationRoot BuildConfigurationRoot()
         {
             var builder = new ConfigurationBuilder();

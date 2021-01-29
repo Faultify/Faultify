@@ -48,7 +48,7 @@ namespace Faultify.Report
                 }
 
             TotalMutations = MutationsKilled + MutationsSurvived + MutationsTimedOut + MutationsNoCoverage;
-            ScorePercentage = (int)((100.0 / TotalMutations) * MutationsKilled);
+            ScorePercentage = (int) (100.0 / TotalMutations * MutationsKilled);
         }
     }
 }

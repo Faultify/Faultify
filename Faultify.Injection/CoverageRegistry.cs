@@ -25,13 +25,13 @@ namespace Faultify.Injection
 
         private static void OnCurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-            File.AppendAllText("debug.txt", $"\n\n registery exit");
+            File.AppendAllText("debug.txt", "\n\n registery exit");
             try
             {
                 // Flush the coverage before process end.
                 var serialized = MutationCoverage.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
-                File.AppendAllText("debug.txt", $"\n\n registery flush file");
+                File.AppendAllText("debug.txt", "\n\n registery flush file");
             }
             catch (Exception ex)
             {
@@ -56,7 +56,8 @@ namespace Faultify.Injection
                         MutationCoverage.Coverage[_currentTestCoverage] = targetHandles;
                     }
 
-                    targetHandles.Add(new RegisteredCoverage() {EntityHandle = entityHandle, AssemblyName = assemblyName });
+                    targetHandles.Add(new RegisteredCoverage
+                        {EntityHandle = entityHandle, AssemblyName = assemblyName});
                 }
                 catch (Exception)
                 {

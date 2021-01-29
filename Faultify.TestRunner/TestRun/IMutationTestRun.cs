@@ -22,11 +22,12 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="projectDuplication"></param>
         /// <returns></returns>
         Task<IEnumerable<TestRunResult>> RunMutationTestAsync(CancellationToken token,
-            MutationSessionProgressTracker sessionProgressTracker, DotnetTestRunner dotnetTestRunner, TestProjectDuplication projectDuplication);
+            MutationSessionProgressTracker sessionProgressTracker, DotnetTestRunner dotnetTestRunner,
+            TestProjectDuplication projectDuplication);
 
 
         /// <summary>
-        /// Initializes the mutation and filter out those who have had a time out.
+        ///     Initializes the mutation and filter out those who have had a time out.
         /// </summary>
         /// <param name="testProject"></param>
         /// <param name="timedOutMutationVariants"></param>

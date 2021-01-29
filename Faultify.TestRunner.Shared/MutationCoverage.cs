@@ -14,9 +14,10 @@ namespace Faultify.TestRunner.Shared
     public class MutationCoverage
     {
         /// <summary>
-        /// Collection with test names as key and the covered method entity handles as value.
+        ///     Collection with test names as key and the covered method entity handles as value.
         /// </summary>
-        public Dictionary<string, List<RegisteredCoverage>> Coverage { get; set; } = new Dictionary<string, List<RegisteredCoverage>>();
+        public Dictionary<string, List<RegisteredCoverage>> Coverage { get; set; } =
+            new Dictionary<string, List<RegisteredCoverage>>();
 
         public byte[] Serialize()
         {
@@ -51,10 +52,12 @@ namespace Faultify.TestRunner.Shared
                 var entityHandles = new List<RegisteredCoverage>(listCount);
                 for (var j = 0; j < listCount; j++)
                 {
-                    string fullQualifiedName = binaryReader.ReadString();
-                    int entityHandle = binaryReader.ReadInt32();
-                    entityHandles.Add(new RegisteredCoverage() {EntityHandle = entityHandle, AssemblyName = fullQualifiedName});
+                    var fullQualifiedName = binaryReader.ReadString();
+                    var entityHandle = binaryReader.ReadInt32();
+                    entityHandles.Add(new RegisteredCoverage
+                        {EntityHandle = entityHandle, AssemblyName = fullQualifiedName});
                 }
+
                 mutationCoverage.Coverage.Add(key, entityHandles);
             }
 

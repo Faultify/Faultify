@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Faultify.Benchmark_0
+﻿namespace Faultify.Benchmark_0
 {
     public class BenchmarkTarget0
     {
@@ -11,7 +8,7 @@ namespace Faultify.Benchmark_0
 
         public int[] ConstructArray()
         {
-            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
+            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
         }
 
         public int Addition(int lhs, int rhs)
@@ -41,10 +38,7 @@ namespace Faultify.Benchmark_0
 
         public bool If(bool condition)
         {
-            if (condition)
-            {
-                return true;
-            }
+            if (condition) return true;
 
             return false;
         }

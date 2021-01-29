@@ -57,6 +57,7 @@ namespace Faultify.TestRunner
             _currentPercentage = 25;
             Log("Finished Coverage...");
         }
+
         public void LogBeginTestSession(int totalTestRounds)
         {
             Log($"Start Mutation Test Session. This takes {totalTestRounds} test rounds");
@@ -69,7 +70,7 @@ namespace Faultify.TestRunner
 
         public void LogEndTestRun(int index, int max, int runId, TimeSpan elapsedSinceStart)
         {
-            _currentPercentage = (int)Map(index, 0f, max, 35f, 95f);
+            _currentPercentage = (int) Map(index, 0f, max, 35f, 95f);
             Log($"Finished Mutation Run '{runId}', elapsed: [{elapsedSinceStart.ToString("hh\\:mm\\:ss")}]: ...");
         }
 
@@ -78,7 +79,7 @@ namespace Faultify.TestRunner
             _currentPercentage = 100;
             Log($"Finished Mutation Test Session in {elapsed.ToString("hh\\:mm\\:ss")} time.");
         }
-        
+
         public void Log(string message)
         {
             _progress.Report(new MutationRunProgress(message, _currentPercentage));

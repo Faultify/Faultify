@@ -13,13 +13,16 @@ namespace Faultify.Cli
         [Option('r', "reportPath", Required = false, HelpText = "The path were the report will be saved.")]
         public string ReportPath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "FaultifyOutput");
 
-        [Option('f', "reportFormat", Required = false, Default = "json" , HelpText = "Type of report to be generated, options: 'pdf', 'html', 'json'")]
+        [Option('f', "reportFormat", Required = false, Default = "json",
+            HelpText = "Type of report to be generated, options: 'pdf', 'html', 'json'")]
         public string ReportType { get; set; }
 
-        [Option('p', "parallel", Required = false, Default = "1", HelpText = "Defines how many test sessions are ran at the same time.")]
+        [Option('p', "parallel", Required = false, Default = "1",
+            HelpText = "Defines how many test sessions are ran at the same time.")]
         public int Parallel { get; set; }
 
-        [Option('l', "mutationLevel", Required = false, Default = MutationLevel.Detailed,  HelpText = "The mutation level indicating the test depth. ")]
+        [Option('l', "mutationLevel", Required = false, Default = MutationLevel.Detailed,
+            HelpText = "The mutation level indicating the test depth. ")]
         public MutationLevel MutationLevel { get; set; }
     }
 }

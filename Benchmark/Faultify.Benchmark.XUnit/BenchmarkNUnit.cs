@@ -11,8 +11,8 @@ namespace Faultify.Benchmark.XUnit
         {
             var targets = new BenchmarkTarget0();
             var actual = targets.ConstructArray();
-            int[] expected = { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
-            
+            int[] expected = {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+
             Assert.Equal(expected, expected);
         }
 
@@ -51,6 +51,7 @@ namespace Faultify.Benchmark.XUnit
             var expected = 4;
             Assert.Equal(expected, actual);
         }
+
         [Fact]
         public void TestModulo()
         {

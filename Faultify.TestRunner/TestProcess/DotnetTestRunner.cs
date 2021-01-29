@@ -7,22 +7,20 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Faultify.TestRunner.Shared;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.TestProcess
 {
     /// <summary>
-    /// Runs the mutation test with 'dotnet test'. 
+    ///     Runs the mutation test with 'dotnet test'.
     /// </summary>
     public class DotnetTestRunner
     {
         private readonly ProcessRunner _coverageProcessRunner;
         private readonly string _testAdapterPath;
-        private readonly TimeSpan _timeout;
+        private readonly DirectoryInfo _testDirectoryInfo;
 
         private readonly FileInfo _testFileInfo;
-        private readonly DirectoryInfo _testDirectoryInfo;
+        private readonly TimeSpan _timeout;
 
         public DotnetTestRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
@@ -52,7 +50,7 @@ namespace Faultify.TestRunner.TestProcess
         }
 
         /// <summary>
-        /// Constructs an instance of a <see cref="ProcessRunner"/> for the test process.
+        ///     Constructs an instance of a <see cref="ProcessRunner" /> for the test process.
         /// </summary>
         /// <param name="tests"></param>
         /// <returns></returns>
@@ -61,7 +59,7 @@ namespace Faultify.TestRunner.TestProcess
             var testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
-                .WithTimeout(_timeout) 
+                .WithTimeout(_timeout)
                 .WithTestAdapter(_testAdapterPath)
                 .WithCollector("TestDataCollector")
                 .WithTests(tests)
@@ -74,14 +72,14 @@ namespace Faultify.TestRunner.TestProcess
                 // CreateNoWindow = false,
                 WorkingDirectory = _testDirectoryInfo.FullName,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                RedirectStandardError = true
             };
-            
+
             return new ProcessRunner(testProcessStartInfo);
         }
 
         /// <summary>
-        /// Runs the given tests and returns the results.
+        ///     Runs the given tests and returns the results.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <param name="progress"></param>
@@ -94,26 +92,23 @@ namespace Faultify.TestRunner.TestProcess
 
             var testResults = new List<TestResult>();
             var remainingTests = new HashSet<string>(tests);
-            
+
             try
             {
                 while (remainingTests.Any())
                 {
                     var testProcessRunner = BuildTestProcessRunner(remainingTests);
-                    
+
                     var process = await testProcessRunner.RunAsync(cancellationToken);
                     process.Dispose();
-                    
+
                     var testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath, cancellationToken);
 
                     var deserializedTestResults = TestResults.Deserialize(testResultsBinary);
 
                     remainingTests.RemoveWhere(x => deserializedTestResults.Tests.Any(y => y.Name == x));
 
-                    foreach (var testResult in deserializedTestResults.Tests)
-                    {
-                        testResults.Add(testResult);
-                    }
+                    foreach (var testResult in deserializedTestResults.Tests) testResults.Add(testResult);
                 }
             }
             finally
@@ -125,8 +120,8 @@ namespace Faultify.TestRunner.TestProcess
         }
 
         /// <summary>
-        /// Run the code coverage process.
-        /// This process finds out which tests cover which mutations.
+        ///     Run the code coverage process.
+        ///     This process finds out which tests cover which mutations.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>

@@ -18,20 +18,24 @@ namespace Faultify.TestRunner
             _testProjectReportModel = new TestProjectReportModel(testProjectName, TimeSpan.MaxValue);
         }
 
-        public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations, TimeSpan testRunDuration)
+        public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations,
+            TimeSpan testRunDuration)
         {
             lock (this)
             {
                 foreach (var testResult in testResults.Tests)
                 {
-                    var mutation = mutations.SingleOrDefault(x => x.MutationIdentifier.TestCoverage.Contains(testResult.Name));
+                    var mutation =
+                        mutations.SingleOrDefault(x => x.MutationIdentifier.TestCoverage.Contains(testResult.Name));
 
                     if (mutation?.Mutation == null)
                         continue;
 
                     var mutationStatus = GetMutationStatus(testResult);
 
-                    if (!_testProjectReportModel.Mutations.Any(x => x.MutationId == mutation.MutationIdentifier.MutationId && mutation.MutationIdentifier.MemberName == x.MemberName))
+                    if (!_testProjectReportModel.Mutations.Any(x =>
+                        x.MutationId == mutation.MutationIdentifier.MutationId &&
+                        mutation.MutationIdentifier.MemberName == x.MemberName))
                     {
                         _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
                             mutation.Mutation.ToString(), "",
@@ -48,10 +52,12 @@ namespace Faultify.TestRunner
                     else
                     {
                         var mut = _testProjectReportModel.Mutations.FirstOrDefault(x =>
-                            x.MutationId == mutation.MutationIdentifier.MutationId && mutation.MutationIdentifier.MemberName == x.MemberName);
+                            x.MutationId == mutation.MutationIdentifier.MutationId &&
+                            mutation.MutationIdentifier.MemberName == x.MemberName);
 
                         mut.TestStatus = mutationStatus;
-                        Console.WriteLine($"Duplicate {mutation.MutationIdentifier.MemberName}.{mutation.MutationIdentifier.MutationId}.{mutation.Mutation.ToString()}; status {mutationStatus} is duplicated");
+                        Console.WriteLine(
+                            $"Duplicate {mutation.MutationIdentifier.MemberName}.{mutation.MutationIdentifier.MutationId}.{mutation.Mutation}; status {mutationStatus} is duplicated");
                     }
                 }
             }
@@ -59,7 +65,7 @@ namespace Faultify.TestRunner
 
         public TestProjectReportModel Build(TimeSpan testDuration, int totalTestRuns)
         {
-            _testProjectReportModel.InitializeMetrics( totalTestRuns, testDuration);
+            _testProjectReportModel.InitializeMetrics(totalTestRuns, testDuration);
             return _testProjectReportModel;
         }
 

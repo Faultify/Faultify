@@ -31,7 +31,7 @@ namespace Faultify.Core.ProjectAnalyzing
                 var projectAnalyzer = analyzerManager.GetProject(path);
                 progress.Report($"Building {Path.GetFileName(path)}");
                 var analyzerResult =
-                    projectAnalyzer.Build(new EnvironmentOptions { DesignTime = false, Restore = false}).First();
+                    projectAnalyzer.Build(new EnvironmentOptions {DesignTime = false, Restore = false}).First();
 
                 return new ProjectInfo(analyzerResult);
             });

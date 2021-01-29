@@ -7,30 +7,32 @@ namespace Faultify.TestRunner.TestRun
 {
     public class DefaultMutationTestRunGenerator : IMutationTestRunGenerator
     {
-        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(Dictionary<RegisteredCoverage, HashSet<string>> testsPerMethod,
+        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(
+            Dictionary<RegisteredCoverage, HashSet<string>> testsPerMethod,
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
-            List<IMutationTestRun> mutationTestRuns= new List<IMutationTestRun>();
-            
+            var mutationTestRuns = new List<IMutationTestRun>();
+
             var allMutations = GetMutationsForCoverage(testsPerMethod, testProjectInfo, mutationLevel);
             var mutationGroups = GetTestGroups(allMutations).ToArray();
 
-            for (int i = 0; i < mutationGroups.Length; i++)
+            for (var i = 0; i < mutationGroups.Length; i++)
             {
                 var mutationGroup = mutationGroups[i];
-               
+
                 mutationTestRuns.Add(new DefaultMutationTestRun
                 {
                     MutationIdentifiers = mutationGroup,
                     RunId = i,
-                    MutationLevel = mutationLevel,
+                    MutationLevel = mutationLevel
                 });
             }
 
             return mutationTestRuns;
         }
 
-        private static IEnumerable<IList<MutationVariantIdentifier>> GetTestGroups(IList<MutationVariantIdentifier> coverage)
+        private static IEnumerable<IList<MutationVariantIdentifier>> GetTestGroups(
+            IList<MutationVariantIdentifier> coverage)
         {
             // Get all MutationsInfo
             var allMutations = new List<MutationVariantIdentifier>(coverage);
@@ -61,25 +63,24 @@ namespace Faultify.TestRunner.TestRun
             }
         }
 
-        private IList<MutationVariantIdentifier> GetMutationsForCoverage(Dictionary<RegisteredCoverage, HashSet<string>> coverage,
+        private IList<MutationVariantIdentifier> GetMutationsForCoverage(
+            Dictionary<RegisteredCoverage, HashSet<string>> coverage,
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
             var allMutations = new List<MutationVariantIdentifier>();
-            
+
             foreach (var assembly in testProjectInfo.DependencyAssemblies)
             foreach (var type in assembly.Types)
             foreach (var method in type.Methods)
             {
-                int methodMutationId = 0;
+                var methodMutationId = 0;
                 var registeredMutation = coverage.FirstOrDefault(x =>
                     x.Key.AssemblyName == assembly.Module.Assembly.Name.Name && x.Key.EntityHandle == method.IntHandle);
-                int mutationGroupId = 0;
+                var mutationGroupId = 0;
 
-                    if (registeredMutation.Key != null)
+                if (registeredMutation.Key != null)
                     foreach (var group in method.AllMutations(mutationLevel))
                     {
-                        
-
                         foreach (var mutation in group)
                         {
                             allMutations.Add(new MutationVariantIdentifier(registeredMutation.Value, method.Name,

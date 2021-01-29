@@ -16,7 +16,8 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="testsPerMethod"></param>
         /// <param name="testProjectInfo"></param>
         /// <returns></returns>
-        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(Dictionary<RegisteredCoverage, HashSet<string>> testsPerMethod,
+        public IEnumerable<IMutationTestRun> GenerateMutationTestRuns(
+            Dictionary<RegisteredCoverage, HashSet<string>> testsPerMethod,
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel);
     }
 }

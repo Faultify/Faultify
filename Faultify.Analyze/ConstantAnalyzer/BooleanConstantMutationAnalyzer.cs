@@ -15,7 +15,8 @@ namespace Faultify.Analyze.ConstantAnalyzer
 
         public override string Name => "Boolean ConstantMutation Analyzer";
 
-        public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field, MutationLevel mutationLevel)
+        public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
+            MutationLevel mutationLevel)
         {
             if (field.Constant is bool original)
                 yield return new ConstantMutation

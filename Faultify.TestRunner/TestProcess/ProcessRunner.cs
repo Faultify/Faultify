@@ -26,12 +26,12 @@ namespace Faultify.TestRunner.TestProcess
             process.EnableRaisingEvents = true;
             process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); };
             process.StartInfo = _processStartInfo;
-            
+
             process.Start();
-            
+
             await taskCompletionSource.Task;
             await cancellationTokenRegistration.DisposeAsync();
-            
+
             return process;
         }
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,28 +17,24 @@ namespace Faultify.TestRunner.ProjectDuplication
 
         public List<TestProjectDuplication> MakeInitialCopies(IProjectInfo testProject, int count)
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(_testDirectory);
+            var dirInfo = new DirectoryInfo(_testDirectory);
 
             // Remove useless folders.
             foreach (var directory in dirInfo.GetDirectories("*"))
-            {
                 if (Regex.Match(directory.Name, "(de|en|es|fr|it|ja|ko|ru|zh-Hans|zh-Hant|test-duplication-\\d)").Groups
                     .Count != 0)
-                {
                     Directory.Delete(directory.FullName, true);
-                }
-            }
 
-            List<TestProjectDuplication> testProjectDuplications = new List<TestProjectDuplication>();
+            var testProjectDuplications = new List<TestProjectDuplication>();
 
             // Start the initial copy
-            List<String> allFiles = Directory.GetFiles(_testDirectory, "*.*", SearchOption.AllDirectories).ToList();
-            var newDirInfo = Directory.CreateDirectory(Path.Combine(_testDirectory, $"test-duplication-0"));
+            var allFiles = Directory.GetFiles(_testDirectory, "*.*", SearchOption.AllDirectories).ToList();
+            var newDirInfo = Directory.CreateDirectory(Path.Combine(_testDirectory, "test-duplication-0"));
 
-            foreach (string file in allFiles)
+            foreach (var file in allFiles)
             {
-                FileInfo mFile = new FileInfo(file);
-                string newPath = Path.Combine(newDirInfo.FullName, mFile.Name);
+                var mFile = new FileInfo(file);
+                var newPath = Path.Combine(newDirInfo.FullName, mFile.Name);
                 mFile.MoveTo(newPath);
             }
 
@@ -50,9 +45,9 @@ namespace Faultify.TestRunner.ProjectDuplication
                 initialCopies,
                 0
             ));
-            
+
             // Copy the initial copy N times.
-            for (int i = 1; i < count + 1; i++)
+            for (var i = 1; i < count + 1; i++)
             {
                 var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i}");
                 CopyFilesRecursively(newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
@@ -74,9 +69,9 @@ namespace Faultify.TestRunner.ProjectDuplication
 
         private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
         {
-            foreach (DirectoryInfo dir in source.GetDirectories())
+            foreach (var dir in source.GetDirectories())
                 CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
-            foreach (FileInfo file in source.GetFiles())
+            foreach (var file in source.GetFiles())
                 file.CopyTo(Path.Combine(target.FullName, file.Name));
         }
     }

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Faultify.Report
+﻿namespace Faultify.Report
 {
     public class MutationAnalyzerReportModel
     {

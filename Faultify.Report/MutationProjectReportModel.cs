@@ -7,7 +7,7 @@ namespace Faultify.Report
     public class MutationProjectReportModel
     {
         public List<TestProjectReportModel> TestProjects { get; set; } = new List<TestProjectReportModel>();
-        public string  Name { get; set; }
+        public string Name { get; set; }
 
         public TimeSpan TestDuration => new TimeSpan(TestProjects.Sum(x => x.TestSessionDuration.Ticks));
 

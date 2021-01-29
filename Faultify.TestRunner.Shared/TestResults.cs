@@ -5,14 +5,14 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 namespace Faultify.TestRunner.Shared
 {
     /// <summary>
-    /// Test results from a test session.
+    ///     Test results from a test session.
     /// </summary>
     // TODO: Uses custom format because Json requires external package.
     // External packages are somehow not working with test data collectors.
     public class TestResults
     {
         /// <summary>
-        /// A list of the test result from each test in the session.
+        ///     A list of the test result from each test in the session.
         /// </summary>
         public List<TestResult> Tests { get; set; } = new List<TestResult>();
 

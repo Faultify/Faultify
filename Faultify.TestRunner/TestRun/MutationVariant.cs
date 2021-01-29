@@ -10,7 +10,8 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     public readonly struct MutationVariantIdentifier
     {
-        public MutationVariantIdentifier(HashSet<string> testNames, string memberName, int mutationId, int mutationGroupId)
+        public MutationVariantIdentifier(HashSet<string> testNames, string memberName, int mutationId,
+            int mutationGroupId)
         {
             TestCoverage = testNames;
             MemberName = memberName;
@@ -19,7 +20,7 @@ namespace Faultify.TestRunner.TestRun
         }
 
         public int MutationId { get; }
-        public int MutationGroupId { get;}
+        public int MutationGroupId { get; }
         public string MemberName { get; }
         public HashSet<string> TestCoverage { get; }
     }
@@ -28,7 +29,7 @@ namespace Faultify.TestRunner.TestRun
     /// <summary>
     ///     Single mutation variant which contains the executable mutation.
     /// </summary>
-    public class MutationVariant 
+    public class MutationVariant
     {
         public bool CausesTimeOut { get; set; } = false;
 
@@ -37,7 +38,7 @@ namespace Faultify.TestRunner.TestRun
         public MutationAnalyzerInfo MutationAnalyzerInfo { get; set; }
 
         public EntityHandle MemberHandle { get; set; }
-        public IMutation Mutation { get; set;  }
+        public IMutation Mutation { get; set; }
         public string MutatedSource { get; set; }
         public string OriginalSource { get; set; }
     }
