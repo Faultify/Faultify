@@ -21,6 +21,7 @@ namespace Faultify.TestRunner
             Log(value);
         }
 
+
         public void LogBeginPreBuilding()
         {
             _currentPercentage = 0;
