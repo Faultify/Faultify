@@ -19,6 +19,7 @@ namespace Faultify.TestRunner.TestRun
         public MutationLevel MutationLevel { get; set; }
 
         public int RunId { get; set; }
+        public int MutationCount => MutationIdentifiers.Count;
 
 
         public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(CancellationToken token,

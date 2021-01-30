@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Faultify.Analyze;
 using Faultify.Analyze.AssemblyMutator;
+using Faultify.Analyze.Mutation;
 using Faultify.Core.ProjectAnalyzing;
 using Faultify.Injection;
 using Faultify.Report;
@@ -226,22 +227,23 @@ namespace Faultify.TestRunner
             // Timed out mutations will be removed because they can cause serious test delays.
             var timedOutMutations = new List<MutationVariantIdentifier>();
 
-            void RunTestRun(IMutationTestRun testRun, TestProjectDuplication testProject)
+            async Task RunTestRun(IMutationTestRun testRun)
             {
-                testRun.InitializeMutations(testProject, timedOutMutations);
-
-                var singRunsStopwatch = new Stopwatch();
-                singRunsStopwatch.Start();
-
-                sessionProgressTracker.LogBeginTestRun(testRun.RunId);
-
-                var dotnetTestRunner =
-                    new DotnetTestRunner(testProject.TestProjectFile.FullFilePath(), maxTestDuration);
-
+                var testProject = testProjectDuplicationPool.AcquireTestProject();
                 try
                 {
-                    var results = testRun.RunMutationTestAsync(cancellationToken, sessionProgressTracker,
-                        dotnetTestRunner, testProject).Result;
+                    testRun.InitializeMutations(testProject, timedOutMutations);
+
+                    var singRunsStopwatch = new Stopwatch();
+                    singRunsStopwatch.Start();
+
+                    sessionProgressTracker.LogBeginTestRun(testRun.RunId);
+
+                    var dotnetTestRunner =
+                        new DotnetTestRunner(testProject.TestProjectFile.FullFilePath(), maxTestDuration);
+
+                    var results = await testRun.RunMutationTestAsync(cancellationToken, sessionProgressTracker,
+                        dotnetTestRunner, testProject);
 
                     if (results != null)
                     {
@@ -262,20 +264,23 @@ namespace Faultify.TestRunner
                             singRunsStopwatch.Elapsed);
                         singRunsStopwatch.Reset();
                     }
+
                 }
                 catch (Exception e)
                 {
                     sessionProgressTracker.Report(
                         $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}");
                 }
+                finally
+                {
+                    testProject.FreeTestProject();
+                }
             }
 
-            Parallel.ForEach(mutationTestRuns, testRun =>
-            {
-                var testProject = testProjectDuplicationPool.AcquireTestProject();
-                RunTestRun(testRun, testProject);
-                testProject.FreeTestProject();
-            });
+
+            IEnumerable<Task> tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
+            
+            Task.WaitAll(tasks.ToArray());
 
             sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed);
             allRunsStopwatch.Stop();

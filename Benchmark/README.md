@@ -1,3 +1,8 @@
+This document contains a benchmark, and a comperison with stryker. 
+
+**Mutations per second formula**: Time in (milliseconds / mutations) / 1000
+**Benchmark Application**: Faultify.Benchmark.Runner**
+
 ## Run Stryker
 
 ```
@@ -5,23 +10,40 @@ dotnet tool install --global dotnet-stryker --version 0.20.0
 dotnet stryker -tp "['Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj']"
 ```
 
-Mutations Found: 35
-Duration:		 23 seconds
-Mutations a second: 0,65 per second
-Mutation score is 60.98 %
+Mutations: 31
+Score:     64.86%
 
-Stryker is running single threaded becasue faultify does not support multithreading yet.
+| Runners | Duration | Mutations per Second | 
+|---------|----------|----------------------|
+| 1       |  19526   |       0,62           | 
+| 2       |  16572   |       0,53           |
+| 3       |  16131   |       0,52           |
+| 4       |  16067   |       0,51           |
+| 5       |  20505   |       0,66           |
+| 6       |  25881   |       0,83           |
+
 
 ## Run Faultify
 ```
 dotnet tool install --global faultify --version 0.0.3
-faultify -p .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj -r .\  -t html
-```
+faultify -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html
 
-Mutations Found: 23
-Duration:		 15
-Mutations a second: 0,65 per second
-Mutation Score: 65%
+// Run at local executable
+..\Faultify.Cli\bin\Debug\netcoreapp3.1\Faultify.Cli.exe -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html
+```
+Mutations: 34
+Score:     62%
+
+| Runners | Duration | Mutations per Second | 
+|---------|----------|----------------------|
+| 1       |  33028   |       0,97           | 
+| 2       |  20533   |       0,60           |
+| 3       |  13373   |       0,39           |
+| 4       |  13473   |       0,40           |
+| 5       |  12685   |       0,37           |
+| 6       |  13059   |       0,38           |
 
 ## Results
-Faultify seems to be slightly faster while it does have a higher score. 
+- Both stryker and faultify have the same ammount of mutations and the same score. 
+- With this particular project stryker is faster when 1-2 testrunners are configured. 
+  Faultify becomes significant faster when more then 2 test runners are configured.

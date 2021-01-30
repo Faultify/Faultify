@@ -13,6 +13,8 @@ namespace Faultify.TestRunner.TestRun
     {
         public int RunId { get; set; }
 
+        public int MutationCount { get;}
+
         /// <summary>
         ///     Runs the mutation test and returns the test run results.
         /// </summary>

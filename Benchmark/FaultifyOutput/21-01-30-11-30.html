@@ -1,0 +1,702 @@
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js" integrity="sha512-YBk7HhgDZvBxmtOfUdvX0z8IH2d10Hp3aEygaMNhtF8fSOvBZ16D/1bXZTJV6ndk/L/DlXxYStP8jrF77v2MIg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-clike.min.js" integrity="sha512-xXwwAe8scUySEhtfaHNqIBors65zyXbtpUOwKjOxesrIwna3Aca9XqcomKMx22u84uRTzsx1Hm7cIM/s1XPzgQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-csharp.min.js" integrity="sha512-c+g36Rm5HvMUIjUwTcEA9iVkFtNJrCDDNubbaUEhCuHcEnXRcsnJRVjoEK1k9OryJnu5vF7IW40vjV5F1EfXRw==" crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <style>
+        #TopTitle {
+            margin-bottom: 2%;
+            margin-top: 1%;
+            text-align: center;
+        }
+
+        #accordionExample {
+            float: left;
+            height: 100%;
+            margin-left: 0.5%;
+            margin-right: 0.5%;
+            width: 70%;
+        }
+
+        .infopanel {
+            border-color: rgba(0, 0, 0, .125);
+            border-radius: 3px;
+            border-style: solid;
+            border-width: 1px;
+            float: left;
+            width: 28.5%;
+        }
+
+        .infolist {
+            margin: 0;
+            padding: 0;
+        }
+
+        .btn:hover {
+            background-color: lightgrey;
+            text-decoration: none;
+        }
+
+        .btn:focus, .btn.active { text-decoration: none; }
+
+        .btn { text-decoration: none; }
+    </style>
+</head>
+
+<body>
+<div>
+    <h1 id="TopTitle"></h1>
+</div>
+<div>
+    <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingproj0" style="padding: 0%;">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseproj0" aria-expanded="true" aria-controls="collapseproj0" style="color: black; height: 100%; text-align: left; width: 100%;">
+                            Faultify.Benchmark.NUnit.dll
+                                <label class="text-warning" style="float: right;">Mutants killed: 18 / 27</label>
+
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseproj0" class="collapse" aria-labelledby="headingproj0" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="accordion" id="AccordionTestProject0">
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie00" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie00" aria-expanded="true" aria-controls="collapsemutatie00" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;add&#x27; to: &#x27;sub&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie00" class="collapse" aria-labelledby="headingmutatie00" data-parent="#collapsemutatie00">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie01" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie01" aria-expanded="true" aria-controls="collapsemutatie01" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;add&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie01" class="collapse" aria-labelledby="headingmutatie01" data-parent="#collapsemutatie01">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie02" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie02" aria-expanded="true" aria-controls="collapsemutatie02" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;clt&#x27; to: &#x27;cgt&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie02" class="collapse" aria-labelledby="headingmutatie02" data-parent="#collapsemutatie02">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public bool LessThan(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs &lt; rhs)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public bool LessThan(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs &gt; rhs)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie03" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie03" aria-expanded="true" aria-controls="collapsemutatie03" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;ceq&#x27; to: &#x27;clt&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie03" class="collapse" aria-labelledby="headingmutatie03" data-parent="#collapsemutatie03">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public bool LogicalAnd(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs == 0 &amp;&amp; rhs == 0)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public bool LogicalAnd(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs == 0 &amp;&amp; rhs &lt; 0)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie04" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie04" aria-expanded="true" aria-controls="collapsemutatie04" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;ceq&#x27; to: &#x27;clt&#x27;. -
+                                                    <label class="text-danger" style="float: right;">Survived</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie04" class="collapse" aria-labelledby="headingmutatie04" data-parent="#collapsemutatie04">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public bool LogicalOr(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs == 0 || rhs == 0)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public bool LogicalOr(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs == 0 || rhs &lt; 0)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie05" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie05" aria-expanded="true" aria-controls="collapsemutatie05" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;add&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie05" class="collapse" aria-labelledby="headingmutatie05" data-parent="#collapsemutatie05">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie06" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie06" aria-expanded="true" aria-controls="collapsemutatie06" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;cgt&#x27; to: &#x27;clt&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie06" class="collapse" aria-labelledby="headingmutatie06" data-parent="#collapsemutatie06">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public bool MoreThan(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs &gt; rhs)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public bool MoreThan(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;if (lhs &lt; rhs)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;return true;&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie07" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie07" aria-expanded="true" aria-controls="collapsemutatie07" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;mul&#x27; to: &#x27;add&#x27;. -
+                                                    <label class="text-danger" style="float: right;">Survived</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie07" class="collapse" aria-labelledby="headingmutatie07" data-parent="#collapsemutatie07">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie08" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie08" aria-expanded="true" aria-controls="collapsemutatie08" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;sub&#x27; to: &#x27;add&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie08" class="collapse" aria-labelledby="headingmutatie08" data-parent="#collapsemutatie08">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie09" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie09" aria-expanded="true" aria-controls="collapsemutatie09" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;add&#x27; to: &#x27;sub&#x27;. -
+                                                    <label class="text-success" style="float: right;">Timeout</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie09" class="collapse" aria-labelledby="headingmutatie09" data-parent="#collapsemutatie09">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int WhileLoop(int loops)&#xD;&#xA;{&#xD;&#xA;&#x9;int i;&#xD;&#xA;&#x9;for (i = 0; i &lt; loops; i&#x2B;&#x2B;)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return i;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int WhileLoop(int loops)&#xD;&#xA;{&#xD;&#xA;&#x9;int num;&#xD;&#xA;&#x9;for (num = 0; num &lt; loops; num--)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return num;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie010" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie010" aria-expanded="true" aria-controls="collapsemutatie010" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;add&#x27; to: &#x27;mul&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie010" class="collapse" aria-labelledby="headingmutatie010" data-parent="#collapsemutatie010">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie011" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie011" aria-expanded="true" aria-controls="collapsemutatie011" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;mul&#x27;. -
+                                                    <label class="text-danger" style="float: right;">Survived</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie011" class="collapse" aria-labelledby="headingmutatie011" data-parent="#collapsemutatie011">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie012" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie012" aria-expanded="true" aria-controls="collapsemutatie012" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;mul&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie012" class="collapse" aria-labelledby="headingmutatie012" data-parent="#collapsemutatie012">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie013" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie013" aria-expanded="true" aria-controls="collapsemutatie013" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;mul&#x27; to: &#x27;sub&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie013" class="collapse" aria-labelledby="headingmutatie013" data-parent="#collapsemutatie013">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie014" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie014" aria-expanded="true" aria-controls="collapsemutatie014" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;sub&#x27; to: &#x27;mul&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie014" class="collapse" aria-labelledby="headingmutatie014" data-parent="#collapsemutatie014">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie015" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie015" aria-expanded="true" aria-controls="collapsemutatie015" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;add&#x27; to: &#x27;mul&#x27;. -
+                                                    <label class="text-success" style="float: right;">Timeout</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie015" class="collapse" aria-labelledby="headingmutatie015" data-parent="#collapsemutatie015">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int WhileLoop(int loops)&#xD;&#xA;{&#xD;&#xA;&#x9;int i;&#xD;&#xA;&#x9;for (i = 0; i &lt; loops; i&#x2B;&#x2B;)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return i;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int WhileLoop(int loops)&#xD;&#xA;{&#xD;&#xA;&#x9;int num;&#xD;&#xA;&#x9;for (num = 0; num &lt; loops; num *= 1)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return num;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie016" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie016" aria-expanded="true" aria-controls="collapsemutatie016" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;add&#x27; to: &#x27;div&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie016" class="collapse" aria-labelledby="headingmutatie016" data-parent="#collapsemutatie016">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie017" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie017" aria-expanded="true" aria-controls="collapsemutatie017" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;sub&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie017" class="collapse" aria-labelledby="headingmutatie017" data-parent="#collapsemutatie017">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie018" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie018" aria-expanded="true" aria-controls="collapsemutatie018" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;sub&#x27;. -
+                                                    <label class="text-danger" style="float: right;">Survived</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie018" class="collapse" aria-labelledby="headingmutatie018" data-parent="#collapsemutatie018">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie019" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie019" aria-expanded="true" aria-controls="collapsemutatie019" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;mul&#x27; to: &#x27;div&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie019" class="collapse" aria-labelledby="headingmutatie019" data-parent="#collapsemutatie019">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie020" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie020" aria-expanded="true" aria-controls="collapsemutatie020" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;sub&#x27; to: &#x27;div&#x27;. -
+                                                    <label class="text-danger" style="float: right;">Survived</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie020" class="collapse" aria-labelledby="headingmutatie020" data-parent="#collapsemutatie020">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie021" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie021" aria-expanded="true" aria-controls="collapsemutatie021" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;add&#x27; to: &#x27;rem&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie021" class="collapse" aria-labelledby="headingmutatie021" data-parent="#collapsemutatie021">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs &#x2B; rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Addition(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs % rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie022" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie022" aria-expanded="true" aria-controls="collapsemutatie022" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;rem&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie022" class="collapse" aria-labelledby="headingmutatie022" data-parent="#collapsemutatie022">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Division(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs % rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie023" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie023" aria-expanded="true" aria-controls="collapsemutatie023" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;div&#x27; to: &#x27;rem&#x27;. -
+                                                    <label class="text-danger" style="float: right;">Survived</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie023" class="collapse" aria-labelledby="headingmutatie023" data-parent="#collapsemutatie023">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs / rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Modulo(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs % rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie024" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie024" aria-expanded="true" aria-controls="collapsemutatie024" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;mul&#x27; to: &#x27;rem&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie024" class="collapse" aria-labelledby="headingmutatie024" data-parent="#collapsemutatie024">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs * rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Multiplication(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs % rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie025" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie025" aria-expanded="true" aria-controls="collapsemutatie025" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;sub&#x27; to: &#x27;rem&#x27;. -
+                                                    <label class="text-danger" style="float: right;">Survived</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie025" class="collapse" aria-labelledby="headingmutatie025" data-parent="#collapsemutatie025">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs - rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int Subtraction(int lhs, int rhs)&#xD;&#xA;{&#xD;&#xA;&#x9;return lhs % rhs;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingmutatie026" style="padding: 0%;">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsemutatie026" aria-expanded="true" aria-controls="collapsemutatie026" style="color: #6e798a; height: 100%; text-align: left; width: 100%;">
+                                                Change operator from: &#x27;clt&#x27; to: &#x27;cgt&#x27;. -
+                                                    <label class="text-success" style="float: right;">Killed</label>
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapsemutatie026" class="collapse" aria-labelledby="headingmutatie026" data-parent="#collapsemutatie026">
+                                        <div class="card-body">
+                                            
+
+                                            <h6>Original Source</h6>
+                                            <pre><code class="language-csharp">public int WhileLoop(int loops)&#xD;&#xA;{&#xD;&#xA;&#x9;int i;&#xD;&#xA;&#x9;for (i = 0; i &lt; loops; i&#x2B;&#x2B;)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return i;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+                                            <h6>Mutated Source</h6>
+                                            <pre><code class="language-csharp">public int WhileLoop(int loops)&#xD;&#xA;{&#xD;&#xA;&#x9;int i;&#xD;&#xA;&#x9;for (i = 0; i &gt; loops; i&#x2B;&#x2B;)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;return i;&#xD;&#xA;}&#xD;&#xA;</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="card-header infopanel">
+        <ul>
+            # Test Session TestTestSessionDuration: 00:00:08.8962730
+        </ul>
+        <ul>
+            Total amount of possible mutations: 27
+        </ul>
+        <ul>
+            # Mutants killed: 18,
+        </ul>
+        <ul>
+            # Mutants survived: 7,
+        </ul>
+        <ul>
+            # Mutants timed out: 2,
+        </ul>
+        <ul>
+            # Mutations without coverage: 0
+        </ul>
+        <ul>
+            <label>
+                Mutation ScorePercentage:
+            </label>
+            <div class="progress">
+
+                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-warning" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">66%</div>
+            </div>
+        </ul>
+    </div>
+</div>
+</body>
