@@ -7,13 +7,14 @@
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z8QK6XU749JB2)
 
 ## Byte Code Dotnet Mutation Utility
-Faultify is a fast, small, simpel dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
+Faultify is a simpel, quick dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
 Basicly, it imitates the bad programmer by introducing mistakes on purpose. 
 A test is supposed to fail after a mutation, if that is not the case the test is probable error-prone.
 
 ### Getting Started
 
 - Read the [Technical Book](https://faultify.github.io/Faultify/index.html)
+- Benchmark [Statistics](https://github.com/Faultify/Faultify/blob/main/Benchmark/README.md)
 
 **Commandline Options**
 
