@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -21,9 +22,13 @@ namespace Faultify.TestRunner.ProjectDuplication
 
             // Remove useless folders.
             foreach (var directory in dirInfo.GetDirectories("*"))
-                if (Regex.Match(directory.Name, "(de|en|es|fr|it|ja|ko|ru|zh-Hans|zh-Hant|test-duplication-\\d)").Groups
-                    .Count != 0)
+            {
+                var match = Regex.Match(directory.Name, "(^cs$|^pl$|^rt$|^de$|^en$|^es$|^fr$|^it$|^ja$|^ko$|^ru$|^zh-Hans$|^zh-Hant$|^test-duplication-\\d$)");
+
+                if (match.Captures.Count != 0) {
                     Directory.Delete(directory.FullName, true);
+                }
+            }
 
             var testProjectDuplications = new List<TestProjectDuplication>();
 
@@ -31,11 +36,36 @@ namespace Faultify.TestRunner.ProjectDuplication
             var allFiles = Directory.GetFiles(_testDirectory, "*.*", SearchOption.AllDirectories).ToList();
             var newDirInfo = Directory.CreateDirectory(Path.Combine(_testDirectory, "test-duplication-0"));
 
+
             foreach (var file in allFiles)
             {
-                var mFile = new FileInfo(file);
-                var newPath = Path.Combine(newDirInfo.FullName, mFile.Name);
-                mFile.MoveTo(newPath);
+                try
+                {
+                    var mFile = new FileInfo(file);
+
+                    if (mFile.Directory.FullName == newDirInfo.Parent.FullName)
+                    {
+                        var newPath = Path.Combine(newDirInfo.FullName, mFile.Name);
+                        mFile.MoveTo(newPath);
+                    }
+                    else
+                    {
+                        var path = mFile.FullName.Replace(newDirInfo.Parent.FullName, "");
+                        var newPath = new FileInfo(Path.Combine(newDirInfo.FullName, path.Trim('\\')));
+
+                        if (!Directory.Exists(newPath.DirectoryName))
+                        {
+                            Directory.CreateDirectory(newPath.DirectoryName);
+                        }
+
+                        mFile.MoveTo(newPath.FullName, true);
+                    }
+                    
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
 
             var initialCopies = testProject.ProjectReferences

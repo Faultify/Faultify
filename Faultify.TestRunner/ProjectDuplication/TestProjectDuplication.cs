@@ -66,6 +66,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Returns a list of <see cref="MutationVariant" /> that can be executed on this given test project duplication.
         /// </summary>
         /// <param name="mutationIdentifiers"></param>
+        /// <param name="mutationLevel"></param>
         /// <returns></returns>
         public IList<MutationVariant> GetMutationVariants(IList<MutationVariantIdentifier> mutationIdentifiers,
             MutationLevel mutationLevel)

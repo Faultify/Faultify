@@ -39,8 +39,10 @@ namespace Faultify.TestRunner.TestProcess
                 .DisableDump()
                 .Build();
 
-            var coverageProcessStartInfo = new ProcessStartInfo("dotnet ", coverageArguments)
+            var coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
             {
+                UseShellExecute = false,
+                CreateNoWindow = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 WorkingDirectory = _testDirectoryInfo.FullName
@@ -68,11 +70,10 @@ namespace Faultify.TestRunner.TestProcess
 
             var testProcessStartInfo = new ProcessStartInfo("dotnet ", testArguments)
             {
-                // UseShellExecute = true,
-                // CreateNoWindow = false,
+
                 WorkingDirectory = _testDirectoryInfo.FullName,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
             };
 
             return new ProcessRunner(testProcessStartInfo);
@@ -99,8 +100,7 @@ namespace Faultify.TestRunner.TestProcess
                 {
                     var testProcessRunner = BuildTestProcessRunner(remainingTests);
 
-                    var process = await testProcessRunner.RunAsync(cancellationToken);
-                    process.Dispose();
+                    await testProcessRunner.RunAsync(cancellationToken);
 
                     var testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath, cancellationToken);
 
@@ -109,6 +109,8 @@ namespace Faultify.TestRunner.TestProcess
                     remainingTests.RemoveWhere(x => deserializedTestResults.Tests.Any(y => y.Name == x));
 
                     foreach (var testResult in deserializedTestResults.Tests) testResults.Add(testResult);
+
+                    
                 }
             }
             finally
