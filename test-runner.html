@@ -186,11 +186,11 @@ Therefore optimizations are essential for a well-functioning mutation tool.</p>
 <ul>
 <li>Mutation Bin Packing</li>
 <li>Mutation Levels</li>
+<li>Run Mutations in Parallel</li>
 </ul>
 <p>Faultily Will Support:</p>
 <ul>
 <li>Memory Mapped Files</li>
-<li>Run Mutations in Parallel</li>
 </ul>
 <p><strong>Run Tests from Memory</strong></p>
 <p>‘dotnet test’ is a wrapper over ‘vs-test-console’ which are both external processes. 
@@ -242,7 +242,7 @@ At the end of the test process this data is used by faultify to binpack the test
 With those events Faultify can do useful things. </p>
 <ul>
 <li><code>TestDataCollector</code>: Collects the test status from running tests and writes them to <code>test_results.json</code>.</li>
-<li><code>CoverageDataCollector</code>: Filters the <code>coverage.json</code> such that only the tests it saw will remain in the file.  </li>
+<li><code>CoverageDataCollector</code>: Filters the <code>coverage.json</code> such that only the tests it saw will remain in the file.</li>
 </ul>
 
                     </main>
