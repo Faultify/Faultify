@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading;
@@ -8,6 +11,7 @@ using Faultify.Report;
 using Faultify.Report.HTMLReporter;
 using Faultify.Report.PDFReporter;
 using Faultify.TestRunner;
+using Karambolo.Extensions.Logging.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,57 +19,57 @@ using Microsoft.Extensions.Options;
 
 namespace Faultify.Cli
 {
-    static class ConsoleMessage
-    {
-        private static string _logo = @"    
-             ______            ____  _ ____     
-            / ____/___ ___  __/ / /_(_) __/_  __
-           / /_  / __ `/ / / / / __/ / /_/ / / / 
-          / __/ / /_/ / /_/ / / /_/ / __/ /_/ / 
-         / _/    \__,_/\__,_/_/\__/_/_/  \__,/ 
-                                       /____/  
-        ";
-
-        public static void PrintLogo()
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(_logo);
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        public static void PrintSettings(Settings settings)
-        {
-            string settingsString = 
-            $"\n" +
-            $"| Mutation Level: {settings.MutationLevel} \t\t \n" +
-            $"| Test Runners: {settings.Parallel} \t\t \n" +
-            $"| Report Path: { settings.ReportPath} \t\t \n" +
-            $"| Report Type: { settings.ReportType} \t\t \n" +
-            $"| Test Project Path: { settings.TestProjectPath} \t\t \n" +
-            $"\n";
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(settingsString);
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-    }
     internal class Program
     {
+        private readonly ILoggerFactory _loggerFactory;
+        private static string _outputDirectory;
+
         public Program(
             IOptions<Settings> settings,
-            ILogger<Program> logger
+            ILoggerFactory loggerFactory
         )
         {
+            _loggerFactory = loggerFactory;
         }
 
         private static async Task Main(string[] args)
         {
             var settings = ParseCommandlineArguments(args);
 
+            var currentDate = DateTime.Now.ToString("yy-MM-dd");
+            _outputDirectory = Path.Combine(settings.ReportPath, currentDate);
+            Directory.CreateDirectory(_outputDirectory);
+
             var configurationRoot = BuildConfigurationRoot();
             var services = new ServiceCollection();
             services.Configure<Settings>(options => configurationRoot.GetSection("settings").Bind(options));
-            services.AddLogging(c => c.AddConsole());
+
+            services.AddLogging(c =>
+            {
+                c.SetMinimumLevel(LogLevel.Trace);
+
+                c.AddFilter(LogConfiguration.TestHost, LogLevel.Trace);
+                c.AddFilter(LogConfiguration.TestRunner, LogLevel.Trace);
+
+                c.AddFile(o =>
+                {
+                    o.RootPath = _outputDirectory;
+                    o.FileAccessMode = LogFileAccessMode.KeepOpenAndAutoFlush;
+
+                    o.Files = new[]
+                    {
+                        new LogFileOptions
+                        {
+                            Path = "testhost-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log", MinLevel = new Dictionary<string, LogLevel>() {{ LogConfiguration.TestHost, LogLevel.Trace } }
+                        },
+                        new LogFileOptions
+                        {
+                            Path = "testprocess-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log", MinLevel = new Dictionary<string, LogLevel>() {{ LogConfiguration.TestRunner, LogLevel.Trace } }
+                        },
+                    };
+                });
+            });
+
             services.AddSingleton<Program>();
             var serviceProvider = services.BuildServiceProvider();
             var program = serviceProvider.GetService<Program>();
@@ -92,21 +96,53 @@ namespace Faultify.Cli
 
             if (!File.Exists(settings.TestProjectPath))
                 throw new Exception($"Test project '{settings.TestProjectPath}' can not be found.");
+            
+            var cursorPosition = (0, 0);
 
-            var testResult = await RunMutationTest(settings);
+            var progress = new Progress<MutationRunProgress>();
+            progress.ProgressChanged += (sender, s) =>
+            {
+                if (s.LogMessageType == LogMessageType.TestRunUpdate)
+                {
+                    if (cursorPosition.Item1 == 0 && cursorPosition.Item2 == 0)
+                    {
+                        cursorPosition = (Console.CursorLeft, Console.CursorTop);
+                    }
+
+                    Console.SetCursorPosition(cursorPosition.Item1, cursorPosition.Item2);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"\n> [{s.Progress}%] {s.Message}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else if (s.LogMessageType != LogMessageType.Other)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"\n> [{s.Progress}%] {s.Message}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"> [{s.Progress}%] {s.Message}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            };
+            var progressTracker = new MutationSessionProgressTracker(progress, _loggerFactory);
+           
+            var testResult = await RunMutationTest(settings, progressTracker);
+            
+            progressTracker.LogBeginReportBuilding(settings.ReportType, settings.ReportPath);
             await GenerateReport(testResult, settings);
-
+            progressTracker.LogEndFaultify(settings.ReportPath);
             await Task.CompletedTask;
         }
 
-        private async Task<TestProjectReportModel> RunMutationTest(Settings settings)
+        private async Task<TestProjectReportModel> RunMutationTest(Settings settings, MutationSessionProgressTracker progressTracker)
         {
-            var progress = new Progress<MutationRunProgress>();
-            progress.ProgressChanged += (sender, s) => { Console.WriteLine($"[{s.Progress}%] {s.Message}"); };
-
             var mutationTestProject =
-                new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel);
-            return await mutationTestProject.Test(progress, CancellationToken.None);
+                new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel, _loggerFactory);
+
+            return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }
 
         private async Task GenerateReport(TestProjectReportModel testResult, Settings settings)
@@ -120,11 +156,9 @@ namespace Faultify.Cli
             var reporter = ReportFactory(settings.ReportType);
             var reportBytes = await reporter.CreateReportAsync(mprm);
 
-            var outputPath = settings.ReportPath;
             var reportFileName = DateTime.Now.ToString("yy-MM-dd-H-mm") + reporter.FileExtension;
-            Directory.CreateDirectory(outputPath);
 
-            await File.WriteAllBytesAsync(Path.Combine(outputPath, reportFileName), reportBytes);
+            await File.WriteAllBytesAsync(Path.Combine(_outputDirectory, reportFileName), reportBytes);
         }
 
         private IReporter ReportFactory(string type)

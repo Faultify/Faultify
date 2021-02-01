@@ -26,7 +26,7 @@ namespace Faultify.TestRunner
                 foreach (var testResult in testResults.Tests)
                 {
                     var mutation =
-                        mutations.SingleOrDefault(x => x.MutationIdentifier.TestCoverage.Contains(testResult.Name));
+                        mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Contains(testResult.Name));
 
                     if (mutation?.Mutation == null)
                         continue;
@@ -56,8 +56,6 @@ namespace Faultify.TestRunner
                             mutation.MutationIdentifier.MemberName == x.MemberName);
 
                         mut.TestStatus = mutationStatus;
-                        Console.WriteLine(
-                            $"Duplicate {mutation.MutationIdentifier.MemberName}.{mutation.MutationIdentifier.MutationId}.{mutation.Mutation}; status {mutationStatus} is duplicated");
                     }
                 }
             }

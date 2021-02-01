@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,7 @@ using Faultify.TestRunner.ProjectDuplication;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestProcess;
 using Faultify.TestRunner.TestRun;
+using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 
 namespace Faultify.TestRunner
@@ -24,12 +26,14 @@ namespace Faultify.TestRunner
         private readonly MutationLevel _mutationLevel;
         private readonly int _parallel;
         private readonly string _testProjectPath;
+        private readonly ILogger _testHostLogger;
 
-        public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel)
+        public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel, ILoggerFactory loggerFactoryFactory)
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
             _parallel = parallel;
+            _testHostLogger = loggerFactoryFactory.CreateLogger("Faultify.TestHost");
         }
 
         /// <summary>
@@ -45,22 +49,19 @@ namespace Faultify.TestRunner
         /// <param name="progress"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<TestProjectReportModel> Test(IProgress<MutationRunProgress> progress,
+        public async Task<TestProjectReportModel> Test(MutationSessionProgressTracker progressTracker,
             CancellationToken cancellationToken = default)
         {
-            var progressTracker = new MutationSessionProgressTracker(progress);
-
             // Build project
             progressTracker.LogBeginPreBuilding();
             var projectInfo = await BuildProject(progressTracker, _testProjectPath);
             progressTracker.LogEndPreBuilding();
 
             // Copy project N times
-            progressTracker.LogBeginProjectDuplication();
+            progressTracker.LogBeginProjectDuplication(_parallel);
             var testProjectCopier =
-                new TestProjectCopier(Directory.GetParent(projectInfo.AssemblyPath).FullName);
+                new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
             var duplications = testProjectCopier.MakeInitialCopies(projectInfo, _parallel);
-            progressTracker.LogEndProjectDuplication();
 
             // Begin code coverage on first project.
             var duplicationPool = new TestProjectDuplicationPool(duplications);
@@ -69,17 +70,16 @@ namespace Faultify.TestRunner
 
             // Measure the test coverage 
             progressTracker.LogBeginCoverage();
-            InjectAssembliesWithCodeCoverage(coverageProjectInfo, progressTracker);
+            InjectAssembliesWithCodeCoverage(coverageProjectInfo);
 
             var coverageTimer = new Stopwatch();
             coverageTimer.Start();
             var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
-            progressTracker.LogEndCoverage();
 
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
-            return await StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
+            return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
                 cancellationToken, coverageTimer.Elapsed, duplicationPool);
         }
 
@@ -126,9 +126,7 @@ namespace Faultify.TestRunner
         ///     Those calls determine what tests cover which methods.
         /// </summary>
         /// <param name="projectInfo"></param>
-        /// <param name="sessionProgressTracker"></param>
-        private void InjectAssembliesWithCodeCoverage(TestProjectInfo projectInfo,
-            MutationSessionProgressTracker sessionProgressTracker)
+        private void InjectAssembliesWithCodeCoverage(TestProjectInfo projectInfo)
         {
             TestCoverageInjector.Instance.InjectTestCoverage(projectInfo.TestModule);
             TestCoverageInjector.Instance.InjectModuleInit(projectInfo.TestModule);
@@ -143,7 +141,6 @@ namespace Faultify.TestRunner
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
                 var dependencyInjectionPath = assembly.Module.FileName;
-                sessionProgressTracker.Report($"Inject coverage code {dependencyInjectionPath}");
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
                 assembly.Module.Write(dependencyInjectionPath);
@@ -160,7 +157,7 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
-            var dotnetTestRunner = new DotnetTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12));
+            var dotnetTestRunner = new DotnetTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHostLogger);
             return await dotnetTestRunner.RunCodeCoverage(cancellationToken);
         }
 
@@ -198,7 +195,7 @@ namespace Faultify.TestRunner
         /// <param name="coverageTestRunTime"></param>
         /// <param name="testProjectDuplicationPool"></param>
         /// <returns></returns>
-        private async Task<TestProjectReportModel> StartMutationTestSession(TestProjectInfo testProjectInfo,
+        private TestProjectReportModel StartMutationTestSession(TestProjectInfo testProjectInfo,
             Dictionary<RegisteredCoverage, HashSet<string>> testsPerMutation,
             MutationSessionProgressTracker sessionProgressTracker,
             CancellationToken cancellationToken, TimeSpan coverageTestRunTime,
@@ -219,9 +216,11 @@ namespace Faultify.TestRunner
 
             var mutationTestRuns = runs.ToList();
             var totalRunsCount = mutationTestRuns.Count();
-            var testRunsExecutedCount = 0;
+            var mutationCount = mutationTestRuns.Sum(x => x.MutationCount);
+            var completedRuns = 0;
+            var failedRuns = 0;
 
-            sessionProgressTracker.LogBeginTestSession(totalRunsCount);
+            sessionProgressTracker.LogBeginTestSession(totalRunsCount, mutationCount, maxTestDuration);
 
             // Stores timed out mutations which will be excluded from test runs if they occur. 
             // Timed out mutations will be removed because they can cause serious test delays.
@@ -230,17 +229,16 @@ namespace Faultify.TestRunner
             async Task RunTestRun(IMutationTestRun testRun)
             {
                 var testProject = testProjectDuplicationPool.AcquireTestProject();
+                
                 try
                 {
                     testRun.InitializeMutations(testProject, timedOutMutations);
 
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-
-                    sessionProgressTracker.LogBeginTestRun(testRun.RunId);
-
+                    
                     var dotnetTestRunner =
-                        new DotnetTestRunner(testProject.TestProjectFile.FullFilePath(), maxTestDuration);
+                        new DotnetTestRunner(testProject.TestProjectFile.FullFilePath(), maxTestDuration, _testHostLogger);
 
                     var results = await testRun.RunMutationTestAsync(cancellationToken, sessionProgressTracker,
                         dotnetTestRunner, testProject);
@@ -256,36 +254,37 @@ namespace Faultify.TestRunner
                             reportBuilder.AddTestResult(testResult.TestResults, testResult.Mutations,
                                 singRunsStopwatch.Elapsed);
                         }
-
-                        testRunsExecutedCount += 1;
-
+                        
                         singRunsStopwatch.Stop();
-                        sessionProgressTracker.LogEndTestRun(testRunsExecutedCount, totalRunsCount, testRun.RunId,
-                            singRunsStopwatch.Elapsed);
                         singRunsStopwatch.Reset();
+                       
                     }
-
                 }
                 catch (Exception e)
                 {
-                    sessionProgressTracker.Report(
-                        $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}");
+                    sessionProgressTracker.Log(
+                        $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}", LogMessageType.Error);
+                    failedRuns += 1;
                 }
                 finally
                 {
+                    lock(this) {
+                        completedRuns += 1;
+                        sessionProgressTracker.LogTestRunUpdate(completedRuns, totalRunsCount, failedRuns);
+                    }
                     testProject.FreeTestProject();
                 }
             }
 
-
             IEnumerable<Task> tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
             
             Task.WaitAll(tasks.ToArray());
-
-            sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed);
             allRunsStopwatch.Stop();
 
-            return reportBuilder.Build(allRunsStopwatch.Elapsed, totalRunsCount);
+            var report = reportBuilder.Build(allRunsStopwatch.Elapsed, totalRunsCount);
+            sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed, completedRuns, mutationCount, report.ScorePercentage);
+
+            return report;
         }
     }
 }
