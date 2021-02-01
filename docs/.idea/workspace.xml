@@ -28,13 +28,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebaf08ce-0659-4ecc-91a4-5c67630faa38" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner.Collector/TestDataCollector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner.Collector/TestDataCollector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Benchmark/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Benchmark/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.Cli/Faultify.Cli.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.Cli/Faultify.Cli.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.Cli/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.Cli/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.Cli/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.Cli/Properties/launchSettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/MutationRunProgress.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/MutationRunProgress.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/MutationSessionProgressTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/MutationSessionProgressTracker.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/MutationTestProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/MutationTestProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/ProjectDuplication/TestProjectDuplicator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/ProjectDuplication/TestProjectDuplicator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/DotnetTestRunner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/DotnetTestRunner.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/ProcessRunner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/ProcessRunner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestProjectReportModelBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestProjectReportModelBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestRun/DefaultMutationTestRun.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestRun/DefaultMutationTestRun.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestRun/DefaultMutationTestRunGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestRun/DefaultMutationTestRunGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestRun/IMutationTestRun.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestRun/IMutationTestRun.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.sln.DotSettings.user" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,13 +74,6 @@
       <recent name="E:\programming\FaultifyNew\Faultify\docs\src\img" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -86,6 +84,7 @@
       <updated>1611175589488</updated>
       <workItem from="1611175590779" duration="2667000" />
       <workItem from="1611219416308" duration="7126000" />
+      <workItem from="1612172800986" duration="652000" />
     </task>
     <servers />
   </component>
@@ -109,5 +108,9 @@
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
     <state x="1035" y="326" key="#com.intellij.fileTypes.FileTypeChooser/-2560.0.2560.1050/0.0.2560.1050@0.0.2560.1050" timestamp="1611220197431" />
+    <state x="1060" y="279" key="FileChooserDialogImpl" timestamp="1612172854952">
+      <screen x="0" y="0" width="2560" height="1050" />
+    </state>
+    <state x="1060" y="279" key="FileChooserDialogImpl/-2560.0.2560.1050/0.0.2560.1050@0.0.2560.1050" timestamp="1612172854952" />
   </component>
 </project>

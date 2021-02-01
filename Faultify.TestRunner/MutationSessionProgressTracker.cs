@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 
 namespace Faultify.TestRunner
 {
@@ -8,12 +9,14 @@ namespace Faultify.TestRunner
     public class MutationSessionProgressTracker : IProgress<string>
     {
         private readonly IProgress<MutationRunProgress> _progress;
+        private readonly ILogger _logger;
 
         private int _currentPercentage;
 
-        public MutationSessionProgressTracker(IProgress<MutationRunProgress> progress)
+        public MutationSessionProgressTracker(IProgress<MutationRunProgress> progress, ILoggerFactory logger)
         {
             _progress = progress;
+            _logger = logger.CreateLogger("Faultify.TestRunner");
         }
 
         public void Report(string value)
@@ -30,65 +33,107 @@ namespace Faultify.TestRunner
 
         public void LogEndPreBuilding()
         {
-            _currentPercentage = 10;
+            _currentPercentage = 5;
             Log("Finished Building test project...");
         }
 
-        public void LogBeginProjectDuplication()
+        public void LogBeginProjectDuplication(int duplications)
         {
-            _currentPercentage = 15;
-            Log("Starting duplicating test projects...");
+            _currentPercentage = 7;
+            Log($"Duplicating {duplications} test projects");
         }
 
         public void LogEndProjectDuplication()
         {
-            _currentPercentage = 20;
+            _currentPercentage = 15;
             Log("End duplication test project...");
         }
-
-
+        
         public void LogBeginCoverage()
         {
-            _currentPercentage = 22;
-            Log("Starting Coverage...");
+            _currentPercentage = 17;
+            Log("Calculating Covered Mutations:\n" +
+                "| - Inject code coverage functions.\n" +
+                "| - Run test session\n" +
+                "| - Calculate optimal way to execute most mutations in the least amount of test runs.",
+                LogMessageType.CodeCoverage);
         }
 
-        public void LogEndCoverage()
+        public void LogBeginTestSession(int totalTestRounds, int mutationCount, TimeSpan testRunTime)
         {
-            _currentPercentage = 25;
-            Log("Finished Coverage...");
-        }
+            _currentPercentage = 20;
 
-        public void LogBeginTestSession(int totalTestRounds)
+            Log($"Start Mutation Test Session:\n" +
+                $"| Test Rounds: {totalTestRounds}\n" +
+                $"| Mutations Found: {mutationCount}\n" +
+                $"| Worst Case Time: {totalTestRounds * testRunTime.Seconds}s"
+                , LogMessageType.TestSessionStart
+            );
+        }
+        
+        public void LogTestRunUpdate(int index, int max, int failedRuns)
         {
-            Log($"Start Mutation Test Session. This takes {totalTestRounds} test rounds");
+            _currentPercentage = (int) Map(index, 0f, max, 0f, 100f);
+            Log($"Test Run Progress:\n" +
+                $"| Test Runs: {max - index}\n" +
+                $"| Completed: {index}\n" +
+                $"| Failed: {failedRuns}" +
+                $"", LogMessageType.TestRunUpdate);
         }
 
-        public void LogBeginTestRun(int runId)
+        public void LogEndTestSession(TimeSpan elapsed, int completedTestRounds, int mutationCount, float score)
         {
-            Log($"Starting Mutation Run: '{runId}' [{DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss")}]:...");
+            _currentPercentage = 85;
+            Log($"Finished Mutation Session:\n" +
+                $"| Test Rounds: {completedTestRounds}\n" +
+                $"| Mutation per Second: {((mutationCount / elapsed.Milliseconds) * 1000):0.0}mps\n" +
+                $"| Duration: {elapsed:hh\\:mm\\:ss}\n" +
+                $"| Score: {score:0.0}%"+
+                $"\n", LogMessageType.TestSessionEnd
+            );
         }
 
-        public void LogEndTestRun(int index, int max, int runId, TimeSpan elapsedSinceStart)
+        public void LogBeginReportBuilding(string reportType, string reportPath)
         {
-            _currentPercentage = (int) Map(index, 0f, max, 35f, 95f);
-            Log($"Finished Mutation Run '{runId}', elapsed: [{elapsedSinceStart.ToString("hh\\:mm\\:ss")}]: ...");
+            _currentPercentage = 98;
+            Log($"Generate Report:\n" +
+                $"| Report Path: { reportPath} \t\t \n" +
+                $"| Report Type: { reportType} \t\t \n"
+            );
         }
 
-        public void LogEndTestSession(TimeSpan elapsed)
+        public void LogEndFaultify(string processLog)
         {
             _currentPercentage = 100;
-            Log($"Finished Mutation Test Session in {elapsed.ToString("hh\\:mm\\:ss")} time.");
+            Log($"Faultify is Done:\n" +
+                $"| Logs: { processLog } \t\t"
+            );
         }
 
-        public void Log(string message)
+        public void LogDebug(string message)
         {
-            _progress.Report(new MutationRunProgress(message, _currentPercentage));
+            _logger.LogDebug(message);
+        }
+
+        public void Log(string message, LogMessageType logMessageType = LogMessageType.Other)
+        {
+            _logger.LogInformation($"> [{_currentPercentage}] {message}");
+            _progress.Report(new MutationRunProgress(message, _currentPercentage, logMessageType));
         }
 
         private static float Map(float value, float fromSource, float toSource, float fromTarget, float toTarget)
         {
             return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
         }
+    }
+
+    public enum LogMessageType
+    {
+        CodeCoverage,
+        TestRunUpdate,
+        TestSessionStart, 
+        TestSessionEnd,
+        Error,
+        Other
     }
 }

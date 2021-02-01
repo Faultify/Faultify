@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Faultify.Core.ProjectAnalyzing;
 
 namespace Faultify.TestRunner.ProjectDuplication
 {
-    public class TestProjectCopier
+    public class TestProjectDuplicator
     {
         private readonly string _testDirectory;
 
-        public TestProjectCopier(string testDirectory)
+        public TestProjectDuplicator(string testDirectory)
         {
             _testDirectory = testDirectory;
         }
@@ -77,7 +78,7 @@ namespace Faultify.TestRunner.ProjectDuplication
             ));
 
             // Copy the initial copy N times.
-            for (var i = 1; i < count + 1; i++)
+            Parallel.ForEach(Enumerable.Range(1, count), (i) =>
             {
                 var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i}");
                 CopyFilesRecursively(newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
@@ -92,8 +93,8 @@ namespace Faultify.TestRunner.ProjectDuplication
                         i
                     )
                 );
-            }
-
+            });
+            
             return testProjectDuplications;
         }
 
