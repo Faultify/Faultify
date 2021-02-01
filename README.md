@@ -60,6 +60,9 @@ The default location for the report is at the executable location in folder '/Fa
 - [X] Nunit/Xunit/Msunit support via `dotnet test`.
 - [X] Runnable from console. 
 
+## Application Preview
+<img src="https://github.com/Faultify/Faultify/blob/main/docs/application-overview.PNG" alt="drawing" width="600"/>
+
 ### Solution Projects
 
 | Solution Item | Description |
