@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Printing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,8 +18,8 @@ namespace Faultify.Cli
 {
     internal class Program
     {
-        private readonly ILoggerFactory _loggerFactory;
         private static string _outputDirectory;
+        private readonly ILoggerFactory _loggerFactory;
 
         public Program(
             IOptions<Settings> settings,
@@ -60,12 +57,14 @@ namespace Faultify.Cli
                     {
                         new LogFileOptions
                         {
-                            Path = "testhost-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log", MinLevel = new Dictionary<string, LogLevel>() {{ LogConfiguration.TestHost, LogLevel.Trace } }
+                            Path = "testhost-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
+                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestHost, LogLevel.Trace}}
                         },
                         new LogFileOptions
                         {
-                            Path = "testprocess-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log", MinLevel = new Dictionary<string, LogLevel>() {{ LogConfiguration.TestRunner, LogLevel.Trace } }
-                        },
+                            Path = "testprocess-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
+                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestRunner, LogLevel.Trace}}
+                        }
                     };
                 });
             });
@@ -96,7 +95,7 @@ namespace Faultify.Cli
 
             if (!File.Exists(settings.TestProjectPath))
                 throw new Exception($"Test project '{settings.TestProjectPath}' can not be found.");
-            
+
             var cursorPosition = (0, 0);
 
             var progress = new Progress<MutationRunProgress>();
@@ -105,9 +104,7 @@ namespace Faultify.Cli
                 if (s.LogMessageType == LogMessageType.TestRunUpdate)
                 {
                     if (cursorPosition.Item1 == 0 && cursorPosition.Item2 == 0)
-                    {
                         cursorPosition = (Console.CursorLeft, Console.CursorTop);
-                    }
 
                     Console.SetCursorPosition(cursorPosition.Item1, cursorPosition.Item2);
                     Console.ForegroundColor = ConsoleColor.Cyan;
@@ -128,19 +125,21 @@ namespace Faultify.Cli
                 }
             };
             var progressTracker = new MutationSessionProgressTracker(progress, _loggerFactory);
-           
+
             var testResult = await RunMutationTest(settings, progressTracker);
-            
+
             progressTracker.LogBeginReportBuilding(settings.ReportType, settings.ReportPath);
             await GenerateReport(testResult, settings);
             progressTracker.LogEndFaultify(settings.ReportPath);
             await Task.CompletedTask;
         }
 
-        private async Task<TestProjectReportModel> RunMutationTest(Settings settings, MutationSessionProgressTracker progressTracker)
+        private async Task<TestProjectReportModel> RunMutationTest(Settings settings,
+            MutationSessionProgressTracker progressTracker)
         {
             var mutationTestProject =
-                new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel, _loggerFactory);
+                new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
+                    _loggerFactory);
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }

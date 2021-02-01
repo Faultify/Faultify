@@ -1,42 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	<PackageVersion>0.0.4</PackageVersion>
-	<PackageId>faultify</PackageId>
-	<Description>Fualtify Mutation Test Commandline Utility</Description>
+	<PropertyGroup>
+		<PackageVersion>0.0.3</PackageVersion>
+		<PackageId>faultify</PackageId>
+		<Description>Fualtify Mutation Test Commandline Utility</Description>
 
-	<Authors>Timon, Janfokke</Authors>
-	<ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
-	  <PackageTags>Test;Mutation;Mutation Testing;Testing</PackageTags>
-	<RepositoryUrl>https://github.com/Faultify/Faultify.git</RepositoryUrl>
-	<Title>Dotnet, byte level, mutation test utility</Title>
-	<Product>Mutation Testing</Product>
+		<Authors>Timon, Janfokke</Authors>
+		<ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
+		<PackageTags>Test;Mutation;Mutation Testing;Testing</PackageTags>
+		<RepositoryUrl>https://github.com/Faultify/Faultify.git</RepositoryUrl>
+		<Title>Dotnet, byte level, mutation test utility</Title>
+		<Product>Mutation Testing</Product>
 
-	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<OutputType>Exe</OutputType>
-	<PackAsTool>true</PackAsTool>
-	<ToolCommandName>faultify</ToolCommandName>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<PackAsTool>true</PackAsTool>
+		<ToolCommandName>faultify</ToolCommandName>
 
-	  <UserSecretsId>a54b9b03-4c3a-41e0-97a0-d891b6b20697</UserSecretsId>
-	<PreserveCompilationContext>true</PreserveCompilationContext>
-  </PropertyGroup>
+		<UserSecretsId>a54b9b03-4c3a-41e0-97a0-d891b6b20697</UserSecretsId>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommandLineParser" Version="2.8.0" />
+		<PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Faultify.Report\Faultify.Report.csproj" />
-    <ProjectReference Include="..\Faultify.TestRunner.Collector\Faultify.TestRunner.Collector.csproj" />
-    <ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Faultify.Report\Faultify.Report.csproj" />
+		<ProjectReference Include="..\Faultify.TestRunner.Collector\Faultify.TestRunner.Collector.csproj" />
+		<ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
+	</ItemGroup>
 
 </Project>

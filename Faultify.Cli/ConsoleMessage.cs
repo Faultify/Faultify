@@ -2,9 +2,9 @@
 
 namespace Faultify.Cli
 {
-    static class ConsoleMessage
+    internal static class ConsoleMessage
     {
-        private static string _logo = @"    
+        private static readonly string _logo = @"    
              ______            ____  _ ____     
             / ____/___ ___  __/ / /_(_) __/_  __
            / /_  / __ `/ / / / / __/ / /_/ / / / 
@@ -22,14 +22,14 @@ namespace Faultify.Cli
 
         public static void PrintSettings(Settings settings)
         {
-            string settingsString = 
-                $"\n" +
+            var settingsString =
+                "\n" +
                 $"| Mutation Level: {settings.MutationLevel} \t\t \n" +
                 $"| Test Runners: {settings.Parallel} \t\t \n" +
-                $"| Report Path: { settings.ReportPath} \t\t \n" +
-                $"| Report Type: { settings.ReportType} \t\t \n" +
-                $"| Test Project Path: { settings.TestProjectPath} \t\t \n" +
-                $"\n";
+                $"| Report Path: {settings.ReportPath} \t\t \n" +
+                $"| Report Type: {settings.ReportType} \t\t \n" +
+                $"| Test Project Path: {settings.TestProjectPath} \t\t \n" +
+                "\n";
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(settingsString);
