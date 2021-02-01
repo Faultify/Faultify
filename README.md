@@ -7,9 +7,9 @@
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z8QK6XU749JB2)
 
 ## Byte Code Dotnet Mutation Utility
-Faultify is a simpel, quick dotnet mutation tool that performs mutations in the byte code to test the test quality of a project. 
-Basicly, it imitates the bad programmer by introducing mistakes on purpose. 
-A test is supposed to fail after a mutation, if that is not the case the test is probable error-prone.
+Faultify provides a quick simple way to realize dotnet mutation testing at the byte code level. 
+It imitates the bad programmer by deliberately introducing errors. 
+A test is assumed to fail after an introduced mutation, the test is likely to be error-prone if it instead succeeds.
 
 ### Getting Started
 
@@ -37,7 +37,7 @@ dotnet tool install --global faultify --version 0.0.4
 faultify -p YourTestProject.csproj -t html
 ```
 
-The default location for the report is at the executable location in folder '/FaultifyOutput'.
+This generates a 'HTML' report for the project 'YourTestProject.csproj' at the default executable location in the folder '/FaultifyOutput'.
 
 ### Features
 
@@ -60,6 +60,12 @@ The default location for the report is at the executable location in folder '/Fa
 - [X] Nunit/Xunit/Msunit support via `dotnet test`.
 - [X] Runnable from console. 
 
+**Todo**
+- Implement [member exclusion](https://github.com/Faultify/Faultify/issues/11).
+
+## Application Preview
+<img src="https://github.com/Faultify/Faultify/blob/main/docs/application-overview.PNG" alt="drawing" width="600"/>
+
 ### Solution Projects
 
 | Solution Item | Description |
@@ -69,7 +75,3 @@ The default location for the report is at the executable location in folder '/Fa
 | `Faultify.TestRunner` | `Contains the code that runs the mutation test process`|
 | `Faultify.Report` | `Contains the code that generates a report`|
 | `/Bechmarks` | `Contains a benchmark project and tests that can be used for mutation testing with faultify/stryker.`|
-
-
-### Alternative
-- Source code mutation with mutation switching to speed up compile speed (stryker). 
