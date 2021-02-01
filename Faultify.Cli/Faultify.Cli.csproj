@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<PackageVersion>0.1.0</PackageVersion>
 		<PackageId>faultify</PackageId>
-		<Description>Fualtify Mutation Test Commandline Utility</Description>
+		<Description>Fualtify Dotnet Mutation Test Commandline Utility</Description>
 
 		<Authors>Timon, Janfokke</Authors>
 		<ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
@@ -20,6 +19,21 @@
 		<UserSecretsId>a54b9b03-4c3a-41e0-97a0-d891b6b20697</UserSecretsId>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<Version>0.1.0</Version>
+		<PackageIcon>small-logo.png</PackageIcon>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\docs\small-logo.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+		</None>
+		<None Include="LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommandLineParser" Version="2.8.0" />

@@ -29,8 +29,8 @@ Score:     64.86%
 
 
 ```
-dotnet tool install --global faultify --version 0.0.3
-faultify -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html
+dotnet tool install --global faultify --version 0.1.0
+faultify -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html -p 4
 
 // Run at local executable
 ..\Faultify.Cli\bin\Debug\netcoreapp3.1\Faultify.Cli.exe -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html
