@@ -28,19 +28,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebaf08ce-0659-4ecc-91a4-5c67630faa38" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Benchmark/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Benchmark/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.Cli/Faultify.Cli.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.Cli/Faultify.Cli.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.Cli/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.Cli/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.Cli/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.Cli/Properties/launchSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/MutationRunProgress.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/MutationRunProgress.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/MutationSessionProgressTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/MutationSessionProgressTracker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/MutationTestProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/MutationTestProject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/ProjectDuplication/TestProjectDuplicator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/ProjectDuplication/TestProjectDuplicator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/DotnetTestRunner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/DotnetTestRunner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/ProcessRunner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestProcess/ProcessRunner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.TestRunner/TestProjectReportModelBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.TestRunner/TestProjectReportModelBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Faultify.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -33,7 +33,7 @@ A test is supposed to fail after a mutation, if that is not the case the test is
 **Install / Run**
 
 ```
-dotnet tool install --global faultify --version 0.0.3
+dotnet tool install --global faultify --version 0.0.4
 faultify -p YourTestProject.csproj -t html
 ```
 

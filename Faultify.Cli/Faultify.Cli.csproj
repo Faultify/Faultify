@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<PackageVersion>0.0.3</PackageVersion>
+		<PackageVersion>0.1.0</PackageVersion>
 		<PackageId>faultify</PackageId>
 		<Description>Fualtify Mutation Test Commandline Utility</Description>
 
