@@ -25,10 +25,10 @@ Therefore optimizations are essential for a well-functioning mutation tool.
 Faultily Has Implemented:
 - Mutation Bin Packing
 - Mutation Levels
+- Run Mutations in Parallel
 
 Faultily Will Support:
 - Memory Mapped Files
-- Run Mutations in Parallel
 
 **Run Tests from Memory**
 
