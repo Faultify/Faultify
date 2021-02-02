@@ -43,7 +43,7 @@ This generates a 'HTML' report for the project 'YourTestProject.csproj' at the d
 
 ### Features
 
-**Funnctional Features**
+**Functional Features**
 - [X] Mutate Arithmetic (+, -, /, *, %) Operators.
 - [X] Mutate Assignment Expressions (+=, -=, /=, *=, %=, --, ++).
 - [X] Mutate Equivalence Operators (==, !=).
@@ -57,8 +57,8 @@ This generates a 'HTML' report for the project 'YourTestProject.csproj' at the d
 - [X] Build mutation report (HTML/PDF).
 - [x] Mutation test algorithm.
 
-**Non-Funnctional Features**
-- [X] Crossplatform .net core compitability. 
+**Non-Functional Features**
+- [X] Cross-platform .net core compatibility. 
 - [X] Nunit/Xunit/Msunit support via `dotnet test`.
 - [X] Runnable from console. 
 
