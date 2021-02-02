@@ -61,6 +61,7 @@ This generates a 'HTML' report for the project 'YourTestProject.csproj' at the d
 - [X] Cross-platform .net core compatibility. 
 - [X] Nunit/Xunit/Msunit support via `dotnet test`.
 - [X] Runnable from console. 
+- [X] All dotnet languages (F#, C#, visualbaisc) support.
 
 **Todo**
 - Implement [member exclusion](https://github.com/Faultify/Faultify/issues/11).
