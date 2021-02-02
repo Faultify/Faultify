@@ -50,7 +50,7 @@ Score:     62%
 | 6       |  13059   |       0,38           |
 
 ## Results
-- Both stryker and faultify have the same ammount of mutations and the same score. 
-- With this particular project stryker is faster when 1-2 testrunners are configured. 
-  Faultify becomes significant faster when more then 2 test runners are configured.
-- On a larger project with `259 mutations` it took Faultify 55 seconds, which is `0,21` seconds for a mutation. Where as for stryker it ook about `150` seconds which is `0,58` seconds per mutation. This is a speed increasement of about `58%`.
+- Both stryker and faultify have about the same amount of mutations and the same score. 
+- With this particular project, stryker is faster when 1–2 test runners are configured. 
+Faultify becomes significantly faster when more then 2 test runners are configured. 
+- On a larger project with `259 mutations,` it took Faultify 55 seconds, which is `0,21` seconds for a mutation. Whereas for stryker it ook about `150` seconds which is `0,58` seconds permutation. This is a speed increasement of about `58%`.
