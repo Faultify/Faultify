@@ -1,6 +1,6 @@
 This document contains a benchmark, and a comperison with stryker. 
 
-**Mutations per second formula**: Time in (milliseconds / mutations) / 1000
+**Seconds per mutation**: Time in (milliseconds / mutations) / 1000
 **Benchmark Application**: Faultify.Benchmark.Runner**
 
 ## Run Stryker
@@ -15,7 +15,7 @@ dotnet stryker -tp "['Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj'
 Mutations: 31
 Score:     64.86%
 
-| Runners | Duration | Mutations per Second | 
+| Runners | Duration | Seconds per mutation | 
 |---------|----------|----------------------|
 | 1       |  19526   |       0,62           | 
 | 2       |  16572   |       0,53           |
@@ -40,7 +40,7 @@ faultify -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html 
 Mutations: 34
 Score:     62%
 
-| Runners | Duration | Mutations per Second | 
+| Runners | Duration | Seconds per mutation | 
 |---------|----------|----------------------|
 | 1       |  33028   |       0,97           | 
 | 2       |  20533   |       0,60           |
@@ -53,5 +53,4 @@ Score:     62%
 - Both stryker and faultify have the same ammount of mutations and the same score. 
 - With this particular project stryker is faster when 1-2 testrunners are configured. 
   Faultify becomes significant faster when more then 2 test runners are configured.
-- On a larger project with `259 mutations` it took Faultify 55 seconds, which is `0,21` mutations a second. Where as for stryker it ook about `150` seconds which is `0,58` per second. 
-This is a speed increasement of about `58%`.
+- On a larger project with `259 mutations` it took Faultify 55 seconds, which is `0,21` seconds for a mutation. Where as for stryker it ook about `150` seconds which is `0,58` seconds per mutation. This is a speed increasement of about `58%`.
