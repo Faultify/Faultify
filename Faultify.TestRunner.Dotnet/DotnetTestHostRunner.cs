@@ -137,10 +137,6 @@ namespace Faultify.TestRunner.Dotnet
 
                     foreach (var testResult in deserializedTestResults.Tests) testResults.Add(testResult);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
                 finally
                 {
                     if (File.Exists(testResultOutputPath)) File.Delete(testResultOutputPath);

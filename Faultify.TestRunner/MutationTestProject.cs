@@ -271,11 +271,6 @@ namespace Faultify.TestRunner
                 }
             }
 
-            // foreach (var run in mutationTestRuns)
-            // {
-            //     RunTestRun(run).Wait();
-            // }
-
             IEnumerable<Task> tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
             
             Task.WaitAll(tasks.ToArray());

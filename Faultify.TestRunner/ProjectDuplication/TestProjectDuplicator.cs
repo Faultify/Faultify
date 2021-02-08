@@ -65,7 +65,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    throw e;
                 }
             }
 

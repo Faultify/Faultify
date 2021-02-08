@@ -85,10 +85,6 @@ namespace Faultify.TestRunner.NUnit
                     }
                 }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
             finally
             {
                 runner.Dispose();
