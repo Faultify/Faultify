@@ -50,6 +50,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Faultify.Report\Faultify.Report.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner.Collector\Faultify.TestRunner.Collector.csproj" />
+		<ProjectReference Include="..\Faultify.TestRunner.Dotnet\Faultify.TestRunner.Dotnet.csproj" />
+		<ProjectReference Include="..\Faultify.TestRunner.NUnit\Faultify.TestRunner.NUnit.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
 	</ItemGroup>
 

@@ -11,6 +11,7 @@ namespace Faultify.TestRunner
 {
     public class TestProjectReportModelBuilder
     {
+        private static readonly object Mutext = new object();
         private readonly TestProjectReportModel _testProjectReportModel;
 
         public TestProjectReportModelBuilder(string testProjectName)
@@ -21,12 +22,12 @@ namespace Faultify.TestRunner
         public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations,
             TimeSpan testRunDuration)
         {
-            lock (this)
+            lock (Mutext)
             {
                 foreach (var testResult in testResults.Tests)
                 {
                     var mutation =
-                        mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Contains(testResult.Name));
+                        mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Any(y => y == testResult.Name));
 
                     if (mutation?.Mutation == null)
                         continue;
@@ -36,7 +37,6 @@ namespace Faultify.TestRunner
                     if (!_testProjectReportModel.Mutations.Any(x =>
                         x.MutationId == mutation.MutationIdentifier.MutationId &&
                         mutation.MutationIdentifier.MemberName == x.MemberName))
-                    {
                         _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
                             mutation.Mutation.ToString(), "",
                             new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
@@ -48,15 +48,6 @@ namespace Faultify.TestRunner
                             mutation.MutationIdentifier.MutationId,
                             mutation.MutationIdentifier.MemberName
                         ));
-                    }
-                    else
-                    {
-                        var mut = _testProjectReportModel.Mutations.FirstOrDefault(x =>
-                            x.MutationId == mutation.MutationIdentifier.MutationId &&
-                            mutation.MutationIdentifier.MemberName == x.MemberName);
-
-                        mut.TestStatus = mutationStatus;
-                    }
                 }
             }
         }

@@ -17,16 +17,15 @@ Score:     64.86%
 
 | Runners | Duration | Seconds per mutation | 
 |---------|----------|----------------------|
-| 1       |  19526   |       0,62           | 
-| 2       |  16572   |       0,53           |
-| 3       |  16131   |       0,52           |
-| 4       |  16067   |       0,51           |
-| 5       |  20505   |       0,66           |
-| 6       |  25881   |       0,83           |
+| 1       |  19443   |       1,63           | 
+| 2       |  17650   |       1,82           |
+| 3       |  17703   |       1,82           |
+| 4       |  21046   |       1,48           |
+| 5       |  25285   |       1,24           |
+| 6       |  25566   |       1,24           |
 
 
 ## Run Faultify
-
 
 ```
 dotnet tool install --global faultify --version 0.1.0
@@ -37,17 +36,17 @@ faultify -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html 
 ```
 
 **Benchmark from Faultify.Benchmark.Runner**
-Mutations: 34
+Mutations: 29
 Score:     62%
 
 | Runners | Duration | Seconds per mutation | 
 |---------|----------|----------------------|
-| 1       |  33028   |       0,97           | 
-| 2       |  20533   |       0,60           |
-| 3       |  13373   |       0,39           |
-| 4       |  13473   |       0,40           |
-| 5       |  12685   |       0,37           |
-| 6       |  13059   |       0,38           |
+| 1       |  22529   |       1,32           | 
+| 2       |  17510   |       1,71           |
+| 3       |  19905   |       1,53           |
+| 4       |  16187   |       1,81           |
+| 5       |  15547   |       1,93           |
+| 6       |  14885   |       2,07           |
 
 ## Results
 - Both stryker and faultify have about the same amount of mutations and the same score. 

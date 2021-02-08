@@ -1,4 +1,4 @@
-﻿namespace Faultify.TestRunner
+﻿namespace Faultify.TestRunner.Logging
 {
     public struct MutationRunProgress
     {

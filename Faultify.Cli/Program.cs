@@ -8,6 +8,8 @@ using Faultify.Report;
 using Faultify.Report.HTMLReporter;
 using Faultify.Report.PDFReporter;
 using Faultify.TestRunner;
+using Faultify.TestRunner.Dotnet;
+using Faultify.TestRunner.Logging;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -124,6 +126,7 @@ namespace Faultify.Cli
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             };
+
             var progressTracker = new MutationSessionProgressTracker(progress, _loggerFactory);
 
             var testResult = await RunMutationTest(settings, progressTracker);
@@ -139,7 +142,7 @@ namespace Faultify.Cli
         {
             var mutationTestProject =
                 new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
-                    _loggerFactory);
+                    _loggerFactory, new DotnetTestHostRunnerFactory());
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }
