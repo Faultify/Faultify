@@ -36,7 +36,7 @@ A test is assumed to fail after an introduced mutation, the test is likely to be
 
 ```
 dotnet tool install --global faultify --version 0.1.0
-faultify -p YourTestProject.csproj -t html
+faultify -t YourTestProject.csproj -f html
 ```
 
 This generates a 'HTML' report for the project 'YourTestProject.csproj' at the default executable location in the folder '/FaultifyOutput'.
