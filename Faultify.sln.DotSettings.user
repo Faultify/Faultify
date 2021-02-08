@@ -16,6 +16,7 @@
     &lt;/And&gt;&#xD;
     &lt;Project Location="E:\programming\FaultifyNew\Faultify\Benchmark\Faultify.Benchmark.XUnit" Presentation="&amp;lt;Benchmark&amp;gt;\&amp;lt;Faultify.Benchmark.XUnit&amp;gt;" /&gt;&#xD;
     &lt;Project Location="E:\programming\FaultifyNew\Faultify\Benchmark\Faultify.Benchmark.NUnit" Presentation="&amp;lt;Benchmark&amp;gt;\&amp;lt;Faultify.Benchmark.NUnit&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="E:\programming\FaultifyNew\Faultify\Benchmark\Faultify.Benchmark.MSTest" Presentation="&amp;lt;Benchmark&amp;gt;\&amp;lt;Faultify.Benchmark.MSTest&amp;gt;" /&gt;&#xD;
   &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=32a3a768_002Db6da_002D4330_002D8cc9_002D95f92b9fb31e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Arithmetic_PostMutation_MinToPlus" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
