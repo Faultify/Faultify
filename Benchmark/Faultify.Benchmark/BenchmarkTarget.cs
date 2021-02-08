@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Faultify.Benchmark_0
 {
@@ -86,7 +85,6 @@ namespace Faultify.Benchmark_0
 
             return false;
         }
-
     }
 
     public class BenchmarkTarget1
@@ -195,7 +193,6 @@ namespace Faultify.Benchmark_0
 
         public void ForLoop(int loops)
         {
-        
             for (var i = 0; i < loops; i++) Console.WriteLine();
         }
 

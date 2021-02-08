@@ -21,7 +21,7 @@ namespace Faultify.TestRunner.TestRun
 
         public int RunId { get; set; }
         public int MutationCount => MutationIdentifiers.Count;
-        
+
         public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
             MutationSessionProgressTracker sessionProgressTracker, ITestHostRunFactory testHostRunnerFactory,
             TestProjectDuplication testProject, ILogger logger)
@@ -34,8 +34,8 @@ namespace Faultify.TestRunner.TestRun
             var testRunner = testHostRunnerFactory.CreateTestRunner(testProject.TestProjectFile.FullFilePath(),
                 timeout, logger);
 
-            var testResults = 
-                await testRunner.RunTests(timeout,  sessionProgressTracker, runningTests);
+            var testResults =
+                await testRunner.RunTests(timeout, sessionProgressTracker, runningTests);
 
             ResetMutations(testProject);
 

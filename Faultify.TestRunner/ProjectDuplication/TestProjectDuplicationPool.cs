@@ -47,9 +47,9 @@ namespace Faultify.TestRunner.ProjectDuplication
                 var freeProject = GetFreeProject();
 
                 if (freeProject != null) return freeProject;
-                
+
                 _signalEvent.WaitOne();
-                
+
                 freeProject = GetFreeProject();
 
                 if (freeProject != null)

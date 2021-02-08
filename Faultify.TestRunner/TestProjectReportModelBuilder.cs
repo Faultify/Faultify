@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Faultify.Report;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
@@ -12,21 +11,19 @@ namespace Faultify.TestRunner
 {
     public class TestProjectReportModelBuilder
     {
+        private static readonly object Mutext = new object();
         private readonly TestProjectReportModel _testProjectReportModel;
 
         public TestProjectReportModelBuilder(string testProjectName)
         {
             _testProjectReportModel = new TestProjectReportModel(testProjectName, TimeSpan.MaxValue);
         }
-        
-        static readonly object Mutext = new object();
 
         public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations,
             TimeSpan testRunDuration)
         {
             lock (Mutext)
             {
-
                 foreach (var testResult in testResults.Tests)
                 {
                     var mutation =
@@ -40,7 +37,6 @@ namespace Faultify.TestRunner
                     if (!_testProjectReportModel.Mutations.Any(x =>
                         x.MutationId == mutation.MutationIdentifier.MutationId &&
                         mutation.MutationIdentifier.MemberName == x.MemberName))
-                    {
                         _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
                             mutation.Mutation.ToString(), "",
                             new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
@@ -52,7 +48,6 @@ namespace Faultify.TestRunner
                             mutation.MutationIdentifier.MutationId,
                             mutation.MutationIdentifier.MemberName
                         ));
-                    }
                 }
             }
         }

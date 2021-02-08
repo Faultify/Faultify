@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Faultify.TestRunner.Shared;
 
 namespace Faultify.Injection
@@ -46,7 +44,6 @@ namespace Faultify.Injection
         /// <param name="entityHandle"></param>
         public static void RegisterTargetCoverage(string assemblyName, int entityHandle)
         {
-            
             lock (RegisterMutex)
             {
                 try

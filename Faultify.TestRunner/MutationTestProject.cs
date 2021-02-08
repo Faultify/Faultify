@@ -14,7 +14,6 @@ using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 
@@ -24,11 +23,12 @@ namespace Faultify.TestRunner
     {
         private readonly MutationLevel _mutationLevel;
         private readonly int _parallel;
+        private readonly ILogger _testHostLogger;
         private readonly ITestHostRunFactory _testHostRunFactory;
         private readonly string _testProjectPath;
-        private readonly ILogger _testHostLogger;
 
-        public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel, ILoggerFactory loggerFactoryFactory, ITestHostRunFactory testHostRunFactory)
+        public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
+            ILoggerFactory loggerFactoryFactory, ITestHostRunFactory testHostRunFactory)
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
@@ -79,7 +79,8 @@ namespace Faultify.TestRunner
 
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
-            return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker, coverageTimer.Elapsed, duplicationPool);
+            return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
+                coverageTimer.Elapsed, duplicationPool);
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace Faultify.TestRunner
 
             var allRunsStopwatch = new Stopwatch();
             allRunsStopwatch.Start();
-            
+
             var mutationTestRuns = runs.ToList();
             var totalRunsCount = mutationTestRuns.Count();
             var mutationCount = mutationTestRuns.Sum(x => x.MutationCount);
@@ -227,14 +228,14 @@ namespace Faultify.TestRunner
             async Task RunTestRun(IMutationTestRun testRun)
             {
                 var testProject = testProjectDuplicationPool.AcquireTestProject();
-                
+
                 try
                 {
                     testRun.InitializeMutations(testProject, timedOutMutations);
 
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-                    
+
                     var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker,
                         _testHostRunFactory, testProject, _testHostLogger);
 
@@ -249,35 +250,38 @@ namespace Faultify.TestRunner
                             reportBuilder.AddTestResult(testResult.TestResults, testResult.Mutations,
                                 singRunsStopwatch.Elapsed);
                         }
-                        
+
                         singRunsStopwatch.Stop();
                         singRunsStopwatch.Reset();
-                       
                     }
                 }
                 catch (Exception e)
                 {
                     sessionProgressTracker.Log(
-                        $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}", LogMessageType.Error);
+                        $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}",
+                        LogMessageType.Error);
                     failedRuns += 1;
                 }
                 finally
                 {
-                    lock(this) {
+                    lock (this)
+                    {
                         completedRuns += 1;
                         sessionProgressTracker.LogTestRunUpdate(completedRuns, totalRunsCount, failedRuns);
                     }
+
                     testProject.FreeTestProject();
                 }
             }
 
-            IEnumerable<Task> tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
-            
+            var tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
+
             Task.WaitAll(tasks.ToArray());
             allRunsStopwatch.Stop();
 
             var report = reportBuilder.Build(allRunsStopwatch.Elapsed, totalRunsCount);
-            sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed, completedRuns, mutationCount, report.ScorePercentage);
+            sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed, completedRuns, mutationCount,
+                report.ScorePercentage);
 
             return report;
         }

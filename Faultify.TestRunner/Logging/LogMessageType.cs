@@ -4,7 +4,7 @@
     {
         CodeCoverage,
         TestRunUpdate,
-        TestSessionStart, 
+        TestSessionStart,
         TestSessionEnd,
         Error,
         Other

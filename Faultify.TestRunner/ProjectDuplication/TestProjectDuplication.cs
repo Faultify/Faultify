@@ -115,8 +115,8 @@ namespace Faultify.TestRunner.ProjectDuplication
                                     Mutation = mutation,
                                     MutationAnalyzerInfo = new MutationAnalyzerInfo
                                     {
-                                        AnalyzerDescription = @group.AnalyzerDescription,
-                                        AnalyzerName = @group.AnalyzerName
+                                        AnalyzerDescription = group.AnalyzerDescription,
+                                        AnalyzerName = group.AnalyzerName
                                     },
                                     MutationIdentifier = mutationIdentifier
                                 });

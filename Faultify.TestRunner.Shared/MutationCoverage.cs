@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Faultify.TestRunner.Shared
 {
-    public class RegisteredCoverage 
+    public class RegisteredCoverage
     {
         public RegisteredCoverage(string assemblyName, int entityHandle)
         {
@@ -21,7 +21,8 @@ namespace Faultify.TestRunner.Shared
 
         public override bool Equals(object obj)
         {
-            return obj is RegisteredCoverage objCast && AssemblyName == objCast.AssemblyName && EntityHandle == objCast.EntityHandle;
+            return obj is RegisteredCoverage objCast && AssemblyName == objCast.AssemblyName &&
+                   EntityHandle == objCast.EntityHandle;
         }
     }
 

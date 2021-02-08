@@ -7,7 +7,7 @@ using Faultify.TestRunner.Shared;
 namespace Faultify.TestRunner
 {
     /// <summary>
-    /// Interface for running tests and code coverage on some test host.
+    ///     Interface for running tests and code coverage on some test host.
     /// </summary>
     public interface ITestHostRunner
     {
