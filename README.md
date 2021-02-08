@@ -11,7 +11,7 @@ Faultify provides a quick simple way to realize dotnet mutation testing at the b
 It imitates the bad programmer by deliberately introducing errors. 
 A test is assumed to fail after an introduced mutation, the test is likely to be error-prone if it instead succeeds.
 
-*note: faultify is just released and bugs can be expected, please open a issue if you get any.*
+*disclaimer: faultify is just released and bugs can be expected, please open a issue if you get any.*
 
 ### Getting Started
 
@@ -65,6 +65,8 @@ This generates a 'HTML' report for the project 'YourTestProject.csproj' at the d
 
 **Todo**
 - Implement [member exclusion](https://github.com/Faultify/Faultify/issues/11).
+- Implement line number display
+- Improve reporting functionality
 
 ## Application Preview
 <img src="https://github.com/Faultify/Faultify/blob/main/docs/application-overview.PNG" alt="drawing" width="600"/>
