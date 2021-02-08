@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Faultify.Report;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
@@ -17,16 +18,19 @@ namespace Faultify.TestRunner
         {
             _testProjectReportModel = new TestProjectReportModel(testProjectName, TimeSpan.MaxValue);
         }
+        
+        static readonly object Mutext = new object();
 
         public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations,
             TimeSpan testRunDuration)
         {
-            lock (this)
+            lock (Mutext)
             {
+
                 foreach (var testResult in testResults.Tests)
                 {
                     var mutation =
-                        mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Contains(testResult.Name));
+                        mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Any(y => y == testResult.Name));
 
                     if (mutation?.Mutation == null)
                         continue;
@@ -48,14 +52,6 @@ namespace Faultify.TestRunner
                             mutation.MutationIdentifier.MutationId,
                             mutation.MutationIdentifier.MemberName
                         ));
-                    }
-                    else
-                    {
-                        var mut = _testProjectReportModel.Mutations.FirstOrDefault(x =>
-                            x.MutationId == mutation.MutationIdentifier.MutationId &&
-                            mutation.MutationIdentifier.MemberName == x.MemberName);
-
-                        mut.TestStatus = mutationStatus;
                     }
                 }
             }

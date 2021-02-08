@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Faultify.Analyze;
+using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
-using Faultify.TestRunner.TestProcess;
+using Microsoft.Extensions.Logging;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -20,19 +21,21 @@ namespace Faultify.TestRunner.TestRun
 
         public int RunId { get; set; }
         public int MutationCount => MutationIdentifiers.Count;
-
-
-        public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(CancellationToken token,
-            MutationSessionProgressTracker sessionProgressTracker, DotnetTestRunner dotnetTestRunner,
-            TestProjectDuplication testProject)
+        
+        public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
+            MutationSessionProgressTracker sessionProgressTracker, ITestHostRunFactory testHostRunnerFactory,
+            TestProjectDuplication testProject, ILogger logger)
         {
             ExecuteMutations(testProject);
 
             var runningTests = _mutationVariants.Where(y => !y.CausesTimeOut)
                 .SelectMany(x => x.MutationIdentifier.TestCoverage);
 
-            var testResults =
-                await dotnetTestRunner.RunTests(token, sessionProgressTracker, runningTests);
+            var testRunner = testHostRunnerFactory.CreateTestRunner(testProject.TestProjectFile.FullFilePath(),
+                timeout, logger);
+
+            var testResults = 
+                await testRunner.RunTests(timeout,  sessionProgressTracker, runningTests);
 
             ResetMutations(testProject);
 

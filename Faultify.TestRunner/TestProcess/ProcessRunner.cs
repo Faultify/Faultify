@@ -1,9 +1,6 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Faultify.TestRunner.Shared;
 
 namespace Faultify.TestRunner.TestProcess
 {
@@ -13,7 +10,15 @@ namespace Faultify.TestRunner.TestProcess
     public class ProcessRunner
     {
         private readonly ProcessStartInfo _processStartInfo;
+
+        /// <summary>
+        /// The output message of this process.
+        /// </summary>
         public StringBuilder Output;
+        
+        /// <summary>
+        /// The error message of this process. 
+        /// </summary>
         public StringBuilder Error;
 
         public ProcessRunner(ProcessStartInfo processStartInfo)
@@ -21,15 +26,21 @@ namespace Faultify.TestRunner.TestProcess
             _processStartInfo = processStartInfo;
         }
 
-        public async Task<Process> RunAsync(CancellationToken cancellationToken)
+        /// <summary>
+        /// Runs the process asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Process> RunAsync()
         {
             var process = new Process();
-
-            var cancellationTokenRegistration = cancellationToken.Register(() => { process.Kill(true); });
-
+            
             var taskCompletionSource = new TaskCompletionSource<object>();
             process.EnableRaisingEvents = true;
-            process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); };
+            process.Exited += (o, e) =>
+            {
+                taskCompletionSource.TrySetResult(null);
+            };
+
             process.StartInfo = _processStartInfo;
 
             Output = new StringBuilder();
@@ -50,7 +61,6 @@ namespace Faultify.TestRunner.TestProcess
             process.BeginErrorReadLine();
 
             await taskCompletionSource.Task;
-            await cancellationTokenRegistration.DisposeAsync();
 
             process.WaitForExit();
 

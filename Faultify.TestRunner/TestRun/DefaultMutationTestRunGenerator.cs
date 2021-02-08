@@ -83,7 +83,7 @@ namespace Faultify.TestRunner.TestRun
                     {
                         foreach (var mutation in group)
                         {
-                            allMutations.Add(new MutationVariantIdentifier(registeredMutation.Value, method.Name,
+                            allMutations.Add(new MutationVariantIdentifier(registeredMutation.Value, method.AssemblyQualifiedName,
                                 methodMutationId, mutationGroupId));
 
                             methodMutationId++;

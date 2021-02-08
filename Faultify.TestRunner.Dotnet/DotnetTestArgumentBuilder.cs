@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Faultify.TestRunner.TestProcess
+namespace Faultify.TestRunner.Dotnet
 {
     /// <summary>
     ///     Dotnet command argument builder.
@@ -37,7 +37,7 @@ namespace Faultify.TestRunner.TestProcess
 
         public DotnetTestArgumentBuilder WithTimeout(TimeSpan timeSpan)
         {
-            _arguments.Append($" --blame-hang-timeout {timeSpan.TotalMilliseconds}");
+            _arguments.Append($" --blame-hang-timeout {timeSpan.TotalMilliseconds}ms");
             return this;
         }
 

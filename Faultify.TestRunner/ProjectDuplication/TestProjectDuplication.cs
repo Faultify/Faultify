@@ -93,7 +93,7 @@ namespace Faultify.TestRunner.ProjectDuplication
 
                     foreach (var method in type.Methods)
                     {
-                        if (!toMutateMethods.Contains(method.Name))
+                        if (!toMutateMethods.Contains(method.AssemblyQualifiedName))
                             continue;
 
                         var methodMutationId = 0;
@@ -102,7 +102,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                         foreach (var mutation in group)
                         {
                             var mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
-                                x.MutationId == methodMutationId && method.Name == x.MemberName);
+                                x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
                             if (mutationIdentifier.MemberName != null)
                                 foundMutations.Add(new MutationVariant

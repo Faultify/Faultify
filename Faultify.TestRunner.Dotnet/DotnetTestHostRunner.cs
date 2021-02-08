@@ -7,14 +7,23 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Faultify.TestRunner.Shared;
+using Faultify.TestRunner.TestProcess;
 using Microsoft.Extensions.Logging;
 
-namespace Faultify.TestRunner.TestProcess
+namespace Faultify.TestRunner.Dotnet
 {
+    public class DotnetTestHostRunnerFactory : ITestHostRunFactory
+    {
+        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        {
+            return new DotnetTestHostRunner(testProjectAssemblyPath, timeout, logger);
+        }
+    }
+
     /// <summary>
     ///     Runs the mutation test with 'dotnet test'.
     /// </summary>
-    public class DotnetTestRunner
+    public class DotnetTestHostRunner : ITestHostRunner
     {
         private readonly string _testAdapterPath;
         private readonly DirectoryInfo _testDirectoryInfo;
@@ -25,11 +34,12 @@ namespace Faultify.TestRunner.TestProcess
 
         private static bool DisableOutput = true;
 
-        public DotnetTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
         {
             _testFileInfo = new FileInfo(testProjectAssemblyPath);
             _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName);
 
+            // _timeout = timeout;
             _timeout = timeout;
             _logger = logger;
             _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -54,7 +64,8 @@ namespace Faultify.TestRunner.TestProcess
 
             var testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
             {
-
+                UseShellExecute = false,
+                CreateNoWindow = true,
                 WorkingDirectory = _testDirectoryInfo.FullName,
                 RedirectStandardOutput = DisableOutput,
                 RedirectStandardError = DisableOutput,
@@ -83,7 +94,7 @@ namespace Faultify.TestRunner.TestProcess
             var coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
             {
                 UseShellExecute = false,
-                CreateNoWindow = false,
+                CreateNoWindow = true,
                 RedirectStandardOutput = DisableOutput,
                 RedirectStandardError = DisableOutput,
                 WorkingDirectory = _testDirectoryInfo.FullName
@@ -97,29 +108,28 @@ namespace Faultify.TestRunner.TestProcess
         /// <summary>
         ///     Runs the given tests and returns the results.
         /// </summary>
-        /// <param name="cancellationToken"></param>
         /// <param name="progress"></param>
         /// <param name="tests"></param>
         /// <returns></returns>
-        public async Task<TestResults> RunTests(CancellationToken cancellationToken, IProgress<string> progress,
+        public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress,
             IEnumerable<string> tests)
         {
             var testResultOutputPath = Path.Combine(_testDirectoryInfo.FullName, TestRunnerConstants.TestsFileName);
 
             var testResults = new List<TestResult>();
             var remainingTests = new HashSet<string>(tests);
-
-            try
+            
+            while (remainingTests.Any())
             {
-                while (remainingTests.Any())
+                try
                 {
                     var testProcessRunner = BuildTestProcessRunner(remainingTests);
 
-                    await testProcessRunner.RunAsync(cancellationToken);
+                    await testProcessRunner.RunAsync();
                     _logger.LogDebug(testProcessRunner.Output.ToString());
                     _logger.LogError(testProcessRunner.Error.ToString());
 
-                    var testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath, cancellationToken);
+                    var testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath, new CancellationTokenSource(timeout).Token);
 
                     var deserializedTestResults = TestResults.Deserialize(testResultsBinary);
 
@@ -127,10 +137,14 @@ namespace Faultify.TestRunner.TestProcess
 
                     foreach (var testResult in deserializedTestResults.Tests) testResults.Add(testResult);
                 }
-            }
-            finally
-            {
-                if (File.Exists(testResultOutputPath)) File.Delete(testResultOutputPath);
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    if (File.Exists(testResultOutputPath)) File.Delete(testResultOutputPath);
+                }
             }
 
             return new TestResults {Tests = testResults};
@@ -149,7 +163,9 @@ namespace Faultify.TestRunner.TestProcess
             try
             {
                 var coverageProcessRunner = BuildCodeCoverageTestProcessRunner();
-                var process = await coverageProcessRunner.RunAsync(cancellationToken);
+                var process = await coverageProcessRunner.RunAsync();
+                _logger.LogDebug(coverageProcessRunner.Output.ToString());
+                _logger.LogError(coverageProcessRunner.Error.ToString());
 
                 if (process.ExitCode != 0) throw new ExitCodeException(process.ExitCode);
 

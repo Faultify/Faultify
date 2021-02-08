@@ -3,10 +3,26 @@ using System.IO;
 
 namespace Faultify.TestRunner.Shared
 {
-    public class RegisteredCoverage
+    public class RegisteredCoverage 
     {
-        public string AssemblyName { get; set; }
-        public int EntityHandle { get; set; }
+        public RegisteredCoverage(string assemblyName, int entityHandle)
+        {
+            AssemblyName = assemblyName;
+            EntityHandle = entityHandle;
+        }
+
+        public string AssemblyName { get; }
+        public int EntityHandle { get; }
+
+        public override int GetHashCode()
+        {
+            return (AssemblyName + ":" + EntityHandle).GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is RegisteredCoverage objCast && AssemblyName == objCast.AssemblyName && EntityHandle == objCast.EntityHandle;
+        }
     }
 
     // TODO: Uses custom format because Json requires external package.
@@ -54,8 +70,7 @@ namespace Faultify.TestRunner.Shared
                 {
                     var fullQualifiedName = binaryReader.ReadString();
                     var entityHandle = binaryReader.ReadInt32();
-                    entityHandles.Add(new RegisteredCoverage
-                        {EntityHandle = entityHandle, AssemblyName = fullQualifiedName});
+                    entityHandles.Add(new RegisteredCoverage(fullQualifiedName, entityHandle));
                 }
 
                 mutationCoverage.Coverage.Add(key, entityHandles);

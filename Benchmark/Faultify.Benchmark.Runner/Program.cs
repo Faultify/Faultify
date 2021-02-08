@@ -7,13 +7,25 @@ namespace Faultify.Benchmark.Runner
 {
     class Program
     {
+        private static double stryker_found_mutations = 31.0;
+        private static double faultify_found_mutations = 29;
+
         static void Main(string[] args)
         {
-            var elapsed = BenchmarkFaultify();
-
-            foreach (var elapse in elapsed)
+            var elapsedFaultify = BenchmarkFaultify();
+            
+            foreach (var elapse in elapsedFaultify)
             {
-                Console.WriteLine($"Threads: {elapse.Item1} Time: {elapse.Item2}");
+                double mps = (faultify_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds);
+                Console.WriteLine($"Threads: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
+            }
+
+            var elapsedStryker = BenchmarkStryker();
+
+            foreach (var elapse in elapsedStryker)
+            {
+                double mps = (stryker_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds);
+                Console.WriteLine($"Threads: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
             }
 
 
@@ -27,13 +39,13 @@ namespace Faultify.Benchmark.Runner
             for (int i = 1; i < 7; i++)
             {
                 string a = "\"['Faultify.Benchmark.NUnit\\\\Faultify.Benchmark.NUnit.csproj']\"";
-                string strykerConfig = $"stryker -tp {a} --project-file=Faultify.Benchmark_0\\Faultify.Benchmark_0.csproj -c " + i;
+                string strykerConfig = $"stryker -tp {a} --project-file=Faultify.Benchmark\\Faultify.Benchmark.csproj -c " + i;
 
                 var st = Stopwatch.StartNew();
                 Console.WriteLine(strykerConfig);
                 var process = new Process();
                 process.StartInfo = new ProcessStartInfo("dotnet", strykerConfig);
-                process.StartInfo.WorkingDirectory = "..\\..\\..\\..\\Benchmark\\";
+                process.StartInfo.WorkingDirectory = @"..\..\..\..\";
 
                 process.Start();
 
@@ -52,11 +64,11 @@ namespace Faultify.Benchmark.Runner
 
             for (int i = 1; i < 7; i++)
             {
-                string faultifyConfig = @" -t ..\..\..\..\Benchmark\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj -f html -p " + i;
+                string faultifyConfig = @" -t ..\..\..\..\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj -f html -p " + i;
 
                 var st = Stopwatch.StartNew();
 
-                var process = Process.Start(@"..\..\..\..\Faultify.Cli\bin\Debug\netcoreapp3.1\Faultify.Cli.exe", faultifyConfig);
+                var process = Process.Start(@"..\..\..\..\..\Faultify.Cli\bin\Debug\netcoreapp3.1\Faultify.Cli.exe", faultifyConfig);
                 process.WaitForExit();
 
                 st.Stop();

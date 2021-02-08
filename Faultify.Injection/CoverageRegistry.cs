@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using Faultify.TestRunner.Shared;
 
 namespace Faultify.Injection
@@ -21,21 +23,19 @@ namespace Faultify.Injection
         public static void Initialize()
         {
             AppDomain.CurrentDomain.ProcessExit += OnCurrentDomain_ProcessExit;
+            AppDomain.CurrentDomain.UnhandledException += OnCurrentDomain_ProcessExit;
         }
 
         private static void OnCurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-            File.AppendAllText("debug.txt", "\n\n registery exit");
             try
             {
                 // Flush the coverage before process end.
                 var serialized = MutationCoverage.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
-                File.AppendAllText("debug.txt", "\n\n registery flush file");
             }
             catch (Exception ex)
             {
-                File.AppendAllText("debug.txt", $"\n\n registery exception {ex}");
                 // ignored
             }
         }
@@ -46,6 +46,7 @@ namespace Faultify.Injection
         /// <param name="entityHandle"></param>
         public static void RegisterTargetCoverage(string assemblyName, int entityHandle)
         {
+            
             lock (RegisterMutex)
             {
                 try
@@ -56,13 +57,15 @@ namespace Faultify.Injection
                         MutationCoverage.Coverage[_currentTestCoverage] = targetHandles;
                     }
 
-                    targetHandles.Add(new RegisteredCoverage
-                        {EntityHandle = entityHandle, AssemblyName = assemblyName});
+                    targetHandles.Add(new RegisteredCoverage(assemblyName, entityHandle));
                 }
                 catch (Exception)
                 {
                     // ignored
                 }
+
+                //OnCurrentDomain_ProcessExit(null, null);
+                File.AppendAllText("debug.txt", "\t out lock\n");
             }
         }
 

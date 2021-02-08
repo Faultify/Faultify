@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
-using Faultify.TestRunner.TestProcess;
+using Microsoft.Extensions.Logging;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -13,19 +14,19 @@ namespace Faultify.TestRunner.TestRun
     {
         public int RunId { get; set; }
 
-        public int MutationCount { get;}
+        public int MutationCount { get; }
 
         /// <summary>
         ///     Runs the mutation test and returns the test run results.
         /// </summary>
-        /// <param name="token"></param>
+        /// <param name="timeout"></param>
         /// <param name="sessionProgressTracker"></param>
-        /// <param name="dotnetTestRunner"></param>
+        /// <param name="testHostRunnerFactory"></param>
         /// <param name="projectDuplication"></param>
         /// <returns></returns>
-        Task<IEnumerable<TestRunResult>> RunMutationTestAsync(CancellationToken token,
-            MutationSessionProgressTracker sessionProgressTracker, DotnetTestRunner dotnetTestRunner,
-            TestProjectDuplication projectDuplication);
+        Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
+            MutationSessionProgressTracker sessionProgressTracker, ITestHostRunFactory testHostRunnerFactory,
+            TestProjectDuplication projectDuplication, ILogger logger);
 
 
         /// <summary>

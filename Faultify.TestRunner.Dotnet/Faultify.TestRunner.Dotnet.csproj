@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Faultify.TestRunner.Dotnet</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Faultify.TestRunner.Shared\Faultify.TestRunner.Shared.csproj" />
+    <ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
+  </ItemGroup>
+
+</Project>
