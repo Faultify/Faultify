@@ -90,7 +90,7 @@ namespace Faultify.TestRunner.ProjectDuplication
 
             return testProjectDuplications;
         }
-
+        
         private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
         {
             foreach (var dir in source.GetDirectories())
