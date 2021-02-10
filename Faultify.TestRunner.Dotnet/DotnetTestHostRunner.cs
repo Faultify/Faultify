@@ -76,6 +76,14 @@ namespace Faultify.TestRunner.Dotnet
 
                     foreach (var testResult in deserializedTestResults.Tests) testResults.Add(testResult);
                 }
+                catch (FileNotFoundException)
+                {
+                    _logger.LogError(
+                        "The file 'test_results.bin' was not generated." +
+                        "This implies that the test run can not be completed. " +
+                        "Consider opening up an issue with the logs found in the output folder."
+                    );
+                }
                 finally
                 {
                     if (File.Exists(testResultOutputPath)) File.Delete(testResultOutputPath);
@@ -108,6 +116,15 @@ namespace Faultify.TestRunner.Dotnet
 
                 var coverageBinary = await File.ReadAllBytesAsync(coverageOutputPath, cancellationToken);
                 return MutationCoverage.Deserialize(coverageBinary);
+            }
+            catch (FileNotFoundException)
+            {
+                _logger.LogError(
+                    "The file 'coverage.bin' was not generated." +
+                    "This implies that the test run can not be completed. " +
+                    "Consider opening up an issue with the logs found in the output folder."
+                );
+                return new MutationCoverage();
             }
             finally
             {
