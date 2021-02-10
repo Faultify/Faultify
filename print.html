@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="mutation.html"><strong aria-hidden="true">2.</strong> Mutations</a></li><li class="chapter-item expanded "><a href="analyzers.html"><strong aria-hidden="true">3.</strong> Analyzers</a></li><li class="chapter-item expanded "><a href="test-runner.html"><strong aria-hidden="true">4.</strong> Test Runner</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="mutation.html"><strong aria-hidden="true">2.</strong> Mutations</a></li><li class="chapter-item expanded "><a href="analyzers/theory.html"><strong aria-hidden="true">3.</strong> Analyzers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="analyzers/theory.html"><strong aria-hidden="true">3.1.</strong> Analyzers Theory</a></li><li class="chapter-item expanded "><a href="analyzers/usage.html"><strong aria-hidden="true">3.2.</strong> Custom Analyzer</a></li></ol></li><li class="chapter-item expanded "><a href="test-runner.html"><strong aria-hidden="true">4.</strong> Test Runner</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -165,11 +165,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>Fault Insertion, Fault Injection, Mutation Testing, Mutation Injection are terms that refer to the same subject. 
-With mutation injection, one introduces changes to the logic of a codebase. 
-If a logic mutation (change) is introduced and a test still succeeds then the test may not be fully reliable. 
-This fact can be used to calculate determine the unit test quality.</p>
-<p>Thanks for having interest to contribute to Faultify!
+                        <p>Thanks for having interest to contribute to Faultify!
 This book goes into some technical implementation details of this library.
 Feel free to join the Discord server if you have any questions.</p>
 <h1><a class="header" href="#il-inspectors" id="il-inspectors">IL-Inspectors</a></h1>
@@ -188,6 +184,11 @@ various targets whom are compiled at run time by the unit tests. </p>
 <li>Add a test target or update an existing one.</li>
 <li>Write a unit test that loads this target and mutates it (see the existing unit tests)</li>
 </ul>
+<h1><a class="header" href="#mutation-tesing" id="mutation-tesing">Mutation Tesing</a></h1>
+<p>Fault Insertion, Fault Injection, Mutation Testing, Mutation Injection are terms that refer to the same subject. 
+With mutation injection, one introduces changes to the logic of a codebase. 
+If a logic mutation (change) is introduced and a test still succeeds then the test may not be fully reliable. 
+This fact can be used to calculate determine the unit test quality.</p>
 <h1><a class="header" href="#what-is-a-mutation" id="what-is-a-mutation">What Is a Mutation</a></h1>
 <p>A mutation is a change in operators, constant values, or variable declinations. Examples of possible mutations are:</p>
 <ul>
@@ -233,6 +234,8 @@ Besides infinite loops, pseudo-infinite is also an edge case that should be take
 </ul>
 </li>
 </ol>
+<p>Next to an ordinary infinite loop there is also a possibility for infinite recursive calls to be created.
+Though, those will be handled the same as time out mutations. </p>
 <h1><a class="header" href="#mutation-technique" id="mutation-technique">Mutation Technique</a></h1>
 <p>There are two main ways to mutate code logic:</p>
 <ul>
@@ -258,7 +261,7 @@ Though there is still optimizing work to be done for Faultify.</p>
 <li>Constant, Method Names, Access modifiers mutations are impossible.</li>
 <li>With some mutations compile errors can be generated.</li>
 </ul>
-<h2><a class="header" href="#byte-code" id="byte-code">Byte-Code</a></h2>
+<h3><a class="header" href="#byte-code" id="byte-code">Byte-Code</a></h3>
 <p><strong>Pros:</strong></p>
 <ul>
 <li>Recompilation is not required.</li>
@@ -334,14 +337,14 @@ that is able to force the branching or comparison variant.</p>
 <h1><a class="header" href="#analyzers" id="analyzers">Analyzers</a></h1>
 <p>An <code>analyzer</code> looks at the bytecode, checks what kind of mutations can take place, 
 and returns the possible mutations (see next section) to the caller.</p>
-<p><img src="./img/analyzers.PNG" alt="Analyzers" /></p>
+<p><img src="analyzers/../img/analyzers.PNG" alt="Analyzers" /></p>
 <p>An analyzer has two generics: <code>TMutation</code> and <code>TInput</code>. 
 <code>TMutation</code> is the mutation type which contains metadata about the possible mutation and can execute and/or undo itself. 
 <code>TInput</code> is the scope where the mutation check will be made. </p>
 <p>The scope is a type of <code>Mono.Cecil</code> and can for example be a <code>Method/FieldDefinition</code> or <code>Instruction</code>.</p>
 <ul>
 <li>In the case of opcode mutations, the scope is an 'Instruction' (e.g. return 1 + 1) , </li>
-<li>in the case of an array mutation, the scope is an integer 'Method Definition',</li>
+<li>in the case of an array mutation, the scope is a 'Method Definition',</li>
 <li>in the case of a constant field mutation, the scope is a 'FieldDefinition'.</li>
 </ul>
 <p><strong>Mutation Level</strong>: This level determines what mutations are executed during a test run.</p>
@@ -352,11 +355,11 @@ On this instruction the '+' can be changed to '-, /, *, %'.
 There are 4 different opcode mutation analyzers. 
 Namely an analyzer for arithmetic operations (/, *), bitwise operations (^, |), branch (if) operations and comparison operations (&lt;, &gt;). 
 For many opcodes, one or more mutations are possible, therefore an 'IEnumerable<TMutation>' is returned.</p>
-<h3><a class="header" href="#constant-mutation-analyzer" id="constant-mutation-analyzer">Constant Mutation Analyzer</a></h3>
+<h2><a class="header" href="#constant-mutation-analyzer" id="constant-mutation-analyzer">Constant Mutation Analyzer</a></h2>
 <p>This mutation analyzer looks at what possible mutations can be performed on a constant field. 
 There are different types of constant fields with different ways of mutation. 
 An integer can be mutated with a random number, a string with a random string and a boolean should be inverted. </p>
-<h3><a class="header" href="#array-mutation-analyzer" id="array-mutation-analyzer">Array Mutation Analyzer</a></h3>
+<h2><a class="header" href="#array-mutation-analyzer" id="array-mutation-analyzer">Array Mutation Analyzer</a></h2>
 <p>This mutation analyzer looks at the possible mutations on arrays in a method body. 
 There are different arrays, different ways to declare and modify them. 
 An array can be:</p>
@@ -372,8 +375,139 @@ An array can be:</p>
 <li>Index initialized arrays </li>
 <li>Index changes</li>
 </ul>
-<h3><a class="header" href="#variable-analyzer" id="variable-analyzer">Variable Analyzer</a></h3>
+<h2><a class="header" href="#variable-analyzer" id="variable-analyzer">Variable Analyzer</a></h2>
 <p>The variable analyzer is able to mutate literal variables such as <code>false</code> to <code>true</code>, <code>1</code> to <code>2</code> etc.. </p>
+<h1><a class="header" href="#analyzers-1" id="analyzers-1">Analyzers</a></h1>
+<p>An <code>analyzer</code> looks at the bytecode, checks what kind of mutations can take place, 
+and returns the possible mutations (see next section) to the caller.</p>
+<p><img src="analyzers/../img/analyzers.PNG" alt="Analyzers" /></p>
+<p>An analyzer has two generics: <code>TMutation</code> and <code>TInput</code>. 
+<code>TMutation</code> is the mutation type which contains metadata about the possible mutation and can execute and/or undo itself. 
+<code>TInput</code> is the scope where the mutation check will be made. </p>
+<p>The scope is a type of <code>Mono.Cecil</code> and can for example be a <code>Method/FieldDefinition</code> or <code>Instruction</code>.</p>
+<ul>
+<li>In the case of opcode mutations, the scope is an 'Instruction' (e.g. return 1 + 1) , </li>
+<li>in the case of an array mutation, the scope is a 'Method Definition',</li>
+<li>in the case of a constant field mutation, the scope is a 'FieldDefinition'.</li>
+</ul>
+<p><strong>Mutation Level</strong>: This level determines what mutations are executed during a test run.</p>
+<h2><a class="header" href="#opcode-mutation-analyzer-1" id="opcode-mutation-analyzer-1">OpCode Mutation Analyzer</a></h2>
+<p>This mutation analyzer looks at what possible mutations there are in the opcode of an instruction. 
+An instruction is a statement like 'a = 1 + 2'. 
+On this instruction the '+' can be changed to '-, /, *, %'. 
+There are 4 different opcode mutation analyzers. 
+Namely an analyzer for arithmetic operations (/, *), bitwise operations (^, |), branch (if) operations and comparison operations (&lt;, &gt;). 
+For many opcodes, one or more mutations are possible, therefore an 'IEnumerable<TMutation>' is returned.</p>
+<h2><a class="header" href="#constant-mutation-analyzer-1" id="constant-mutation-analyzer-1">Constant Mutation Analyzer</a></h2>
+<p>This mutation analyzer looks at what possible mutations can be performed on a constant field. 
+There are different types of constant fields with different ways of mutation. 
+An integer can be mutated with a random number, a string with a random string and a boolean should be inverted. </p>
+<h2><a class="header" href="#array-mutation-analyzer-1" id="array-mutation-analyzer-1">Array Mutation Analyzer</a></h2>
+<p>This mutation analyzer looks at the possible mutations on arrays in a method body. 
+There are different arrays, different ways to declare and modify them. 
+An array can be:</p>
+<ul>
+<li>Modified</li>
+<li>Emptied</li>
+<li>Resized</li>
+</ul>
+<p>There are:</p>
+<ul>
+<li>Arrays passed as parameters</li>
+<li>Inline initialized arrays (<code>new {1, 2, 3 }</code>)</li>
+<li>Index initialized arrays </li>
+<li>Index changes</li>
+</ul>
+<h2><a class="header" href="#variable-analyzer-1" id="variable-analyzer-1">Variable Analyzer</a></h2>
+<p>The variable analyzer is able to mutate literal variables such as <code>false</code> to <code>true</code>, <code>1</code> to <code>2</code> etc.. </p>
+<p>Analyzers can be used separately from Faultify. 
+They are able to provide the user mutations. 
+The reader can look at <code>AssemblyMutator</code> for inspiration.
+This is the abstraction that Faultify uses to analyze for mutations. </p>
+<h2><a class="header" href="#implement-custom-analyzer" id="implement-custom-analyzer">Implement Custom Analyzer</a></h2>
+<p>To implement your own Analyzer there are a couple of steps:</p>
+<ul>
+<li>Implement (or use existing) <code>IMutation</code>.</li>
+<li>Implement instance of <code>IMutationAnalyzer</code>.</li>
+</ul>
+<h3><a class="header" href="#implement-imutation" id="implement-imutation">Implement IMutation</a></h3>
+<p>The mutation, as shown in the previous chapter, is responsible for performing the mutation.
+Implement this to your use-case. </p>
+<pre><code class="language-csharp">public class CustomMutation : IMutation
+{
+    public OpCode OriginalValue { get; set; }
+    public OpCode NewValue { get; set; }
+
+    public Instruction InstructionReference { get; set; }
+
+    public void Mutate()
+    {
+        InstructionReference.OpCode = NewValue;
+    }
+
+    public void Reset()
+    {
+        InstructionReference.OpCode = NewValue;
+    }
+}
+</code></pre>
+<p><em>Faultify provides a set of <code>IMutation</code> implementations that serve some general goals.</em> </p>
+<h3><a class="header" href="#implement-analyzer" id="implement-analyzer">Implement Analyzer</a></h3>
+<p><code>IMutationAnalyzer</code> has two generic parameters. </p>
+<ul>
+<li>The first one indicates the mutation type that is returned if the analyzer detects this mutation kind. </li>
+<li>The second one indicates in which scope the mutation can be found. 
+The scope should be a type from <code>Mono.Cecil</code> such as: <code>MethodDefinion</code>, <code>Instruction</code>, <code>FieldDefinition</code>, <code>TypeDefinition</code>, <code>AssemblyDefinition</code>.</li>
+</ul>
+<p>The general idea is that the analyzer inspects this scope for some possible mutations and returns the generic mutation. </p>
+<p>In the following example, an analyzer that searches for <code>add</code> to <code>sub</code> mutations in the <code>Instruction</code> scope is demonstrated: </p>
+<pre><code class="language-csharp">public class CustomMutationAnalyzer : IMutationAnalyzer&lt;CustomMutation, Instruction&gt;
+{
+    public string Description =&gt; &quot;Addition to subtraction analyzer.&quot;;
+
+    public string Name =&gt; &quot;Addition to Subtraction&quot;;
+
+    public IEnumerable&lt;CustomMutation&gt; AnalyzeMutations(Instruction field,
+        MutationLevel mutationLevel)
+    {
+        if (field.OpCode.Code == Code.Add)
+        {
+            yield return new CustomMutation() {OriginalValue = field.OpCode, NewValue = OpCodes.Sub};
+        }
+    }
+}
+</code></pre>
+<h3><a class="header" href="#use-analyzer" id="use-analyzer">Use Analyzer</a></h3>
+<pre><code class="language-csharp">var analyzer =  new CustomMutationAnalyzer();
+using var assembly = ModuleDefinition.ReadModule(&quot;assembly.dll&quot;);
+var mutations = assembly.Types
+    .SelectMany(x =&gt; x.Methods)
+    .SelectMany(x =&gt; x.Body.Instructions)
+    .SelectMany(instruction =&gt; analyzer.AnalyzeMutations(instruction, MutationLevel.Detailed).ToList());
+
+foreach (var mutation in mutations)
+{
+    mutation.Mutate();
+    // do some stuff
+    mutation.Reset();
+}
+</code></pre>
+<p>After mutation or resetting a mutation back to original 
+one has to write the <code>ModuleDefinition</code> back to the file system. 
+Otherwise, the mutations are just purely performed in memory.</p>
+<h3><a class="header" href="#assembly-mutator" id="assembly-mutator">Assembly Mutator</a></h3>
+<p>The <code>AssemblyMutator</code> can be used to analyze all kinds of mutations in a target assembly.
+It can be extended with custom analyzers. 
+Tho an extension must correspond to one of the following collections in <code>AssemblyMutator</code>:</p>
+<ul>
+<li>ArrayMutationAnalyzers (<code>IMutationAnalyzer&lt;ArrayMutation, MethodDefinition&gt;</code>)</li>
+<li>ConstantAnalyzers (<code>IMutationAnalyzer&lt;ConstantMutation, FieldDefinition&gt;</code>)</li>
+<li>VariableMutationAnalyzer (<code>IMutationAnalyzer&lt;VariableMutation, MethodDefinition&gt;</code>)</li>
+<li>OpCodeMutationAnalyzer (<code>IMutationAnalyzer&lt;OpCodeMutation, Instruction&gt;</code>)</li>
+</ul>
+<p>If you add your analyzer to one of those collections then it will be used in the process of analyzing.
+Unfortunately, if your analyzer does not fit the interfaces, it can not be used with the <code>AssemblyMutator</code>.
+Then you would have to create some kind of <code>AssemblyMutator</code> for yourself.</p>
 <h2><a class="header" href="#test-process-overview" id="test-process-overview">Test Process Overview</a></h2>
 <p><strong>The main test process overview looks like this:</strong></p>
 <img src="./img/test-process-overview.PNG" alt="drawing" width="500"/>
@@ -446,15 +580,17 @@ This entails that test coverage is method based not mutation-based which implies
 <li>Run method that is tested by unit test.</li>
 <li>Register method name.</li>
 </ol>
-<p>Those results are written to: <code>coverage.json</code>.
+<p>Those results are written to: <code>coverage.bin</code>.
 At the end of the test process this data is used by faultify to binpack the tests with mutations (see above).</p>
 <h2><a class="header" href="#datacollector" id="datacollector">DataCollector</a></h2>
 <p>The test data collectors are used to handle events from the test host.
 With those events Faultify can do useful things. </p>
 <ul>
-<li><code>TestDataCollector</code>: Collects the test status from running tests and writes them to <code>test_results.json</code>.</li>
-<li><code>CoverageDataCollector</code>: Filters the <code>coverage.json</code> such that only the tests it saw will remain in the file.</li>
+<li><code>TestDataCollector</code>: Collects the test status from running tests and writes them to <code>test_results.bin</code>.</li>
+<li><code>CoverageDataCollector</code>: Filters the <code>coverage.bin</code> such that only the tests it saw will remain in the file.</li>
 </ul>
+<p>The reason why a custom byte format is used instead of json is that within a DataCollector it was not possible to use 
+a Json library.</p>
 
                     </main>
 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Getting Started - Faultify</title>
+        <title>Analyzers Theory - Faultify</title>
         
         
 
@@ -18,28 +18,28 @@
         <meta name="theme-color" content="#ffffff" />
 
         
-        <link rel="icon" href="favicon.svg">
+        <link rel="icon" href="../favicon.svg">
         
         
-        <link rel="shortcut icon" href="favicon.png">
+        <link rel="shortcut icon" href="../favicon.png">
         
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
         
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="stylesheet" href="../css/print.css" media="print">
         
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
         
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
         
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         
@@ -49,7 +49,7 @@
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "";
+            var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="getting-started.html" class="active"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="mutation.html"><strong aria-hidden="true">2.</strong> Mutations</a></li><li class="chapter-item expanded "><a href="analyzers/theory.html"><strong aria-hidden="true">3.</strong> Analyzers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="analyzers/theory.html"><strong aria-hidden="true">3.1.</strong> Analyzers Theory</a></li><li class="chapter-item expanded "><a href="analyzers/usage.html"><strong aria-hidden="true">3.2.</strong> Custom Analyzer</a></li></ol></li><li class="chapter-item expanded "><a href="test-runner.html"><strong aria-hidden="true">4.</strong> Test Runner</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="../mutation.html"><strong aria-hidden="true">2.</strong> Mutations</a></li><li class="chapter-item expanded "><a href="../analyzers/theory.html" class="active"><strong aria-hidden="true">3.</strong> Analyzers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../analyzers/theory.html" class="active"><strong aria-hidden="true">3.1.</strong> Analyzers Theory</a></li><li class="chapter-item expanded "><a href="../analyzers/usage.html"><strong aria-hidden="true">3.2.</strong> Custom Analyzer</a></li></ol></li><li class="chapter-item expanded "><a href="../test-runner.html"><strong aria-hidden="true">4.</strong> Test Runner</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -131,7 +131,7 @@
 
                     <div class="right-buttons">
                         
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         
@@ -163,34 +163,62 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>Thanks for having interest to contribute to Faultify!
-This book goes into some technical implementation details of this library.
-Feel free to join the Discord server if you have any questions.</p>
-<h1><a class="header" href="#il-inspectors" id="il-inspectors">IL-Inspectors</a></h1>
-<p>Those tools can be used to inspect IL-code.</p>
+                        <h1><a class="header" href="#analyzers" id="analyzers">Analyzers</a></h1>
+<p>An <code>analyzer</code> looks at the bytecode, checks what kind of mutations can take place, 
+and returns the possible mutations (see next section) to the caller.</p>
+<p><img src="../img/analyzers.PNG" alt="Analyzers" /></p>
+<p>An analyzer has two generics: <code>TMutation</code> and <code>TInput</code>. 
+<code>TMutation</code> is the mutation type which contains metadata about the possible mutation and can execute and/or undo itself. 
+<code>TInput</code> is the scope where the mutation check will be made. </p>
+<p>The scope is a type of <code>Mono.Cecil</code> and can for example be a <code>Method/FieldDefinition</code> or <code>Instruction</code>.</p>
 <ul>
-<li>https://github.com/icsharpcode/ILSpy</li>
-<li>https://github.com/dnSpy/dnSpy (allows manual editing of IL)</li>
+<li>In the case of opcode mutations, the scope is an 'Instruction' (e.g. return 1 + 1) , </li>
+<li>in the case of an array mutation, the scope is a 'Method Definition',</li>
+<li>in the case of a constant field mutation, the scope is a 'FieldDefinition'.</li>
 </ul>
-<h1><a class="header" href="#testing" id="testing">Testing</a></h1>
-<p>All mutations are tested in <a href="https://github.com/Faultify/Faultify/tree/main/Faultify.Tests">Faultify.Tests</a>. 
-Code that is to be mutated has to be compiled such that this compiled assembly can be read by <code>Mono.Cecil</code>.
-There is a folder <a href="https://github.com/Faultify/Faultify/tree/main/Faultify.Tests/UnitTests/TestSource">TestSource</a> that contains 
-various targets whom are compiled at run time by the unit tests. </p>
-<p>For new mutations:</p>
+<p><strong>Mutation Level</strong>: This level determines what mutations are executed during a test run.</p>
+<h2><a class="header" href="#opcode-mutation-analyzer" id="opcode-mutation-analyzer">OpCode Mutation Analyzer</a></h2>
+<p>This mutation analyzer looks at what possible mutations there are in the opcode of an instruction. 
+An instruction is a statement like 'a = 1 + 2'. 
+On this instruction the '+' can be changed to '-, /, *, %'. 
+There are 4 different opcode mutation analyzers. 
+Namely an analyzer for arithmetic operations (/, *), bitwise operations (^, |), branch (if) operations and comparison operations (&lt;, &gt;). 
+For many opcodes, one or more mutations are possible, therefore an 'IEnumerable<TMutation>' is returned.</p>
+<h2><a class="header" href="#constant-mutation-analyzer" id="constant-mutation-analyzer">Constant Mutation Analyzer</a></h2>
+<p>This mutation analyzer looks at what possible mutations can be performed on a constant field. 
+There are different types of constant fields with different ways of mutation. 
+An integer can be mutated with a random number, a string with a random string and a boolean should be inverted. </p>
+<h2><a class="header" href="#array-mutation-analyzer" id="array-mutation-analyzer">Array Mutation Analyzer</a></h2>
+<p>This mutation analyzer looks at the possible mutations on arrays in a method body. 
+There are different arrays, different ways to declare and modify them. 
+An array can be:</p>
 <ul>
-<li>Add a test target or update an existing one.</li>
-<li>Write a unit test that loads this target and mutates it (see the existing unit tests)</li>
+<li>Modified</li>
+<li>Emptied</li>
+<li>Resized</li>
 </ul>
+<p>There are:</p>
+<ul>
+<li>Arrays passed as parameters</li>
+<li>Inline initialized arrays (<code>new {1, 2, 3 }</code>)</li>
+<li>Index initialized arrays </li>
+<li>Index changes</li>
+</ul>
+<h2><a class="header" href="#variable-analyzer" id="variable-analyzer">Variable Analyzer</a></h2>
+<p>The variable analyzer is able to mutate literal variables such as <code>false</code> to <code>true</code>, <code>1</code> to <code>2</code> etc.. </p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="../mutation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
                         
-                            <a rel="next" href="mutation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../analyzers/theory.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -202,9 +230,13 @@ various targets whom are compiled at run time by the unit tests. </p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a rel="prev" href="../mutation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
                 
-                    <a rel="next" href="mutation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../analyzers/theory.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -227,14 +259,14 @@ various targets whom are compiled at run time by the unit tests. </p>
         
 
         
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
         
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         

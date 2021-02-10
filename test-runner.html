@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="mutation.html"><strong aria-hidden="true">2.</strong> Mutations</a></li><li class="chapter-item expanded "><a href="analyzers.html"><strong aria-hidden="true">3.</strong> Analyzers</a></li><li class="chapter-item expanded "><a href="test-runner.html" class="active"><strong aria-hidden="true">4.</strong> Test Runner</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="mutation.html"><strong aria-hidden="true">2.</strong> Mutations</a></li><li class="chapter-item expanded "><a href="analyzers/theory.html"><strong aria-hidden="true">3.</strong> Analyzers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="analyzers/theory.html"><strong aria-hidden="true">3.1.</strong> Analyzers Theory</a></li><li class="chapter-item expanded "><a href="analyzers/usage.html"><strong aria-hidden="true">3.2.</strong> Custom Analyzer</a></li></ol></li><li class="chapter-item expanded "><a href="test-runner.html" class="active"><strong aria-hidden="true">4.</strong> Test Runner</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -235,22 +235,24 @@ This entails that test coverage is method based not mutation-based which implies
 <li>Run method that is tested by unit test.</li>
 <li>Register method name.</li>
 </ol>
-<p>Those results are written to: <code>coverage.json</code>.
+<p>Those results are written to: <code>coverage.bin</code>.
 At the end of the test process this data is used by faultify to binpack the tests with mutations (see above).</p>
 <h2><a class="header" href="#datacollector" id="datacollector">DataCollector</a></h2>
 <p>The test data collectors are used to handle events from the test host.
 With those events Faultify can do useful things. </p>
 <ul>
-<li><code>TestDataCollector</code>: Collects the test status from running tests and writes them to <code>test_results.json</code>.</li>
-<li><code>CoverageDataCollector</code>: Filters the <code>coverage.json</code> such that only the tests it saw will remain in the file.</li>
+<li><code>TestDataCollector</code>: Collects the test status from running tests and writes them to <code>test_results.bin</code>.</li>
+<li><code>CoverageDataCollector</code>: Filters the <code>coverage.bin</code> such that only the tests it saw will remain in the file.</li>
 </ul>
+<p>The reason why a custom byte format is used instead of json is that within a DataCollector it was not possible to use 
+a Json library.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="analyzers.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="analyzers/usage.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
@@ -264,7 +266,7 @@ With those events Faultify can do useful things. </p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="analyzers.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="analyzers/usage.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
