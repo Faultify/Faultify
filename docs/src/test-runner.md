@@ -83,12 +83,15 @@ When running the test process the code will do something like the following:
 3. Run method that is tested by unit test.
 4. Register method name.
 
-Those results are written to: `coverage.json`.
+Those results are written to: `coverage.bin`.
 At the end of the test process this data is used by faultify to binpack the tests with mutations (see above).  
 
 ## DataCollector
 The test data collectors are used to handle events from the test host.
 With those events Faultify can do useful things. 
 
-- `TestDataCollector`: Collects the test status from running tests and writes them to `test_results.json`.
-- `CoverageDataCollector`: Filters the `coverage.json` such that only the tests it saw will remain in the file.  
+- `TestDataCollector`: Collects the test status from running tests and writes them to `test_results.bin`.
+- `CoverageDataCollector`: Filters the `coverage.bin` such that only the tests it saw will remain in the file.
+
+The reason why a custom byte format is used instead of json is that within a DataCollector it was not possible to use 
+a Json library.   

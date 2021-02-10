@@ -14,7 +14,7 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyFieldDefinition : IMutationProvider, IFaultifyMemberDefinition
     {
-        private readonly HashSet<ConstantMutationAnalyzer> _fieldAnalyzers;
+        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _fieldAnalyzers;
 
         /// <summary>
         ///     Underlying Mono.Cecil FieldDefinition.
@@ -22,7 +22,7 @@ namespace Faultify.Analyze.AssemblyMutator
         private readonly FieldDefinition _fieldDefinition;
 
         public FaultifyFieldDefinition(FieldDefinition fieldDefinition,
-            HashSet<ConstantMutationAnalyzer> fieldAnalyzers)
+            HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers)
         {
             _fieldDefinition = fieldDefinition;
             _fieldAnalyzers = fieldAnalyzers;

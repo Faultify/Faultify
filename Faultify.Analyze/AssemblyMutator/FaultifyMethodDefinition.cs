@@ -5,6 +5,7 @@ using System.Reflection.Metadata.Ecma335;
 using Faultify.Analyze.Groupings;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.OpcodeAnalyzer;
+using Mono.Cecil.Cil;
 using MethodDefinition = Mono.Cecil.MethodDefinition;
 
 namespace Faultify.Analyze.AssemblyMutator
@@ -14,21 +15,21 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyMethodDefinition : IMutationProvider, IFaultifyMemberDefinition
     {
-        private readonly HashSet<ArrayMutationAnalyzer> _arrayMutationAnalyzers;
+        private readonly HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
 
         /// <summary>
         ///     Underlying Mono.Cecil TypeDefinition.
         /// </summary>
         private readonly MethodDefinition _methodDefinition;
 
-        private readonly HashSet<OpCodeMutationAnalyzer> _opcodeMethodAnalyzers;
+        private readonly HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> _opcodeMethodAnalyzers;
 
-        private readonly HashSet<VariableMutationAnalyzer> _variableMutationAnalyzers;
+        private readonly HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
 
         public FaultifyMethodDefinition(MethodDefinition methodDefinition,
-            HashSet<OpCodeMutationAnalyzer> opcodeMethodAnalyzers,
-            HashSet<VariableMutationAnalyzer> variableMutationAnalyzers,
-            HashSet<ArrayMutationAnalyzer> arrayMutationAnalyzers)
+            HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> opcodeMethodAnalyzers,
+            HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
+            HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers)
         {
             _methodDefinition = methodDefinition;
             _opcodeMethodAnalyzers = opcodeMethodAnalyzers;
