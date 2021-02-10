@@ -17,7 +17,7 @@ namespace Faultify.Cli
             HelpText = "Type of report to be generated, options: 'pdf', 'html', 'json'")]
         public string ReportType { get; set; }
 
-        [Option('p', "parallel", Required = false, Default = "1",
+        [Option('p', "parallel", Required = false, Default = 1,
             HelpText = "Defines how many test sessions are ran at the same time.")]
         public int Parallel { get; set; }
 
