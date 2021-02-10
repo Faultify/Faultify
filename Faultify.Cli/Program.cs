@@ -23,82 +23,11 @@ using Mono.Cecil.Cil;
 
 namespace Faultify.Cli
 {
-    public class CustomMutation : IMutation
-    {
-        public OpCode OriginalValue { get; set; }
-        public OpCode NewValue { get; set; }
-
-        public Instruction InstructionReference { get; set; }
-
-        public void Mutate()
-        {
-            InstructionReference.OpCode = NewValue;
-        }
-
-        public void Reset()
-        {
-            InstructionReference.OpCode = NewValue;
-        }
-    }
-
-    public class CustomMutationAnalyzer : IMutationAnalyzer<CustomMutation, Instruction>
-    {
-        public string Description => "Some Description";
-
-        public string Name => "Some Name";
-
-        public IEnumerable<CustomMutation> AnalyzeMutations(Instruction field,
-            MutationLevel mutationLevel)
-        {
-            if (field.OpCode.Code == Code.Add)
-            {
-                yield return new CustomMutation() {OriginalValue = field.OpCode, NewValue = OpCodes.Sub};
-            }
-        }
-    }
-
     internal class Program
     {
         private static string _outputDirectory;
         private readonly ILoggerFactory _loggerFactory;
-
-        void Test()
-        {
-            var analyzer = new CustomMutationAnalyzer();
-
-
-            HashSet<ArrayMutationAnalyzer> arrayMutationAnalyzers = new HashSet<ArrayMutationAnalyzer>()
-            {
-                new ArrayMutationAnalyzer()
-            };
-
-            HashSet<ConstantMutationAnalyzer> constantAnalyzers = new HashSet<ConstantMutationAnalyzer>
-            {
-                new StringConstantMutationAnalyzer(),
-                new NumberConstantMutationAnalyzer()
-            };
-
-            HashSet<VariableMutationAnalyzer> variableMutationAnalyzers =
-                new HashSet<VariableMutationAnalyzer>
-                {
-                    new VariableMutationAnalyzer()
-                };
-
-            HashSet<ConstantMutationAnalyzer> fieldAnalyzers = new HashSet<ConstantMutationAnalyzer>
-            {
-                new BooleanConstantMutationAnalyzer(),
-                new NumberConstantMutationAnalyzer(),
-                new StringConstantMutationAnalyzer()
-            };
-
-            HashSet<OpCodeMutationAnalyzer> opCodeMethodAnalyzers = new HashSet<OpCodeMutationAnalyzer>
-            {
-                new ArithmeticMutationAnalyzer(),
-                new ComparisonMutationAnalyzer(),
-                new BitwiseMutationAnalyzer()
-            };
-        }
-
+        
         public Program(
             IOptions<Settings> settings,
             ILoggerFactory loggerFactory
