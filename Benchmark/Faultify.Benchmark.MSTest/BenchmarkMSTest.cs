@@ -1,10 +1,9 @@
-using Faultify.Benchmark_0;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Faultify.Benchmark.MSTest
 {
     [TestClass]
-    public class BenchmarkXUnit
+    public class BenchmarkMSTest
     {
         [TestMethod]
         public void TestArray()
@@ -129,7 +128,7 @@ namespace Faultify.Benchmark.MSTest
     }
 
     [TestClass]
-    public class BenchmarkXUnit1
+    public class BenchmarkMSTest1
     {
         [TestMethod]
         public void TestArray()
@@ -254,7 +253,7 @@ namespace Faultify.Benchmark.MSTest
     }
 
     [TestClass]
-    public class BenchmarkXUnit2
+    public class BenchmarkMSTest2
     {
         [TestMethod]
         public void TestArray()
@@ -379,7 +378,7 @@ namespace Faultify.Benchmark.MSTest
     }
 
     [TestClass]
-    public class BenchmarkXUnit3
+    public class BenchmarkMSTest3
     {
         [TestMethod]
         public void TestArray()

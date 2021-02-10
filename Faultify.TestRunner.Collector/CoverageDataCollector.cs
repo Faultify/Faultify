@@ -22,6 +22,10 @@ namespace Faultify.TestRunner.Collector
         /// </summary>
         private readonly HashSet<string> _testNames = new HashSet<string>();
 
+        private bool _coverageFlushed = false;
+        private DataCollectionLogger _logger;
+        private DataCollectionEnvironmentContext context;
+
         public override void Initialize(
             XmlElement configurationElement,
             DataCollectionEvents events,
@@ -29,35 +33,75 @@ namespace Faultify.TestRunner.Collector
             DataCollectionLogger logger,
             DataCollectionEnvironmentContext environmentContext)
         {
+            _logger = logger;
+            context = environmentContext;
+
             events.TestCaseEnd += EventsOnTestCaseEnd;
+            events.TestCaseStart += EventsOnTestCaseStart;
+
             events.SessionEnd += EventsOnSessionEnd;
+            events.SessionStart += EventsOnSessionStart;
+
+            AppDomain.CurrentDomain.ProcessExit += OnCurrentDomain_ProcessExit;
+            AppDomain.CurrentDomain.UnhandledException += OnCurrentDomain_ProcessExit;
+        }
+
+        private void EventsOnSessionStart(object sender, SessionStartEventArgs e)
+        {
+            _logger.LogWarning(context.SessionDataCollectionContext, "Coverage Test Session Started");
+        }
+
+        private void OnCurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            _logger.LogWarning(context.SessionDataCollectionContext, "Coverage Test Session Exit");
+
+            EventsOnSessionEnd(sender, new SessionEndEventArgs() {});
         }
 
         private void EventsOnSessionEnd(object sender, SessionEndEventArgs e)
         {
             try
             {
+                if (_coverageFlushed) return;
+
                 // Read coverage that was registered by: `Faultify.Injection.CoverageRegistry.RegisterTestCoverage()`.
                 var binary = File.ReadAllBytes(TestRunnerConstants.CoverageFileName);
 
                 var mutationCoverage = MutationCoverage.Deserialize(binary);
+
+                _logger.LogWarning(context.SessionDataCollectionContext, "registry tests:" + mutationCoverage.Coverage.Count().ToString());
+                _logger.LogWarning(context.SessionDataCollectionContext, "collector tests:" + _testNames.Count().ToString());
+
+                //_logger.LogWarning(context.SessionDataCollectionContext, string.Join(',', mutationCoverage.Coverage.Select(x => $"key: {x.Key} value: {x.Value.Count}")));
 
                 // Filter out functions that are not tests
                 mutationCoverage.Coverage = mutationCoverage.Coverage
                     .Where(pair => _testNames.Contains(pair.Key))
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
 
-                var outputJson = mutationCoverage.Serialize();
-                File.WriteAllBytes(TestRunnerConstants.CoverageFileName, outputJson);
+                //_logger.LogWarning(context.SessionDataCollectionContext, string.Join(',', mutationCoverage.Coverage.Select(x=> $"key: {x.Key} value: {x.Value.Count}")));
+
+                var serialized = mutationCoverage.Serialize();
+                File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
+
+                _coverageFlushed = true;
             }
             catch (Exception ex)
             {
                 // ignored
             }
+
+            _logger.LogWarning(context.SessionDataCollectionContext, "Coverage Test Session Finished");
+        }
+
+        private void EventsOnTestCaseStart(object sender, TestCaseStartEventArgs e)
+        {
+            _logger.LogWarning(context.SessionDataCollectionContext, $"Test Case Start: {e.TestCaseName}");
         }
 
         private void EventsOnTestCaseEnd(object sender, TestCaseEndEventArgs e)
         {
+            _logger.LogWarning(context.SessionDataCollectionContext, $"Test Case End: {e.TestCaseName}");
             _testNames.Add(e.TestElement.FullyQualifiedName);
         }
     }

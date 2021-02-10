@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Faultify.Benchmark_0
+namespace Faultify.Benchmark
 {
     public class BenchmarkTarget
     {

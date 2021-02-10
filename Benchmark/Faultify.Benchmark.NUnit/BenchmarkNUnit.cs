@@ -1,9 +1,8 @@
-using Faultify.Benchmark_0;
 using NUnit.Framework;
 
 namespace Faultify.Benchmark.NUnit
 {
-    public class BenchmarkXUnit
+    public class BenchmarkNUnit
     {
         [Test]
         public void TestArray()
@@ -127,7 +126,7 @@ namespace Faultify.Benchmark.NUnit
         }
     }
 
-    public class BenchmarkXUnit1
+    public class BenchmarkNUnit1
     {
         [Test]
         public void TestArray()
@@ -251,7 +250,7 @@ namespace Faultify.Benchmark.NUnit
         }
     }
 
-    public class BenchmarkXUnit2
+    public class BenchmarkNUnit2
     {
         [Test]
         public void TestArray()
@@ -375,7 +374,7 @@ namespace Faultify.Benchmark.NUnit
         }
     }
 
-    public class BenchmarkXUnit3
+    public class BenchmarkNUnit3
     {
         [Test]
         public void TestArray()

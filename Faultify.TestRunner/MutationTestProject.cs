@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Faultify.Analyze;
@@ -14,11 +15,22 @@ using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
+using ICSharpCode.Decompiler.TypeSystem;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
+using Newtonsoft.Json.Linq;
 
 namespace Faultify.TestRunner
 {
+    public enum TestFramework
+    {
+        XUnit,
+        NUnit,
+        MsTest,
+        None
+    }
+
+
     public class MutationTestProject
     {
         private readonly MutationLevel _mutationLevel;
@@ -56,21 +68,20 @@ namespace Faultify.TestRunner
             progressTracker.LogBeginPreBuilding();
             var projectInfo = await BuildProject(progressTracker, _testProjectPath);
             progressTracker.LogEndPreBuilding();
-
+            
             // Copy project N times
             progressTracker.LogBeginProjectDuplication(_parallel);
-            var testProjectCopier =
-                new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
+            var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
             var duplications = testProjectCopier.MakeInitialCopies(projectInfo, _parallel);
 
             // Begin code coverage on first project.
             var duplicationPool = new TestProjectDuplicationPool(duplications);
             var coverageProject = duplicationPool.TakeTestProject();
-            var coverageProjectInfo = GetTestProjectInfo(coverageProject);
+            var coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
             progressTracker.LogBeginCoverage();
-            InjectAssembliesWithCodeCoverage(coverageProjectInfo);
+            PrepareAssembliesForCodeCoverage(coverageProjectInfo);
 
             var coverageTimer = new Stopwatch();
             coverageTimer.Start();
@@ -87,11 +98,14 @@ namespace Faultify.TestRunner
         ///     Returns information about the test project.
         /// </summary>
         /// <returns></returns>
-        private TestProjectInfo GetTestProjectInfo(TestProjectDuplication duplication)
+        private TestProjectInfo GetTestProjectInfo(TestProjectDuplication duplication, IProjectInfo testProjectInfo)
         {
+            var testFramework = GetTestFramework(testProjectInfo);
+
             // Read the test project into memory.
             var projectInfo = new TestProjectInfo
             {
+                TestFramework = testFramework,
                 TestModule = ModuleDefinition.ReadModule(duplication.TestProjectFile.FullFilePath())
             };
 
@@ -103,9 +117,26 @@ namespace Faultify.TestRunner
                 if (loadProjectReferenceModel.Types.Count > 0)
                     projectInfo.DependencyAssemblies.Add(loadProjectReferenceModel);
             }
-
+            
             return projectInfo;
         }
+        
+        private TestFramework GetTestFramework(IProjectInfo projectInfo)
+        {
+            var projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
+
+            if (Regex.Match(projectFile, "xunit").Captures.Any())
+                return TestFramework.XUnit;
+
+            if (Regex.Match(projectFile, "nunit").Captures.Any())
+                return TestFramework.XUnit;
+
+            if (Regex.Match(projectFile, "mstest").Captures.Any())
+                return TestFramework.XUnit;
+
+            return TestFramework.None;
+        }
+
 
         /// <summary>
         ///     Builds the project at the given project path.
@@ -126,7 +157,7 @@ namespace Faultify.TestRunner
         ///     Those calls determine what tests cover which methods.
         /// </summary>
         /// <param name="projectInfo"></param>
-        private void InjectAssembliesWithCodeCoverage(TestProjectInfo projectInfo)
+        private void PrepareAssembliesForCodeCoverage(TestProjectInfo projectInfo)
         {
             TestCoverageInjector.Instance.InjectTestCoverage(projectInfo.TestModule);
             TestCoverageInjector.Instance.InjectModuleInit(projectInfo.TestModule);
@@ -145,6 +176,23 @@ namespace Faultify.TestRunner
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
                 assembly.Module.Write(dependencyInjectionPath);
                 assembly.Module.Dispose();
+            }
+            
+            switch (projectInfo.TestFramework)
+            {
+                case TestFramework.XUnit:
+                    var testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
+                    var xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
+                    var xunitCoverageSettings = JObject.FromObject(new { parallelizeTestCollections= false});
+                    if (!File.Exists(xunitConfigFileName))
+                        File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
+                    else
+                    {
+                        var originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
+                        originalJsonConfig.Merge(xunitCoverageSettings);
+                        File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
+                    }
+                    break;
             }
         }
 
