@@ -1,5 +1,4 @@
 using Xunit;
-//[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Faultify.Benchmark.XUnit
 {
