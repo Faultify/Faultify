@@ -1,8 +1,3 @@
-Fault Insertion, Fault Injection, Mutation Testing, Mutation Injection are terms that refer to the same subject. 
-With mutation injection, one introduces changes to the logic of a codebase. 
-If a logic mutation (change) is introduced and a test still succeeds then the test may not be fully reliable. 
-This fact can be used to calculate determine the unit test quality.
-
 Thanks for having interest to contribute to Faultify!
 This book goes into some technical implementation details of this library.
 Feel free to join the Discord server if you have any questions.

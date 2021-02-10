@@ -1,3 +1,10 @@
+# Mutation Tesing
+
+Fault Insertion, Fault Injection, Mutation Testing, Mutation Injection are terms that refer to the same subject. 
+With mutation injection, one introduces changes to the logic of a codebase. 
+If a logic mutation (change) is introduced and a test still succeeds then the test may not be fully reliable. 
+This fact can be used to calculate determine the unit test quality.
+
 # What Is a Mutation
 
 A mutation is a change in operators, constant values, or variable declinations. Examples of possible mutations are:
@@ -43,6 +50,9 @@ However, this can be very difficult to detect in advance for the following reaso
    - There can be various loops with different mutations. It is relatively easy to detect that a `while(false)` to `while(true)` mutation results in an infinite loop. However, this is way more difficult for a `while(a < b)` to a `while(a > b)` mutation.
     Besides infinite loops, pseudo-infinite is also an edge case that should be taken into account. A pseudo-infinite loop means that a loop takes some time to run however it is finite. The for loop mutation ‘++’ to ‘- -’ will flip the iteration direction which can take a long time (usually int.Max times) before it completes.
 
+Next to an ordinary infinite loop there is also a possibility for infinite recursive calls to be created.
+Though, those will be handled the same as time out mutations. 
+
 # Mutation Technique
 There are two main ways to mutate code logic:
 - At the source code level (modifying syntax trees and compile the mutations)
@@ -66,7 +76,7 @@ Though there is still optimizing work to be done for Faultify.
 - Constant, Method Names, Access modifiers mutations are impossible.
 - With some mutations compile errors can be generated.
 
-## Byte-Code
+### Byte-Code
 **Pros:**
 - Recompilation is not required.
 - Integrates with all .NET languages working on CIL.

@@ -3,7 +3,11 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using Faultify.Analyze.ConstantAnalyzer;
+using Faultify.Analyze.Mutation;
 using Faultify.Analyze.OpcodeAnalyzer;
+using Mono.Cecil.Cil;
+using FieldDefinition = Mono.Cecil.FieldDefinition;
+using MethodDefinition = Mono.Cecil.MethodDefinition;
 using TypeDefinition = Mono.Cecil.TypeDefinition;
 
 namespace Faultify.Analyze.AssemblyMutator
@@ -13,16 +17,16 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyTypeDefinition : IFaultifyMemberDefinition
     {
-        private readonly HashSet<ConstantMutationAnalyzer> _constantAnalyzers;
+        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _constantAnalyzers;
 
         public FaultifyTypeDefinition(TypeDefinition typeDefinition,
-            HashSet<OpCodeMutationAnalyzer> methodAnalyzers, HashSet<ConstantMutationAnalyzer> fieldAnalyzers,
-            HashSet<ConstantMutationAnalyzer> constantAnalyzers,
-            HashSet<VariableMutationAnalyzer> variableMutationAnalyzers,
-            HashSet<ArrayMutationAnalyzer> arrayMutationAnalyzers
+            HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> methodAnalyzers, 
+            HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers,
+            HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
+            HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers
         )
         {
-            _constantAnalyzers = constantAnalyzers;
+            _constantAnalyzers = fieldAnalyzers;
             TypeDefinition = typeDefinition;
 
             Fields = TypeDefinition.Fields.Select(x => new FaultifyFieldDefinition(x, fieldAnalyzers)).ToList();
