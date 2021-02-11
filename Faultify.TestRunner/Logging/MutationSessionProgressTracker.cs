@@ -85,9 +85,9 @@ namespace Faultify.TestRunner.Logging
         {
             _currentPercentage = 85;
 
-            double mutationPerSeconds = (float)elapsed.Seconds == 0.0 ? 0.0 : mutationCount / (float)elapsed.Seconds;
- 
-             Log("Finished Mutation Session:\n" +
+            var mutationPerSeconds = (float) elapsed.Seconds == 0.0 ? 0.0 : mutationCount / (float) elapsed.Seconds;
+
+            Log("Finished Mutation Session:\n" +
                 $"| Test Rounds: {completedTestRounds}\n" +
                 $"| Mutation per Second: {mutationPerSeconds:0.0}mps\n" +
                 $"| Duration: {elapsed:hh\\:mm\\:ss}\n" +

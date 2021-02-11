@@ -2,10 +2,8 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.ConstantAnalyzer;
 using Faultify.Analyze.Groupings;
 using Faultify.Analyze.Mutation;
-using Faultify.Analyze.OpcodeAnalyzer;
 using Mono.Cecil.Cil;
 using FieldDefinition = Mono.Cecil.FieldDefinition;
 using MethodDefinition = Mono.Cecil.MethodDefinition;
@@ -21,7 +19,7 @@ namespace Faultify.Analyze.AssemblyMutator
         private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _constantAnalyzers;
 
         public FaultifyTypeDefinition(TypeDefinition typeDefinition,
-            HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> opcodeAnalyzers, 
+            HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> opcodeAnalyzers,
             HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers,
             HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
             HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers
@@ -32,7 +30,8 @@ namespace Faultify.Analyze.AssemblyMutator
 
             Fields = TypeDefinition.Fields.Select(x => new FaultifyFieldDefinition(x, fieldAnalyzers)).ToList();
             Methods = TypeDefinition.Methods.Select(x =>
-                    new FaultifyMethodDefinition(x, fieldAnalyzers, opcodeAnalyzers, variableMutationAnalyzers, arrayMutationAnalyzers))
+                    new FaultifyMethodDefinition(x, fieldAnalyzers, opcodeAnalyzers, variableMutationAnalyzers,
+                        arrayMutationAnalyzers))
                 .ToList();
         }
 
@@ -57,7 +56,7 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             foreach (var analyzer in _constantAnalyzers)
             foreach (var field in TypeDefinition.Fields)
-                yield return new ConstGrouping()
+                yield return new ConstGrouping
                 {
                     Mutations = analyzer.AnalyzeMutations(field, mutationLevel),
                     Key = field.Name,

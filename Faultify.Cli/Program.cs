@@ -4,10 +4,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
-using Faultify.Analyze;
-using Faultify.Analyze.ConstantAnalyzer;
-using Faultify.Analyze.Mutation;
-using Faultify.Analyze.OpcodeAnalyzer;
 using Faultify.Report;
 using Faultify.Report.HTMLReporter;
 using Faultify.Report.PDFReporter;
@@ -19,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Mono.Cecil.Cil;
 
 namespace Faultify.Cli
 {
@@ -27,7 +22,7 @@ namespace Faultify.Cli
     {
         private static string _outputDirectory;
         private readonly ILoggerFactory _loggerFactory;
-        
+
         public Program(
             IOptions<Settings> settings,
             ILoggerFactory loggerFactory

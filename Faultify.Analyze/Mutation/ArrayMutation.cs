@@ -39,7 +39,7 @@ namespace Faultify.Analyze.Mutation
 
         public override string ToString()
         {
-            return $"Change array contents.";
+            return "Change array contents.";
         }
     }
 }

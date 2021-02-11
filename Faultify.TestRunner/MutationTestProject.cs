@@ -15,7 +15,6 @@ using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
-using ICSharpCode.Decompiler.TypeSystem;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Newtonsoft.Json.Linq;
@@ -68,7 +67,7 @@ namespace Faultify.TestRunner
             progressTracker.LogBeginPreBuilding();
             var projectInfo = await BuildProject(progressTracker, _testProjectPath);
             progressTracker.LogEndPreBuilding();
-            
+
             // Copy project N times
             progressTracker.LogBeginProjectDuplication(_parallel);
             var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
@@ -117,10 +116,10 @@ namespace Faultify.TestRunner
                 if (loadProjectReferenceModel.Types.Count > 0)
                     projectInfo.DependencyAssemblies.Add(loadProjectReferenceModel);
             }
-            
+
             return projectInfo;
         }
-        
+
         private TestFramework GetTestFramework(IProjectInfo projectInfo)
         {
             var projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
@@ -177,21 +176,24 @@ namespace Faultify.TestRunner
                 assembly.Module.Write(dependencyInjectionPath);
                 assembly.Module.Dispose();
             }
-            
+
             switch (projectInfo.TestFramework)
             {
                 case TestFramework.XUnit:
                     var testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
                     var xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
-                    var xunitCoverageSettings = JObject.FromObject(new { parallelizeTestCollections= false});
+                    var xunitCoverageSettings = JObject.FromObject(new {parallelizeTestCollections = false});
                     if (!File.Exists(xunitConfigFileName))
+                    {
                         File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
+                    }
                     else
                     {
                         var originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
                         originalJsonConfig.Merge(xunitCoverageSettings);
                         File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
                     }
+
                     break;
             }
         }

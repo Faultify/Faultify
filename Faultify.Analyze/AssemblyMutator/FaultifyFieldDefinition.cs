@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.ConstantAnalyzer;
 using Faultify.Analyze.Groupings;
 using Faultify.Analyze.Mutation;
 using FieldDefinition = Mono.Cecil.FieldDefinition;

@@ -63,7 +63,7 @@ namespace Faultify.TestRunner.Collector
 
             // Register this test because there is a possibility for the test host to crash before the end event. 
             _testResults.Tests.Add(new TestResult
-                { Outcome = TestOutcome.None, Name = e.TestElement.FullyQualifiedName });
+                {Outcome = TestOutcome.None, Name = e.TestElement.FullyQualifiedName});
         }
 
         private void EventsOnTestCaseEnd(object sender, TestCaseEndEventArgs e)
@@ -75,7 +75,8 @@ namespace Faultify.TestRunner.Collector
 
             if (test == null)
             {
-                _logger.LogError(context.SessionDataCollectionContext, "Test case end event received but no test case start was recorded earlier.");
+                _logger.LogError(context.SessionDataCollectionContext,
+                    "Test case end event received but no test case start was recorded earlier.");
                 return;
             }
 

@@ -17,20 +17,20 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyMethodDefinition : IMutationProvider, IFaultifyMemberDefinition
     {
-        
+        private readonly HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
+
+        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>>
+            _constantReferenceMutationAnalyers;
+
+        private readonly HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> _opcodeMethodAnalyzers;
+
+        private readonly HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
+
 
         /// <summary>
         ///     Underlying Mono.Cecil TypeDefinition.
         /// </summary>
         public readonly MethodDefinition MethodDefinition;
-
-        private readonly HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
-
-        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers;
-
-        private readonly HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> _opcodeMethodAnalyzers;
-
-        private readonly HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
 
         public FaultifyMethodDefinition(MethodDefinition methodDefinition,
             HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> constantReferenceMutationAnalyers,
@@ -58,6 +58,9 @@ namespace Faultify.Analyze.AssemblyMutator
 
         public IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
+            if (MethodDefinition.Body == null)
+                return Enumerable.Empty<IMutationGrouping<IMutation>>();
+
             MethodDefinition.Body.SimplifyMacros();
 
             IEnumerable<IMutationGrouping<IMutation>> opcodeMutations = OpCodeMutations(mutationLevel);
@@ -96,19 +99,17 @@ namespace Faultify.Analyze.AssemblyMutator
                 .OfType<FieldReference>();
 
             foreach (var field in fieldReferences)
+            foreach (var analyzer in _constantReferenceMutationAnalyers)
             {
-                foreach (var analyzer in _constantReferenceMutationAnalyers)
-                {
-                    var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
+                var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
 
-                    yield return new ConstGrouping()
-                    {
-                        AnalyzerName = analyzer.Name,
-                        AnalyzerDescription = analyzer.Description,
-                        Key = field.Name,
-                        Mutations = mutations
-                    };
-                }
+                yield return new ConstGrouping
+                {
+                    AnalyzerName = analyzer.Name,
+                    AnalyzerDescription = analyzer.Description,
+                    Key = field.Name,
+                    Mutations = mutations
+                };
             }
         }
 

@@ -22,7 +22,7 @@ namespace Faultify.TestRunner.Collector
         /// </summary>
         private readonly HashSet<string> _testNames = new HashSet<string>();
 
-        private bool _coverageFlushed = false;
+        private bool _coverageFlushed;
         private DataCollectionLogger _logger;
         private DataCollectionEnvironmentContext context;
 
@@ -55,7 +55,7 @@ namespace Faultify.TestRunner.Collector
         {
             _logger.LogWarning(context.SessionDataCollectionContext, "Coverage Test Session Exit");
 
-            EventsOnSessionEnd(sender, new SessionEndEventArgs() {});
+            EventsOnSessionEnd(sender, new SessionEndEventArgs());
         }
 
         private void EventsOnSessionEnd(object sender, SessionEndEventArgs e)
@@ -73,7 +73,7 @@ namespace Faultify.TestRunner.Collector
                 mutationCoverage.Coverage = mutationCoverage.Coverage
                     .Where(pair => _testNames.Contains(pair.Key))
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
-                
+
                 var serialized = mutationCoverage.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
                 _coverageFlushed = true;

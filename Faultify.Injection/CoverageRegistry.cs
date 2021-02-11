@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using Faultify.TestRunner.Shared;
 
 namespace Faultify.Injection
