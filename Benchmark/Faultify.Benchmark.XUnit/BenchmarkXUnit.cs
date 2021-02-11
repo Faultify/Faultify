@@ -10,8 +10,7 @@ namespace Faultify.Benchmark.XUnit
             var targets = new BenchmarkTarget();
             var actual = targets.ConstructArray();
             int[] expected = {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
-
-            Assert.Equal(expected, expected);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
