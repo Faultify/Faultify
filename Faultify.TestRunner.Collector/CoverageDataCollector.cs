@@ -76,9 +76,6 @@ namespace Faultify.TestRunner.Collector
                 
                 var serialized = mutationCoverage.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
-
-                var serialized = mutationCoverage.Serialize();
-                File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
                 _coverageFlushed = true;
             }
             catch (Exception ex)
