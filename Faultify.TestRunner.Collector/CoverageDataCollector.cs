@@ -69,26 +69,21 @@ namespace Faultify.TestRunner.Collector
 
                 var mutationCoverage = MutationCoverage.Deserialize(binary);
 
-                _logger.LogWarning(context.SessionDataCollectionContext, "registry tests:" + mutationCoverage.Coverage.Count().ToString());
-                _logger.LogWarning(context.SessionDataCollectionContext, "collector tests:" + _testNames.Count().ToString());
-
-                //_logger.LogWarning(context.SessionDataCollectionContext, string.Join(',', mutationCoverage.Coverage.Select(x => $"key: {x.Key} value: {x.Value.Count}")));
-
                 // Filter out functions that are not tests
                 mutationCoverage.Coverage = mutationCoverage.Coverage
                     .Where(pair => _testNames.Contains(pair.Key))
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
-
-                //_logger.LogWarning(context.SessionDataCollectionContext, string.Join(',', mutationCoverage.Coverage.Select(x=> $"key: {x.Key} value: {x.Value.Count}")));
-
+                
                 var serialized = mutationCoverage.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
 
+                var serialized = mutationCoverage.Serialize();
+                File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
                 _coverageFlushed = true;
             }
             catch (Exception ex)
             {
-                // ignored
+                _logger.LogError(context.SessionDataCollectionContext, $"Test Session Exception: {ex}");
             }
 
             _logger.LogWarning(context.SessionDataCollectionContext, "Coverage Test Session Finished");
