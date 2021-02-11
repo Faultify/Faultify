@@ -6,8 +6,8 @@ namespace Faultify.Benchmark.Runner
 {
     internal class Program
     {
-        private static readonly double stryker_found_mutations = 31.0;
-        private static readonly double faultify_found_mutations = 29;
+        private static readonly double stryker_found_mutations = 124;
+        private static readonly double faultify_found_mutations = 168;
 
         private static void Main(string[] args)
         {
@@ -16,7 +16,7 @@ namespace Faultify.Benchmark.Runner
             foreach (var elapse in elapsedFaultify)
             {
                 var mps = faultify_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds;
-                Console.WriteLine($"Threads: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
+                Console.WriteLine($"Runners: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
             }
 
             var elapsedStryker = BenchmarkStryker();
@@ -24,11 +24,8 @@ namespace Faultify.Benchmark.Runner
             foreach (var elapse in elapsedStryker)
             {
                 var mps = stryker_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds;
-                Console.WriteLine($"Threads: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
+                Console.WriteLine($"Runners: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
             }
-
-
-            Console.WriteLine("Hello World!");
         }
 
         private static List<(int, long)> BenchmarkStryker()
@@ -42,7 +39,7 @@ namespace Faultify.Benchmark.Runner
                     $"stryker -tp {a} --project-file=Faultify.Benchmark\\Faultify.Benchmark.csproj -c " + i;
 
                 var st = Stopwatch.StartNew();
-                Console.WriteLine(strykerConfig);
+
                 var process = new Process();
                 process.StartInfo = new ProcessStartInfo("dotnet", strykerConfig);
                 process.StartInfo.WorkingDirectory = @"..\..\..\..\";
