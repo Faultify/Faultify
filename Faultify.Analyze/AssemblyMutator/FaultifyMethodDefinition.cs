@@ -4,8 +4,6 @@ using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using Faultify.Analyze.Groupings;
 using Faultify.Analyze.Mutation;
-using Faultify.Analyze.OpcodeAnalyzer;
-using Microsoft.Build.Framework;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -94,25 +92,22 @@ namespace Faultify.Analyze.AssemblyMutator
 
         public IEnumerable<ConstGrouping> ConstantReferenceMutations(MutationLevel mutationLevel)
         {
-            if (MethodDefinition.Name == "LessThan")
+            var fieldReferences = MethodDefinition.Body.Instructions
+                .OfType<FieldReference>();
+
+            foreach (var field in fieldReferences)
             {
-                var fieldReferences = MethodDefinition.Body.Instructions
-                    .OfType<FieldReference>();
-
-                foreach (var field in fieldReferences)
+                foreach (var analyzer in _constantReferenceMutationAnalyers)
                 {
-                    foreach (var analyzer in _constantReferenceMutationAnalyers)
-                    {
-                        var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
+                    var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
 
-                        yield return new ConstGrouping()
-                        {
-                            AnalyzerName = analyzer.Name,
-                            AnalyzerDescription = analyzer.Description,
-                            Key = field.Name,
-                            Mutations = mutations
-                        };
-                    }
+                    yield return new ConstGrouping()
+                    {
+                        AnalyzerName = analyzer.Name,
+                        AnalyzerDescription = analyzer.Description,
+                        Key = field.Name,
+                        Mutations = mutations
+                    };
                 }
             }
         }

@@ -82,9 +82,7 @@ namespace Faultify.TestRunner.TestRun
             {
                 if (mutationVariant.CausesTimeOut)
                     continue;
-
-                Console.WriteLine(mutationVariant.Mutation);
-
+                
                 // Execute mutation and flush it to the files.
                 mutationVariant.Mutation?.Mutate();
             }
