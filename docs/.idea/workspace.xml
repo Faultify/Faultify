@@ -28,14 +28,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebaf08ce-0659-4ecc-91a4-5c67630faa38" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/analyzers/usage.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Faultify.Cli/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.Cli/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Faultify.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/../Faultify.sln.DotSettings.user" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SUMMARY.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/SUMMARY.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analyzers.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/analyzers/theory.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/getting-started.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/getting-started.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mutation.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/mutation.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test-runner.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/test-runner.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +83,7 @@
       <workItem from="1611219416308" duration="7126000" />
       <workItem from="1612172800986" duration="653000" />
       <workItem from="1612271129120" duration="167000" />
-      <workItem from="1612968889061" duration="4518000" />
+      <workItem from="1612968889061" duration="5708000" />
     </task>
     <servers />
   </component>
