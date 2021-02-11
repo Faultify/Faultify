@@ -2,6 +2,8 @@
 using System.Linq;
 using Faultify.Analyze;
 using Faultify.TestRunner.Shared;
+using Mono.Cecil;
+using MonoMod.Utils;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -68,14 +70,15 @@ namespace Faultify.TestRunner.TestRun
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
             var allMutations = new List<MutationVariantIdentifier>();
-
+            
             foreach (var assembly in testProjectInfo.DependencyAssemblies)
             foreach (var type in assembly.Types)
             foreach (var method in type.Methods)
             {
                 var methodMutationId = 0;
                 var registeredMutation = coverage.FirstOrDefault(x =>
-                    x.Key.AssemblyName == assembly.Module.Assembly.Name.Name && x.Key.EntityHandle == method.IntHandle);
+                    x.Key.AssemblyName == assembly.Module.Assembly.Name.Name &&
+                    x.Key.EntityHandle == method.IntHandle);
                 var mutationGroupId = 0;
 
                 if (registeredMutation.Key != null)

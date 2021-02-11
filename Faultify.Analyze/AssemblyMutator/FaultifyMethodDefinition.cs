@@ -5,7 +5,11 @@ using System.Reflection.Metadata.Ecma335;
 using Faultify.Analyze.Groupings;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.OpcodeAnalyzer;
+using Microsoft.Build.Framework;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
+using FieldDefinition = Mono.Cecil.FieldDefinition;
 using MethodDefinition = Mono.Cecil.MethodDefinition;
 
 namespace Faultify.Analyze.AssemblyMutator
@@ -15,41 +19,49 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyMethodDefinition : IMutationProvider, IFaultifyMemberDefinition
     {
-        private readonly HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
+        
 
         /// <summary>
         ///     Underlying Mono.Cecil TypeDefinition.
         /// </summary>
-        private readonly MethodDefinition _methodDefinition;
+        public readonly MethodDefinition MethodDefinition;
+
+        private readonly HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
+
+        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers;
 
         private readonly HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> _opcodeMethodAnalyzers;
 
         private readonly HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
 
         public FaultifyMethodDefinition(MethodDefinition methodDefinition,
+            HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> constantReferenceMutationAnalyers,
             HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> opcodeMethodAnalyzers,
             HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
             HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers)
         {
-            _methodDefinition = methodDefinition;
+            MethodDefinition = methodDefinition;
+            _constantReferenceMutationAnalyers = constantReferenceMutationAnalyers;
             _opcodeMethodAnalyzers = opcodeMethodAnalyzers;
             _variableMutationAnalyzers = variableMutationAnalyzers;
             _arrayMutationAnalyzers = arrayMutationAnalyzers;
         }
 
-        public int IntHandle => _methodDefinition.MetadataToken.ToInt32();
+        public int IntHandle => MethodDefinition.MetadataToken.ToInt32();
 
         /// <summary>
         ///     Full assembly name of this method.
         /// </summary>
-        public string AssemblyQualifiedName => _methodDefinition.FullName;
+        public string AssemblyQualifiedName => MethodDefinition.FullName;
 
-        public string Name => _methodDefinition.Name;
+        public string Name => MethodDefinition.Name;
 
         public EntityHandle Handle => MetadataTokens.EntityHandle(IntHandle);
 
         public IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
+            MethodDefinition.Body.SimplifyMacros();
+
             IEnumerable<IMutationGrouping<IMutation>> opcodeMutations = OpCodeMutations(mutationLevel);
             IEnumerable<IMutationGrouping<IMutation>> variableMutations = VariableMutations(mutationLevel);
             IEnumerable<IMutationGrouping<IMutation>> arrayMutations = ArrayMutations(mutationLevel);
@@ -64,8 +76,8 @@ namespace Faultify.Analyze.AssemblyMutator
         public IEnumerable<OpCodeGrouping> OpCodeMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _opcodeMethodAnalyzers)
-                if (_methodDefinition.Body?.Instructions != null)
-                    foreach (var instruction in _methodDefinition.Body?.Instructions)
+                if (MethodDefinition.Body?.Instructions != null)
+                    foreach (var instruction in MethodDefinition.Body?.Instructions)
                     {
                         var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel).ToList();
 
@@ -80,12 +92,37 @@ namespace Faultify.Analyze.AssemblyMutator
                     }
         }
 
+        public IEnumerable<ConstGrouping> ConstantReferenceMutations(MutationLevel mutationLevel)
+        {
+            if (MethodDefinition.Name == "LessThan")
+            {
+                var fieldReferences = MethodDefinition.Body.Instructions
+                    .OfType<FieldReference>();
+
+                foreach (var field in fieldReferences)
+                {
+                    foreach (var analyzer in _constantReferenceMutationAnalyers)
+                    {
+                        var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
+
+                        yield return new ConstGrouping()
+                        {
+                            AnalyzerName = analyzer.Name,
+                            AnalyzerDescription = analyzer.Description,
+                            Key = field.Name,
+                            Mutations = mutations
+                        };
+                    }
+                }
+            }
+        }
+
         public IEnumerable<VariableMutationGrouping> VariableMutations(MutationLevel mutationLevel)
         {
             return _variableMutationAnalyzers.Select(analyzer => new VariableMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(_methodDefinition, mutationLevel),
-                Key = _methodDefinition.Name,
+                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel),
+                Key = MethodDefinition.Name,
                 AnalyzerName = analyzer.Name,
                 AnalyzerDescription = analyzer.Description
             });
@@ -95,8 +132,8 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             return _arrayMutationAnalyzers.Select(analyzer => new ArrayMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(_methodDefinition, mutationLevel),
-                Key = _methodDefinition.Name,
+                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel),
+                Key = MethodDefinition.Name,
                 AnalyzerName = analyzer.Name,
                 AnalyzerDescription = analyzer.Description
             });

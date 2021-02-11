@@ -5,6 +5,7 @@ using Faultify.Analyze.Mutation;
 using Faultify.Core.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 
 namespace Faultify.Analyze
 {
@@ -35,7 +36,7 @@ namespace Faultify.Analyze
             //TODO Check Quick fix
             if (method?.Body == null)
                 return Enumerable.Empty<VariableMutation>();
-
+            
             var mutations = new List<VariableMutation>();
             foreach (var instruction in method.Body.Instructions)
             {
@@ -68,7 +69,7 @@ namespace Faultify.Analyze
                         Variable = variableInstruction
                     });
             }
-
+            
             return mutations;
         }
     }

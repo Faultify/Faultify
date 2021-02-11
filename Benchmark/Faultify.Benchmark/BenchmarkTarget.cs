@@ -4,7 +4,7 @@ namespace Faultify.Benchmark
 {
     public class BenchmarkTarget
     {
-        // private const bool Constant = 1 < 2;
+        private const bool Constant = 1 < 2;
         // public static bool TestStaticField = 1 < 2;
         // public bool TestLocalField = 1 < 2;
 
@@ -35,6 +35,8 @@ namespace Faultify.Benchmark
 
         public bool LessThan(int lhs, int rhs)
         {
+            Console.WriteLine(Constant);
+
             if (lhs < rhs) return true;
 
             return false;
