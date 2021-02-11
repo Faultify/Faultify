@@ -15,7 +15,6 @@ namespace Faultify.Injection
         private static readonly MutationCoverage MutationCoverage = new MutationCoverage();
         private static string _currentTestCoverage = "NONE";
         private static readonly object RegisterMutex = new object();
-        private static readonly object SetCoverageTestMutex = new object();
 
         /// <summary>
         ///     Is injected into <Module> by <see cref="TestCoverageInjector" /> and will be called on assembly load.
@@ -48,7 +47,6 @@ namespace Faultify.Injection
         {
             lock (RegisterMutex)
             {
-                File.AppendAllText("debug.txt", $"\tRegister Target {_currentTestCoverage}: {assemblyName}.{entityHandle} {Thread.CurrentThread.ManagedThreadId}\n");
                 try
                 {
                     if (!MutationCoverage.Coverage.TryGetValue(_currentTestCoverage, out var targetHandles))
@@ -72,11 +70,7 @@ namespace Faultify.Injection
         /// <param name="testName"></param>
         public static void RegisterTestCoverage(string testName)
         {
-            lock (RegisterMutex)
-            {
-                File.AppendAllText("debug.txt", $"\tRegister Test Name {testName} {Thread.CurrentThread.ManagedThreadId}\n");
-                _currentTestCoverage = testName;
-            }
+            _currentTestCoverage = testName;
         }
     }
 }
