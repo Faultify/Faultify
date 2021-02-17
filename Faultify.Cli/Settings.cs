@@ -1,17 +1,10 @@
 ﻿using System.IO;
 using CommandLine;
 using Faultify.Analyze;
+using Faultify.TestRunner;
 
 namespace Faultify.Cli
 {
-    public enum TestHost
-    {
-        NUnit,
-        XUnit, 
-        MsTest,
-        DotnetTest
-    }
-
     internal class Settings
     {
         [Option('t', "testProjectName", Required = true,
@@ -26,7 +19,7 @@ namespace Faultify.Cli
         public string ReportType { get; set; }
 
         [Option('p', "parallel", Required = false, Default = 1,
-            HelpText = "Defines how many test sessions are ran at the same time. This option can only be used when using `dotnet test` testhost")]
+            HelpText = "Defines how many test sessions are ran at the same time.")]
         public int Parallel { get; set; }
 
         [Option('l', "mutationLevel", Required = false, Default = MutationLevel.Detailed,
@@ -34,7 +27,7 @@ namespace Faultify.Cli
         public MutationLevel MutationLevel { get; set; }
 
         [Option('h', "testHost", Required = false, Default = TestHost.DotnetTest,
-            HelpText = "The test host that is used.")]
+            HelpText = "The test host that is used. Only 'DotnetTest' is supported due to some bugs in both NUnit and XUnit!.")]
         public TestHost TestHost { get; set; }
     }
 }

@@ -14,16 +14,6 @@ using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.XUnit
 {
-    public class XUnitTestHostRunnerFactory : ITestHostRunFactory
-    {
-        public TestFramework TestFramework => TestFramework.XUnit;
-
-        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
-        {
-            return new XUnitTestHostRunner(testProjectAssemblyPath, timeout, logger);
-        }
-    }
-
     public class XUnitTestHostRunner : ITestHostRunner
     {
         private readonly string _testProjectAssemblyPath;
@@ -85,13 +75,7 @@ namespace Faultify.TestRunner.XUnit
         
         private MutationCoverage ReadCoverageFile()
         {
-            using var mmf = MemoryMappedFile.OpenExisting("CoverageFile");
-            using var stream = mmf.CreateViewStream();
-            using MemoryStream memoryStream = new MemoryStream();
-            stream.CopyTo(memoryStream);
-            memoryStream.Position = 0;
-
-            var mutationCoverage = MutationCoverage.Deserialize(memoryStream.ToArray());
+            var mutationCoverage = Utils.ReadMutationCoverageFile();
 
             mutationCoverage.Coverage = mutationCoverage.Coverage
                 .Where(pair => _coverageTests.Contains(pair.Key))

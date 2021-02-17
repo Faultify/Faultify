@@ -61,7 +61,7 @@ namespace Faultify.Benchmark
 
         public int Subtraction(int lhs, int rhs)
         {
-            return lhs + 10 + rhs;
+            return lhs - rhs;
         }
 
         public int Multiplication(int lhs, int rhs)

@@ -79,13 +79,7 @@ namespace Faultify.TestRunner.NUnit
 
         private MutationCoverage ReadCoverageFile()
         {
-            using var mmf = MemoryMappedFile.OpenExisting("CoverageFile");
-            using var stream = mmf.CreateViewStream();
-            using MemoryStream memoryStream = new MemoryStream();
-            stream.CopyTo(memoryStream);
-            memoryStream.Position = 0;
-
-            var mutationCoverage = MutationCoverage.Deserialize(memoryStream.ToArray());
+            var mutationCoverage = Utils.ReadMutationCoverageFile();
 
             mutationCoverage.Coverage = mutationCoverage.Coverage
                 .Where(pair => _coverageTests.Contains(pair.Key))

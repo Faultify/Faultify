@@ -24,23 +24,14 @@ namespace Faultify.Injection
         {
             AppDomain.CurrentDomain.ProcessExit += OnCurrentDomain_ProcessExit;
             AppDomain.CurrentDomain.UnhandledException += OnCurrentDomain_ProcessExit;
-            
-            var file = File.Create("test.txt");
-            file.Dispose();
-
-            var fileStream = new FileStream("test.txt", FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
-            _mmf = MemoryMappedFile.CreateFromFile(fileStream, "CoverageFile", 20000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, true);
+            _mmf = MemoryMappedFile.OpenExisting("CoverageFile", MemoryMappedFileRights.ReadWrite);
         }
 
         private static void OnCurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-            _mmf.Dispose();
-            
             try
             {
-                // Flush the coverage before process end.
-                var serialized = MutationCoverage.Serialize();
-                File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
+                Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
             }
             catch (Exception ex)
             {
@@ -66,9 +57,7 @@ namespace Faultify.Injection
 
                     targetHandles.Add(new RegisteredCoverage(assemblyName, entityHandle));
 
-                    using var stream = _mmf.CreateViewStream();
-                    using BinaryWriter bStream = new BinaryWriter(stream);
-                    bStream.Write(MutationCoverage.Serialize());
+                    Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
                 }
                 catch (Exception ex)
                 {

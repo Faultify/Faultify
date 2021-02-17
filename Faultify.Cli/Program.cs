@@ -143,11 +143,7 @@ namespace Faultify.Cli
         {
             ITestHostRunFactory testHost = settings.TestHost switch
             {
-                TestHost.XUnit => new XUnitTestHostRunnerFactory(),
-                TestHost.DotnetTest => new DotnetTestHostRunnerFactory(),
-                TestHost.NUnit => new DotnetTestHostRunnerFactory(),
-                TestHost.MsTest => new DotnetTestHostRunnerFactory(),
-                _ => throw new ArgumentOutOfRangeException()
+                _ => new DotnetTestHostRunnerFactory() // TODO: Use Faultify.TestRunner.XUnit/NUnit for in memory testing. 
             };
 
             var mutationTestProject =
