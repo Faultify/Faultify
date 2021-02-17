@@ -28,7 +28,7 @@ Score:     64%
 ## Run Faultify
 
 ```
-dotnet tool install --global faultify --version 0.1.0
+dotnet tool install --global faultify --version 0.2.0
 faultify -t .\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj  -f html -p 4
 
 // Run (main) local executable
@@ -57,5 +57,3 @@ stryker is slightly faster with 2-3 test runners wereas faultify is faster with 
 - Stryker becomes slower, as they acknowlege as well, after 3 testrunners. 
 - Faultify becomes faster with every test runner added. Only when more test runners are specified than test runs, speed is not influenced
 
-Faultify becomes significantly faster when more then 2 test runners are configured. 
-- On a larger project with `259 mutations,` it took Faultify 55 seconds, which is `0,21` seconds for a mutation. Whereas for stryker it ook about `150` seconds which is `0,58` seconds permutation. This is a speed increasement of about `58%`.

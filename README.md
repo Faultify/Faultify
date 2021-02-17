@@ -22,8 +22,7 @@ A test is assumed to fail after an introduced mutation, the test is likely to be
 
 ```
   -t, --testProjectName    Required. The path pointing to the test project project file.
-  
-  -r, --reportPath         (Default: ./FaultifyOutput) The path were the report will be saved.
+  -r, --reportPath         The path were the report will be saved.
   -f, --reportFormat       (Default: json) Type of report to be generated, options: 'pdf', 'html', 'json'
   -p, --parallel           (Default: 1) Defines how many test sessions are ran at the same time.
   -l, --mutationLevel      (Default: Detailed) The mutation level indicating the test depth.
@@ -35,7 +34,7 @@ A test is assumed to fail after an introduced mutation, the test is likely to be
 **Install / Run**
 
 ```
-dotnet tool install --global faultify --version 0.1.0
+dotnet tool install --global faultify --version 0.2.0
 faultify -t YourTestProject.csproj -f html
 ```
 
@@ -67,6 +66,7 @@ This generates a 'HTML' report for the project 'YourTestProject.csproj' at the d
 - Implement [member exclusion](https://github.com/Faultify/Faultify/issues/11).
 - Implement line number display
 - Improve reporting functionality
+- Implement assembly testing in memory
 
 ## Application Preview
 <img src="https://github.com/Faultify/Faultify/blob/main/docs/application-overview.PNG" alt="drawing" width="600"/>

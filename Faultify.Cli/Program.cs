@@ -10,7 +10,6 @@ using Faultify.Report.PDFReporter;
 using Faultify.TestRunner;
 using Faultify.TestRunner.Dotnet;
 using Faultify.TestRunner.Logging;
-using Faultify.TestRunner.XUnit;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -4,7 +4,7 @@
 		<PackageId>faultify</PackageId>
 		<Description>Fualtify Dotnet Mutation Test Commandline Utility</Description>
 
-		<Authors>Timon, Janfokke</Authors>
+		<Authors>Timon</Authors>
 		<ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
 		<PackageTags>Test;Mutation;Mutation Testing;Testing</PackageTags>
 		<RepositoryUrl>https://github.com/Faultify/Faultify.git</RepositoryUrl>
@@ -22,7 +22,7 @@
 
 	<PropertyGroup>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<Version>0.1.0</Version>
+		<Version>0.2.0</Version>
 		<PackageIcon>small-logo.png</PackageIcon>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	</PropertyGroup>
@@ -51,8 +51,6 @@
 		<ProjectReference Include="..\Faultify.Report\Faultify.Report.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner.Collector\Faultify.TestRunner.Collector.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner.Dotnet\Faultify.TestRunner.Dotnet.csproj" />
-		<ProjectReference Include="..\Faultify.TestRunner.NUnit\Faultify.TestRunner.NUnit.csproj" />
-		<ProjectReference Include="..\Faultify.TestRunner.XUnit\Faultify.TestRunner.XUnit.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
 	</ItemGroup>
 

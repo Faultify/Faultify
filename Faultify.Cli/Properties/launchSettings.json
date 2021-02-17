@@ -2,7 +2,7 @@
   "profiles": {
     "Faultify.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "-t  E:\\programming\\FaultifyNew\\Faultify\\Benchmark\\Faultify.Benchmark.XUnit\\Faultify.Benchmark.XUnit.csproj  -f html -p 4"
+      "commandLineArgs": "-t  E:\\programming\\stryker-net\\src\\Stryker.Core\\Stryker.Core.UnitTest\\Stryker.Core.UnitTest.csproj -p 9"
     }
   }
 }
