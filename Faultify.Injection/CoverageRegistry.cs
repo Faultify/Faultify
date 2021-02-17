@@ -56,8 +56,10 @@ namespace Faultify.Injection
                     }
 
                     targetHandles.Add(new RegisteredCoverage(assemblyName, entityHandle));
+
+                    Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // ignored
                 }
