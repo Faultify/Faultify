@@ -21,15 +21,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Faultify.TestRunner
 {
-    public enum TestFramework
-    {
-        XUnit,
-        NUnit,
-        MsTest,
-        None
-    }
-
-
     public class MutationTestProject
     {
         private readonly MutationLevel _mutationLevel;
@@ -86,6 +77,11 @@ namespace Faultify.TestRunner
             coverageTimer.Start();
             var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            coverageProject.FreeTestProject();
 
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
@@ -207,6 +203,8 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
+            using var _file = Utils.CreateCoverageMemoryMappedFile();
+
             var testRunner =
                 _testHostRunFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHostLogger);
             return await testRunner.RunCodeCoverage(cancellationToken);

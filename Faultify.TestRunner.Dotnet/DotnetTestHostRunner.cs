@@ -12,14 +12,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Faultify.TestRunner.Dotnet
 {
-    public class DotnetTestHostRunnerFactory : ITestHostRunFactory
-    {
-        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
-        {
-            return new DotnetTestHostRunner(testProjectAssemblyPath, timeout, logger);
-        }
-    }
-
     /// <summary>
     ///     Runs the mutation test with 'dotnet test'.
     /// </summary>
@@ -100,8 +92,6 @@ namespace Faultify.TestRunner.Dotnet
         /// <returns></returns>
         public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
         {
-            var coverageOutputPath = Path.Combine(_testDirectoryInfo.FullName, TestRunnerConstants.CoverageFileName);
-
             try
             {
                 var coverageProcessRunner = BuildCodeCoverageTestProcessRunner();
@@ -114,8 +104,7 @@ namespace Faultify.TestRunner.Dotnet
 
                 if (process.ExitCode != 0) throw new ExitCodeException(process.ExitCode);
 
-                var coverageBinary = await File.ReadAllBytesAsync(coverageOutputPath, cancellationToken);
-                return MutationCoverage.Deserialize(coverageBinary);
+                return Utils.ReadMutationCoverageFile();
             }
             catch (FileNotFoundException)
             {
@@ -125,10 +114,6 @@ namespace Faultify.TestRunner.Dotnet
                     "Consider opening up an issue with the logs found in the output folder."
                 );
                 return new MutationCoverage();
-            }
-            finally
-            {
-                if (File.Exists(coverageOutputPath)) File.Delete(coverageOutputPath);
             }
         }
 

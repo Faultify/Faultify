@@ -8,6 +8,7 @@ namespace Faultify.TestRunner
     /// </summary>
     public interface ITestHostRunFactory
     {
+        public TestFramework TestFramework { get; }
         public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using Faultify.TestRunner.Shared;
 
 namespace Faultify.Injection
@@ -14,6 +15,7 @@ namespace Faultify.Injection
         private static readonly MutationCoverage MutationCoverage = new MutationCoverage();
         private static string _currentTestCoverage = "NONE";
         private static readonly object RegisterMutex = new object();
+        private static MemoryMappedFile _mmf;
 
         /// <summary>
         ///     Is injected into <Module> by <see cref="TestCoverageInjector" /> and will be called on assembly load.
@@ -22,15 +24,14 @@ namespace Faultify.Injection
         {
             AppDomain.CurrentDomain.ProcessExit += OnCurrentDomain_ProcessExit;
             AppDomain.CurrentDomain.UnhandledException += OnCurrentDomain_ProcessExit;
+            _mmf = MemoryMappedFile.OpenExisting("CoverageFile", MemoryMappedFileRights.ReadWrite);
         }
 
         private static void OnCurrentDomain_ProcessExit(object sender, EventArgs e)
         {
             try
             {
-                // Flush the coverage before process end.
-                var serialized = MutationCoverage.Serialize();
-                File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
+                Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
             }
             catch (Exception ex)
             {
@@ -55,8 +56,10 @@ namespace Faultify.Injection
                     }
 
                     targetHandles.Add(new RegisteredCoverage(assemblyName, entityHandle));
+
+                    Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // ignored
                 }

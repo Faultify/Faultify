@@ -63,19 +63,16 @@ namespace Faultify.TestRunner.Collector
             try
             {
                 if (_coverageFlushed) return;
-
-                // Read coverage that was registered by: `Faultify.Injection.CoverageRegistry.RegisterTestCoverage()`.
-                var binary = File.ReadAllBytes(TestRunnerConstants.CoverageFileName);
-
-                var mutationCoverage = MutationCoverage.Deserialize(binary);
-
+                
+                var mutationCoverage = Utils.ReadMutationCoverageFile();
+                
                 // Filter out functions that are not tests
                 mutationCoverage.Coverage = mutationCoverage.Coverage
                     .Where(pair => _testNames.Contains(pair.Key))
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
+                
+                Utils.WriteMutationCoverageFile(mutationCoverage);
 
-                var serialized = mutationCoverage.Serialize();
-                File.WriteAllBytes(TestRunnerConstants.CoverageFileName, serialized);
                 _coverageFlushed = true;
             }
             catch (Exception ex)

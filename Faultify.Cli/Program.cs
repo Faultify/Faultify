@@ -10,6 +10,7 @@ using Faultify.Report.PDFReporter;
 using Faultify.TestRunner;
 using Faultify.TestRunner.Dotnet;
 using Faultify.TestRunner.Logging;
+using Faultify.TestRunner.XUnit;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -140,9 +141,14 @@ namespace Faultify.Cli
         private async Task<TestProjectReportModel> RunMutationTest(Settings settings,
             MutationSessionProgressTracker progressTracker)
         {
+            ITestHostRunFactory testHost = settings.TestHost switch
+            {
+                _ => new DotnetTestHostRunnerFactory() // TODO: Use Faultify.TestRunner.XUnit/NUnit for in memory testing. 
+            };
+
             var mutationTestProject =
                 new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
-                    _loggerFactory, new DotnetTestHostRunnerFactory());
+                    _loggerFactory, testHost);
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }
