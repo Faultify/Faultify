@@ -49,7 +49,7 @@ namespace Faultify.TestRunner.Collector
                 var serialized = _testResults.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.TestsFileName, serialized);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _logger.LogError(context.SessionDataCollectionContext, "Test Session Exception: {ex}");
             }

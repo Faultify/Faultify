@@ -33,7 +33,7 @@ namespace Faultify.Injection
             {
                 Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 // ignored
             }
