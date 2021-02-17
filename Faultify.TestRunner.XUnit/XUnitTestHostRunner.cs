@@ -3,69 +3,75 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Faultify.MemoryTest.TestInformation;
 using Faultify.TestRunner.Shared;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TestResult = Faultify.TestRunner.Shared.TestResult;
 
-namespace Faultify.TestRunner.NUnit
+namespace Faultify.TestRunner.XUnit
 {
-    public class NUnitTestHostRunner : ITestHostRunner
+    public class XUnitTestHostRunnerFactory : ITestHostRunFactory
+    {
+        public TestFramework TestFramework => TestFramework.XUnit;
+
+        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        {
+            return new XUnitTestHostRunner(testProjectAssemblyPath, timeout, logger);
+        }
+    }
+
+    public class XUnitTestHostRunner : ITestHostRunner
     {
         private readonly string _testProjectAssemblyPath;
-        private readonly TimeSpan _timeout;
         private readonly TestResults _testResults = new TestResults();
+        private string _coveragePath;
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
 
-        public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public XUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
         {
             _testProjectAssemblyPath = testProjectAssemblyPath;
-            _timeout = timeout;
-        }
 
+            _coveragePath = Path.Combine(
+                new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName,
+                TestRunnerConstants.CoverageFileName);
+        }
+        
         public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress, IEnumerable<string> tests)
         {
             var hashedTests = new HashSet<string>(tests);
 
-            var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
-            nunitHostRunner.Settings.Add("DefaultTimeout", _timeout.Milliseconds);
-            nunitHostRunner.Settings.Add("StopOnError", true);
-            nunitHostRunner.Settings.Add("BaseDirectory", new FileInfo(_testProjectAssemblyPath).DirectoryName);
+            var xunitHostRunner = new MemoryTest.XUnit.XUnitTestHostRunner(_testProjectAssemblyPath);
+            xunitHostRunner.TestEnd += OnTestEnd;
 
-            nunitHostRunner.TestEnd += OnTestEnd;
-
-            await nunitHostRunner.RunTestsAsync(CancellationToken.None, hashedTests);
+            await xunitHostRunner.RunTestsAsync(CancellationToken.None, hashedTests);
 
             return _testResults;
         }
 
         public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
         {
-            var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
-            nunitHostRunner.Settings.Add("DefaultTimeout", 1000);
-            nunitHostRunner.Settings.Add("StopOnError", true);
-            nunitHostRunner.Settings.Add("BaseDirectory", new FileInfo(_testProjectAssemblyPath).DirectoryName);
-            
-            nunitHostRunner.TestEnd += OnTestEndCoverage;
+            var xunitHostRunner = new MemoryTest.XUnit.XUnitTestHostRunner(_testProjectAssemblyPath);
+            xunitHostRunner.TestEnd += OnTestEndCoverage;
 
-            await nunitHostRunner.RunTestsAsync(CancellationToken.None);
+            await xunitHostRunner.RunTestsAsync(CancellationToken.None);
 
             return ReadCoverageFile();
         }
-        
+
         private void OnTestEnd(object? sender, TestEnd e)
         {
-            _testResults.Tests.Add(new TestResult() { Name = e.TestName, Outcome = ParseTestOutcome(e.TestOutcome) });
+            _testResults.Tests.Add(new TestResult() { Name = e.TestName, Outcome = ParseTestOutcome(e.TestOutcome)});
         }
 
         private void OnTestEndCoverage(object? sender, TestEnd e)
         {
             _coverageTests.Add(e.FullTestName);
         }
-
+       
         private TestOutcome ParseTestOutcome(MemoryTest.TestOutcome outcome)
         {
             return outcome switch
@@ -76,7 +82,7 @@ namespace Faultify.TestRunner.NUnit
                 _ => throw new ArgumentOutOfRangeException(nameof(outcome), outcome, null)
             };
         }
-
+        
         private MutationCoverage ReadCoverageFile()
         {
             using var mmf = MemoryMappedFile.OpenExisting("CoverageFile");

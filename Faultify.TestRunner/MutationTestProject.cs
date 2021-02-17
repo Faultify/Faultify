@@ -75,7 +75,7 @@ namespace Faultify.TestRunner
 
             // Begin code coverage on first project.
             var duplicationPool = new TestProjectDuplicationPool(duplications);
-            var coverageProject = duplicationPool.TakeTestProject();
+            var coverageProject = duplicationPool.AcquireTestProject();
             var coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
@@ -86,6 +86,11 @@ namespace Faultify.TestRunner
             coverageTimer.Start();
             var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            coverageProject.FreeTestProject();
 
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);

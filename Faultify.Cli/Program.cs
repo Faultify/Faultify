@@ -10,6 +10,7 @@ using Faultify.Report.PDFReporter;
 using Faultify.TestRunner;
 using Faultify.TestRunner.Dotnet;
 using Faultify.TestRunner.Logging;
+using Faultify.TestRunner.XUnit;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -140,9 +141,18 @@ namespace Faultify.Cli
         private async Task<TestProjectReportModel> RunMutationTest(Settings settings,
             MutationSessionProgressTracker progressTracker)
         {
+            ITestHostRunFactory testHost = settings.TestHost switch
+            {
+                TestHost.XUnit => new XUnitTestHostRunnerFactory(),
+                TestHost.DotnetTest => new DotnetTestHostRunnerFactory(),
+                TestHost.NUnit => new DotnetTestHostRunnerFactory(),
+                TestHost.MsTest => new DotnetTestHostRunnerFactory(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
             var mutationTestProject =
                 new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
-                    _loggerFactory, new DotnetTestHostRunnerFactory());
+                    _loggerFactory, testHost);
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }
