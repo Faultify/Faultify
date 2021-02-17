@@ -18,16 +18,11 @@ namespace Faultify.TestRunner.XUnit
     {
         private readonly string _testProjectAssemblyPath;
         private readonly TestResults _testResults = new TestResults();
-        private string _coveragePath;
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
 
-        public XUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public XUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan _0, ILogger _1)
         {
             _testProjectAssemblyPath = testProjectAssemblyPath;
-
-            _coveragePath = Path.Combine(
-                new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName,
-                TestRunnerConstants.CoverageFileName);
         }
         
         public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress, IEnumerable<string> tests)

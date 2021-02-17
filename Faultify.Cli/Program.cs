@@ -25,7 +25,7 @@ namespace Faultify.Cli
         private readonly ILoggerFactory _loggerFactory;
 
         public Program(
-            IOptions<Settings> settings,
+            IOptions<Settings> _,
             ILoggerFactory loggerFactory
         )
         {

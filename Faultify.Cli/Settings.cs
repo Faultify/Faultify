@@ -26,8 +26,6 @@ namespace Faultify.Cli
             HelpText = "The mutation level indicating the test depth. ")]
         public MutationLevel MutationLevel { get; set; }
 
-        [Option('h', "testHost", Required = false, Default = TestHost.DotnetTest,
-            HelpText = "The test host that is used. Only 'DotnetTest' is supported due to some bugs in both NUnit and XUnit!.")]
-        public TestHost TestHost { get; set; }
+        public TestHost TestHost => TestHost.DotnetTest; // TODO: when NUnit, XUnit issues are fixed we can support in memory testers. 
     }
 }
