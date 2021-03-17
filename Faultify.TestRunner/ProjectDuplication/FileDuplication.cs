@@ -100,5 +100,44 @@ namespace Faultify.TestRunner.ProjectDuplication
 
             _fileStream = new FileStream(FullFilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
+
+        ///// <summary>
+        /////     Copying the file
+        ///// </summary>
+        //public FileDuplication CopyFile(int i)
+        //{
+        //    string fileName = "clone" + i.ToString() + "_" + Name;
+        //    string copyDestination = Directory + "\\..";
+        //    string copyDirectory = Path.Combine(copyDestination, fileName);
+        //    File.Create(copyDirectory);
+
+        //    string sourceFile = Path.Combine(Directory + "\\..", fileName);
+
+
+        //    string sourcePath = Path.Combine(Directory + "\\..", Name);
+        //    try
+        //    {
+        //    File.Copy(sourceFile, copyDirectory, true);
+        //    } catch (Exception e)
+        //    {
+        //        Console.WriteLine(e.StackTrace);
+        //    }
+        //    if (System.IO.Directory.Exists(sourcePath))
+        //    {
+        //        string[] files = System.IO.Directory.GetFiles(sourcePath);
+
+        //        foreach (string s in files)
+        //        {
+        //            fileName = Path.GetFileName(s);
+        //            copyDirectory = Path.Combine(Directory, fileName);
+        //            File.Copy(s, copyDirectory, true);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Source path does not exist!");
+        //    }
+        //    return new FileDuplication(Directory, fileName);
+        //}
     }
 }

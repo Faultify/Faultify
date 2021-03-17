@@ -1,8 +1,8 @@
 {
   "profiles": {
     "Faultify.Cli": {
-      "commandName": "Project",
-      "commandLineArgs": "-t  E:\\programming\\stryker-net\\src\\Stryker.Core\\Stryker.Core.UnitTest\\Stryker.Core.UnitTest.csproj -p 9"
+        "commandName": "Project",
+        "commandLineArgs": "-t  C:\\Users\\Vxvl4\\source\\repos\\Faultify\\Benchmark\\Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj -p 9 -f pdf"
     }
   }
 }

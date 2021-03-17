@@ -37,7 +37,7 @@ namespace Faultify.TestRunner.TestRun
             var testResults =
                 await testRunner.RunTests(timeout, sessionProgressTracker, runningTests);
 
-            ResetMutations(testProject);
+            //ResetMutations(testProject);
 
             return new List<TestRunResult>
             {
