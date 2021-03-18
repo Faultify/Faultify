@@ -30,8 +30,8 @@ namespace Faultify.TestRunner.NUnit
             var hashedTests = new HashSet<string>(tests);
 
             var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
-            nunitHostRunner.Settings.Add("DefaultTimeout", _timeout.Milliseconds);
-            nunitHostRunner.Settings.Add("StopOnError", true);
+            nunitHostRunner.Settings.Add("DefaultTimeout", 3000);
+            nunitHostRunner.Settings.Add("StopOnError", false);
             nunitHostRunner.Settings.Add("BaseDirectory", new FileInfo(_testProjectAssemblyPath).DirectoryName);
 
             nunitHostRunner.TestEnd += OnTestEnd;
@@ -45,7 +45,7 @@ namespace Faultify.TestRunner.NUnit
         {
             var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
             nunitHostRunner.Settings.Add("DefaultTimeout", 1000);
-            nunitHostRunner.Settings.Add("StopOnError", true);
+            nunitHostRunner.Settings.Add("StopOnError", false);
             nunitHostRunner.Settings.Add("BaseDirectory", new FileInfo(_testProjectAssemblyPath).DirectoryName);
             
             nunitHostRunner.TestEnd += OnTestEndCoverage;
@@ -57,7 +57,7 @@ namespace Faultify.TestRunner.NUnit
         
         private void OnTestEnd(object? sender, TestEnd e)
         {
-            _testResults.Tests.Add(new TestResult() { Name = e.TestName, Outcome = ParseTestOutcome(e.TestOutcome) });
+            _testResults.Tests.Add(new TestResult() { Name = e.FullTestName, Outcome = ParseTestOutcome(e.TestOutcome) });
         }
 
         private void OnTestEndCoverage(object? sender, TestEnd e)

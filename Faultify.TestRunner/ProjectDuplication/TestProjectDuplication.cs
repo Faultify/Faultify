@@ -22,6 +22,11 @@ namespace Faultify.TestRunner.ProjectDuplication
             DuplicationNumber = duplicationNumber;
         }
 
+        //public TestProjectDuplication Copy(int i)
+        //{
+        //    return new TestProjectDuplication(TestProjectFile.CopyFile(i), TestProjectReferences.Select(x => x.CopyFile(i)), i);
+        //}
+
         /// <summary>
         ///     Test project references.
         /// </summary>

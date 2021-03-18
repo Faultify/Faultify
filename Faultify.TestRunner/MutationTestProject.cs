@@ -86,7 +86,7 @@ namespace Faultify.TestRunner
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
             return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
-                coverageTimer.Elapsed, duplicationPool);
+                coverageTimer.Elapsed, duplicationPool, testProjectCopier);
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace Faultify.TestRunner
         private TestProjectReportModel StartMutationTestSession(TestProjectInfo testProjectInfo,
             Dictionary<RegisteredCoverage, HashSet<string>> testsPerMutation,
             MutationSessionProgressTracker sessionProgressTracker, TimeSpan coverageTestRunTime,
-            TestProjectDuplicationPool testProjectDuplicationPool)
+            TestProjectDuplicationPool testProjectDuplicationPool, TestProjectDuplicator testProjectDuplicator)
         {
             // Generate the mutation test runs for the mutation session.
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
@@ -276,21 +276,26 @@ namespace Faultify.TestRunner
             async Task RunTestRun(IMutationTestRun testRun)
             {
                 var testProject = testProjectDuplicationPool.AcquireTestProject();
+                //var testProject = testProjectDuplicator.MakeCopy(new Random().Next());
 
+                Console.WriteLine("De staat");
                 try
                 {
                     testRun.InitializeMutations(testProject, timedOutMutations);
-
+                    Console.WriteLine("in de try");
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-
+                    Console.WriteLine("pre test run");
                     var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker,
                         _testHostRunFactory, testProject, _testHostLogger);
-
+                    Console.WriteLine("post test run");
                     if (results != null)
                     {
+                        Console.WriteLine("in de if");
                         foreach (var testResult in results)
                         {
+
+                            Console.WriteLine("in de for each");
                             // Store the timed out mutations such that they can be excluded.
                             timedOutMutations.AddRange(testResult.GetTimedOutTests());
 
@@ -302,9 +307,14 @@ namespace Faultify.TestRunner
                         singRunsStopwatch.Stop();
                         singRunsStopwatch.Reset();
                     }
+                    else
+                    {
+                                                Console.WriteLine("In de else");
+                    }
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine("in de catch");
                     sessionProgressTracker.Log(
                         $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}",
                         LogMessageType.Error);
@@ -312,14 +322,22 @@ namespace Faultify.TestRunner
                 }
                 finally
                 {
+
+                    Console.WriteLine("in de finaly");
                     lock (this)
                     {
                         completedRuns += 1;
+
+                        Console.WriteLine("De");
                         sessionProgressTracker.LogTestRunUpdate(completedRuns, totalRunsCount, failedRuns);
                     }
 
+                    Console.WriteLine("Spa");
                     testProject.FreeTestProject();
+                    Console.WriteLine("Cito");
+
                 }
+                Console.WriteLine("2");
             }
 
             var tasks = from testRun in mutationTestRuns select RunTestRun(testRun);

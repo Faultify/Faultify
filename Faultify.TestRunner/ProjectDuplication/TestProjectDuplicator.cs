@@ -12,6 +12,12 @@ namespace Faultify.TestRunner.ProjectDuplication
     {
         private readonly string _testDirectory;
 
+        private DirectoryInfo newDirInfo;
+
+        private List<string> allFiles;
+
+        private IProjectInfo projectInfo;
+
         public TestProjectDuplicator(string testDirectory)
         {
             _testDirectory = testDirectory;
@@ -20,7 +26,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         public List<TestProjectDuplication> MakeInitialCopies(IProjectInfo testProject, int count)
         {
             var dirInfo = new DirectoryInfo(_testDirectory);
-
+            projectInfo = testProject;
             // Remove useless folders.
             foreach (var directory in dirInfo.GetDirectories("*"))
             {
@@ -33,8 +39,8 @@ namespace Faultify.TestRunner.ProjectDuplication
             var testProjectDuplications = new List<TestProjectDuplication>();
 
             // Start the initial copy
-            var allFiles = Directory.GetFiles(_testDirectory, "*.*", SearchOption.AllDirectories).ToList();
-            var newDirInfo = Directory.CreateDirectory(Path.Combine(_testDirectory, "test-duplication-0"));
+            allFiles = Directory.GetFiles(_testDirectory, "*.*", SearchOption.AllDirectories).ToList();
+            newDirInfo = Directory.CreateDirectory(Path.Combine(_testDirectory, "test-duplication-0"));
 
 
             foreach (var file in allFiles)
@@ -97,6 +103,24 @@ namespace Faultify.TestRunner.ProjectDuplication
                 CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
             foreach (var file in source.GetFiles())
                 file.CopyTo(Path.Combine(target.FullName, file.Name));
+        }
+
+        public TestProjectDuplication MakeCopy(int i)
+        {
+            var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-CLONE-{i}"); //TODO: adjust the folder number
+            CopyFilesRecursively(newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
+            var duplicatedAsseblies = projectInfo.ProjectReferences
+                .Select(x =>
+                    new FileDuplication(duplicatedDirectoryPath, Path.GetFileNameWithoutExtension(x) + ".dll"));
+
+            return
+                new TestProjectDuplication(
+                    new FileDuplication(duplicatedDirectoryPath,
+                                        Path.GetFileName(projectInfo.AssemblyPath)),
+                    duplicatedAsseblies,
+                    i
+            );
+
         }
     }
 }
