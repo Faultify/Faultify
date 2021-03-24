@@ -55,5 +55,6 @@
 		<ProjectReference Include="..\Faultify.TestRunner.XUnit\Faultify.TestRunner.XUnit.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
 	</ItemGroup>
+	
 
 </Project>

@@ -22,11 +22,6 @@ namespace Faultify.TestRunner.ProjectDuplication
             DuplicationNumber = duplicationNumber;
         }
 
-        //public TestProjectDuplication Copy(int i)
-        //{
-        //    return new TestProjectDuplication(TestProjectFile.CopyFile(i), TestProjectReferences.Select(x => x.CopyFile(i)), i);
-        //}
-
         /// <summary>
         ///     Test project references.
         /// </summary>
@@ -63,8 +58,19 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// </summary>
         public void FreeTestProject()
         {
+            //TODO: rename to MarkAsFree(). Currently, it gives the false impression that it actually does something to free the project.
             IsInUse = false;
             TestProjectFreed?.Invoke(this, this);
+        }
+
+
+        /// <summary>
+        ///     Delete the test project completely
+        ///     Currently does not work, given that Nunit restricts access to the files await's been given
+        /// </summary>
+        public void DeleteTestProject()
+        {
+            Directory.Delete(TestProjectFile.Directory, true);
         }
 
         /// <summary>
@@ -142,24 +148,33 @@ namespace Faultify.TestRunner.ProjectDuplication
         public void FlushMutations(IList<MutationVariant> mutationVariants)
         {
             var assemblies = new HashSet<AssemblyMutator>(mutationVariants.Select(x => x.Assembly));
-
             foreach (var assembly in assemblies)
             {
                 var fileDuplication = TestProjectReferences.FirstOrDefault(x =>
                     assembly.Module.Name == x.Name);
+                try
+                {
+                    using var writeStream = fileDuplication.OpenReadWriteStream();
+                    using var ms = new MemoryStream();
+                    assembly.Module.Write(ms);
+                    writeStream.Write(ms.ToArray());
 
-                using var writeStream = fileDuplication.OpenReadWriteStream();
-                using var ms = new MemoryStream();
-                assembly.Module.Write(ms);
-                writeStream.Write(ms.ToArray());
+                    ms.Position = 0;
+                    var decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), ms);
 
-                ms.Position = 0;
-                var decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), ms);
+                    foreach (var mutationVariant in mutationVariants)
+                        if (assembly == mutationVariant.Assembly && string.IsNullOrEmpty(mutationVariant.MutatedSource))
+                            mutationVariant.MutatedSource = decompiler.Decompile(mutationVariant.MemberHandle);
 
-                foreach (var mutationVariant in mutationVariants)
-                    if (assembly == mutationVariant.Assembly && string.IsNullOrEmpty(mutationVariant.MutatedSource))
-                        mutationVariant.MutatedSource = decompiler.Decompile(mutationVariant.MemberHandle);
-                fileDuplication.Dispose();
+                    } 
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    } 
+                    finally
+                    {
+                        fileDuplication.Dispose();
+                    }
             }
 
             TestProjectFile.Dispose();

@@ -60,13 +60,12 @@ namespace Faultify.TestRunner
             progressTracker.LogEndPreBuilding();
 
             // Copy project N times
-            progressTracker.LogBeginProjectDuplication(_parallel);
+            //progressTracker.LogBeginProjectDuplication(_parallel); TODO: might wanna remove
             var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
-            var duplications = testProjectCopier.MakeInitialCopies(projectInfo, _parallel);
+            var duplications = testProjectCopier.MakeInitialCopy(projectInfo);
 
             // Begin code coverage on first project.
-            var duplicationPool = new TestProjectDuplicationPool(duplications);
-            var coverageProject = duplicationPool.TakeTestProject();
+            var coverageProject = testProjectCopier.MakeCopy(0);
             var coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
@@ -86,7 +85,7 @@ namespace Faultify.TestRunner
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
             return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
-                coverageTimer.Elapsed, duplicationPool, testProjectCopier);
+                coverageTimer.Elapsed, testProjectCopier);
         }
 
         /// <summary>
@@ -124,7 +123,7 @@ namespace Faultify.TestRunner
                 return TestFramework.XUnit;
 
             if (Regex.Match(projectFile, "nunit").Captures.Any())
-                return TestFramework.XUnit;
+                return TestFramework.NUnit;
 
             if (Regex.Match(projectFile, "mstest").Captures.Any())
                 return TestFramework.XUnit;
@@ -246,7 +245,7 @@ namespace Faultify.TestRunner
         private TestProjectReportModel StartMutationTestSession(TestProjectInfo testProjectInfo,
             Dictionary<RegisteredCoverage, HashSet<string>> testsPerMutation,
             MutationSessionProgressTracker sessionProgressTracker, TimeSpan coverageTestRunTime,
-            TestProjectDuplicationPool testProjectDuplicationPool, TestProjectDuplicator testProjectDuplicator)
+            TestProjectDuplicator testProjectDuplicator)
         {
             // Generate the mutation test runs for the mutation session.
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
@@ -275,27 +274,20 @@ namespace Faultify.TestRunner
 
             async Task RunTestRun(IMutationTestRun testRun)
             {
-                var testProject = testProjectDuplicationPool.AcquireTestProject();
-                //var testProject = testProjectDuplicator.MakeCopy(new Random().Next());
+                var testProject = testProjectDuplicator.MakeCopy(testRun.RunId + 1);
 
-                Console.WriteLine("De staat");
                 try
                 {
                     testRun.InitializeMutations(testProject, timedOutMutations);
-                    Console.WriteLine("in de try");
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-                    Console.WriteLine("pre test run");
                     var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker,
                         _testHostRunFactory, testProject, _testHostLogger);
-                    Console.WriteLine("post test run");
                     if (results != null)
                     {
-                        Console.WriteLine("in de if");
                         foreach (var testResult in results)
                         {
 
-                            Console.WriteLine("in de for each");
                             // Store the timed out mutations such that they can be excluded.
                             timedOutMutations.AddRange(testResult.GetTimedOutTests());
 
@@ -307,14 +299,9 @@ namespace Faultify.TestRunner
                         singRunsStopwatch.Stop();
                         singRunsStopwatch.Reset();
                     }
-                    else
-                    {
-                                                Console.WriteLine("In de else");
-                    }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("in de catch");
                     sessionProgressTracker.Log(
                         $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}",
                         LogMessageType.Error);
@@ -323,21 +310,16 @@ namespace Faultify.TestRunner
                 finally
                 {
 
-                    Console.WriteLine("in de finaly");
                     lock (this)
                     {
                         completedRuns += 1;
 
-                        Console.WriteLine("De");
                         sessionProgressTracker.LogTestRunUpdate(completedRuns, totalRunsCount, failedRuns);
                     }
 
-                    Console.WriteLine("Spa");
-                    testProject.FreeTestProject();
-                    Console.WriteLine("Cito");
+                    testProject.FreeTestProject(); //TODO: replace with deletion
 
                 }
-                Console.WriteLine("2");
             }
 
             var tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
