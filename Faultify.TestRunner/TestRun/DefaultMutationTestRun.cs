@@ -90,8 +90,10 @@ namespace Faultify.TestRunner.TestRun
             testProject.FlushMutations(_mutationVariants);
         }
 
+
         /// <summary>
         ///     Resets any mutation that was performed.
+        ///     TODO: Might no longer be useful since duplications are no longer recycled
         /// </summary>
         /// <param name="testProject"></param>
         private void ResetMutations(TestProjectDuplication testProject)
@@ -101,11 +103,11 @@ namespace Faultify.TestRunner.TestRun
                 if (mutationVariant.CausesTimeOut)
                     continue;
 
-                // Execute mutation and flush it to the files.
+                // Reset mutation and flush it to the files.
                 mutationVariant.Mutation?.Reset();
             }
 
-            testProject.FlushMutations(_mutationVariants);
+           testProject.FlushMutations(_mutationVariants);
         }
     }
 }

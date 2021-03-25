@@ -10,6 +10,7 @@ using Faultify.Report.PDFReporter;
 using Faultify.TestRunner;
 using Faultify.TestRunner.Dotnet;
 using Faultify.TestRunner.NUnit;
+using Faultify.TestRunner.XUnit;
 using Faultify.TestRunner.Logging;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.Extensions.Configuration;
@@ -143,7 +144,7 @@ namespace Faultify.Cli
         {
             ITestHostRunFactory testHost = settings.TestHost switch
             {
-                _ => new DotnetTestHostRunner() // TODO: Use Faultify.TestRunner.XUnit/NUnit for in memory testing. 
+                _ => new NUnitTestHostRunnerFactory() // TODO: Use Faultify.TestRunner.XUnit/NUnit for in memory testing. 
             };
 
             var mutationTestProject =

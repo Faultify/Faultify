@@ -23,7 +23,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)
@@ -108,7 +108,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)
@@ -193,7 +193,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)
@@ -278,7 +278,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)

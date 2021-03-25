@@ -29,6 +29,7 @@ namespace Faultify.TestRunner.ProjectDuplication
 
         public void Dispose()
         {
+            if (_fileStream != null) _fileStream.Close();
             _fileStream = null;
         }
 

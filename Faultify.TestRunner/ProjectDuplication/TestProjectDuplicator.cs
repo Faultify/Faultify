@@ -23,7 +23,13 @@ namespace Faultify.TestRunner.ProjectDuplication
             _testDirectory = testDirectory;
         }
 
-        public List<TestProjectDuplication> MakeInitialCopies(IProjectInfo testProject, int count)
+        /// <summary>
+        ///  Create the very first duplication of the project that will be used for coverage calculations
+        ///  and as a reference for all other duplications
+        /// </summary>
+        /// <param name="testProject"></param>
+        /// <returns> the initial duplication</returns>
+        public TestProjectDuplication MakeInitialCopy(IProjectInfo testProject)
         {
             var dirInfo = new DirectoryInfo(_testDirectory);
             projectInfo = testProject;
@@ -70,31 +76,13 @@ namespace Faultify.TestRunner.ProjectDuplication
 
             var initialCopies = testProject.ProjectReferences
                 .Select(x => new FileDuplication(newDirInfo.FullName, Path.GetFileNameWithoutExtension(x) + ".dll"));
-            testProjectDuplications.Add(new TestProjectDuplication(
+            var testProjectDuplication = new TestProjectDuplication(
                 new FileDuplication(newDirInfo.FullName, Path.GetFileName(testProject.AssemblyPath)),
                 initialCopies,
                 0
-            ));
+            );
 
-            // Copy the initial copy N times.
-            Parallel.ForEach(Enumerable.Range(1, count), i =>
-            {
-                var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i}");
-                CopyFilesRecursively(newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
-                var duplicatedAsseblies = testProject.ProjectReferences
-                    .Select(x =>
-                        new FileDuplication(duplicatedDirectoryPath, Path.GetFileNameWithoutExtension(x) + ".dll"));
-
-                testProjectDuplications.Add(
-                    new TestProjectDuplication(
-                        new FileDuplication(duplicatedDirectoryPath, Path.GetFileName(testProject.AssemblyPath)),
-                        duplicatedAsseblies,
-                        i
-                    )
-                );
-            });
-
-            return testProjectDuplications;
+            return testProjectDuplication;
         }
 
         private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
@@ -105,9 +93,14 @@ namespace Faultify.TestRunner.ProjectDuplication
                 file.CopyTo(Path.Combine(target.FullName, file.Name));
         }
 
+        /// <summary>
+        /// Create a copy based on the initial duplication's data
+        /// </summary>
+        /// <param name="i">the ID of the duplication</param>
+        /// <returns> The newly created duplication </returns>
         public TestProjectDuplication MakeCopy(int i)
         {
-            var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-CLONE-{i}"); //TODO: adjust the folder number
+            var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i + 1}"); //TODO: adjust the folder number
             CopyFilesRecursively(newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
             var duplicatedAsseblies = projectInfo.ProjectReferences
                 .Select(x =>
