@@ -82,25 +82,6 @@ namespace Faultify.TestRunner.ProjectDuplication
                 0
             );
 
-            //TODO: remove once confident
-            // Copy the initial copy N times.
-            //Parallel.ForEach(Enumerable.Range(1, count), i =>
-            //{
-            //    var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i}");
-            //    CopyFilesRecursively(newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
-            //    var duplicatedAsseblies = testProject.ProjectReferences
-            //        .Select(x =>
-            //            new FileDuplication(duplicatedDirectoryPath, Path.GetFileNameWithoutExtension(x) + ".dll"));
-
-            //    testProjectDuplications.Add(
-            //        new TestProjectDuplication(
-            //            new FileDuplication(duplicatedDirectoryPath, Path.GetFileName(testProject.AssemblyPath)),
-            //            duplicatedAsseblies,
-            //            i
-            //        )
-            //    );
-            //});
-
             return testProjectDuplication;
         }
 

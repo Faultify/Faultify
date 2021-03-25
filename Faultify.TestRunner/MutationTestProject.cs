@@ -60,7 +60,6 @@ namespace Faultify.TestRunner
             progressTracker.LogEndPreBuilding();
 
             // Copy project N times
-            //progressTracker.LogBeginProjectDuplication(_parallel); TODO: might wanna remove
             var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
             var duplications = testProjectCopier.MakeInitialCopy(projectInfo);
 
