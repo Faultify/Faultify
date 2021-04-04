@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Faultify.Analyze.Groupings;
+using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
 
 namespace Faultify.Analyze.AssemblyMutator
@@ -13,6 +13,6 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Returns all possible mutations.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel);
+        IEnumerable<IMutationGroup<IMutation>> AllMutations(MutationLevel mutationLevel);
     }
 }

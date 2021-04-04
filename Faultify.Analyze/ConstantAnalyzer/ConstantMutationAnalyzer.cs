@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
 
 namespace Faultify.Analyze.ConstantAnalyzer
@@ -14,7 +15,6 @@ namespace Faultify.Analyze.ConstantAnalyzer
 
         public abstract string Name { get; }
 
-        public abstract IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
-            MutationLevel mutationLevel);
+        public abstract IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel);
     }
 }

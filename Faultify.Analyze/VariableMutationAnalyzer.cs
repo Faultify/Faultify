@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Faultify.Core.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -30,13 +31,14 @@ namespace Faultify.Analyze
 
         public string Name => "Variable Mutation Analyzer";
 
-        public IEnumerable<VariableMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel)
+        public IMutationGroup<VariableMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel)
         {
-            //TODO Check Quick fix
-            if (method?.Body == null)
-                return Enumerable.Empty<VariableMutation>();
+            List<VariableMutation> mutations = new List<VariableMutation>();
 
-            var mutations = new List<VariableMutation>();
+            // NOTE: Commenting this out, may cause errors
+            // if (method?.Body == null)
+            //     mutations = Enumerable.Empty<VariableMutation>();
+
             foreach (var instruction in method.Body.Instructions)
             {
                 // Booleans (0,1) or number literals are loaded on the evaluation stack with 'ldc_...' and popped of with 'stloc'.
@@ -72,11 +74,15 @@ namespace Faultify.Analyze
                 }
                 catch
                 {
-                    // ignore (sometimes `Type.GetType` fails)
+                    Console.Error.WriteLine($"GetType() failed to get the type of {variableDefinition.VariableType}"); // TODO: Use proper logging
                 }
             }
 
-            return mutations;
+            return new MutationGroup<VariableMutation> {
+                Name = Name,
+                Description = Description,
+                Mutations = mutations
+            };
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Faultify.Analyze.ArrayMutationStrategy;
+using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
 using Faultify.Core.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using System;
 
 namespace Faultify.Analyze
 {
@@ -31,17 +34,22 @@ namespace Faultify.Analyze
 
         public string Name => "Array Analyzer";
 
-        /// <summary>
-        ///     Analyzes the method body and searches for dynamic array.
-        /// </summary>
-        /// <param name="method"></param>
-        /// <returns></returns>
-        public IEnumerable<ArrayMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel)
+        public IMutationGroup<ArrayMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel)
         {
-            foreach (var instruction in method.Body.Instructions)
-                // Call the corresponding strategy based on the result
-                if (instruction.IsDynamicArray() && SupportedTypeCheck(instruction))
-                    yield return new ArrayMutation(new DynamicArrayRandomizerStrategy(method), method);
+            // Filter and map arrays
+            IEnumerable<ArrayMutation> arrayMutations =
+                from instruction
+                in method.Body.Instructions
+                where instruction.IsDynamicArray() && SupportedTypeCheck(instruction)
+                select new ArrayMutation(new DynamicArrayRandomizerStrategy(method), method);
+
+            // Build Mutation Group
+            return new MutationGroup<ArrayMutation>
+            {
+                Name = Name,
+                Description = Description,
+                Mutations = arrayMutations
+            };
         }
 
         /// <summary>
@@ -52,7 +60,7 @@ namespace Faultify.Analyze
         private bool SupportedTypeCheck(Instruction newarr)
         {
             var type = ((TypeReference) newarr.Operand).ToSystemType();
-            return Mapped.Types.TryGetValue(type, out _);
+            return Mapped.Types.Contains(type);
         }
     }
 }
