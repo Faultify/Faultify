@@ -88,7 +88,7 @@ namespace Faultify.Tests.UnitTests.Utils
 
             foreach (var instruction in mutateMethod.Body.Instructions)
             {
-                var possibleOperatorMutations = mutator.AnalyzeMutations(instruction, MutationLevel.Detailed);
+                var possibleOperatorMutations = mutator.GenerateMutations(instruction, MutationLevel.Detailed);
 
                 foreach (var mutation in possibleOperatorMutations)
                 {
@@ -126,7 +126,7 @@ namespace Faultify.Tests.UnitTests.Utils
             if (simplify)
                 mutateMethod.Body.SimplifyMacros();
 
-            var possibleOperatorMutations = mutator.AnalyzeMutations(mutateMethod, MutationLevel.Detailed);
+            var possibleOperatorMutations = mutator.GenerateMutations(mutateMethod, MutationLevel.Detailed);
 
             foreach (var mutation in possibleOperatorMutations)
             {
@@ -153,7 +153,7 @@ namespace Faultify.Tests.UnitTests.Utils
 
             var mutator = Activator.CreateInstance<TMutator>();
 
-            var possibleOperatorMutations = mutator.AnalyzeMutations(field, MutationLevel.Detailed);
+            var possibleOperatorMutations = mutator.GenerateMutations(field, MutationLevel.Detailed);
 
             foreach (var mutation in possibleOperatorMutations)
             {
@@ -181,7 +181,7 @@ namespace Faultify.Tests.UnitTests.Utils
                 .FirstOrDefault(x => x.Name == fieldName);
 
             var mutator = Activator.CreateInstance<TMutator>();
-            var mutation = mutator.AnalyzeMutations(field, MutationLevel.Detailed).First();
+            var mutation = mutator.GenerateMutations(field, MutationLevel.Detailed).First();
             mutation.Mutate();
             var mutatedBinaryStream = new MemoryStream();
             module.Write(mutatedBinaryStream);
@@ -198,7 +198,7 @@ namespace Faultify.Tests.UnitTests.Utils
                 .FirstOrDefault(x => x.Name == methodName);
 
             var mutator = Activator.CreateInstance<TMutator>();
-            var mutation = mutator.AnalyzeMutations(method, MutationLevel.Detailed).First();
+            var mutation = mutator.GenerateMutations(method, MutationLevel.Detailed).First();
 
             mutation.Mutate();
             var mutatedBinaryStream = new MemoryStream();

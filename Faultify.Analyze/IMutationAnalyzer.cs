@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
 
 namespace Faultify.Analyze
@@ -24,6 +25,9 @@ namespace Faultify.Analyze
         ///     Analyzes possible mutations in the given scope.
         ///     Returns the mutation that can be either executed or reverted.
         /// </summary>
-        IEnumerable<TMutation> AnalyzeMutations(TScope scope, MutationLevel mutationLevel);
+        /// <param name="scope">Scope in which to evaluate mutations</param>
+        /// <param name="mutationLevel">Optimization and coverage level</param>
+        /// <returns>A <see cref="IMutationGroup{TMutation}"/> containing the mutations</returns>
+        IMutationGroup<TMutation> GenerateMutations(TScope scope, MutationLevel mutationLevel);
     }
 }

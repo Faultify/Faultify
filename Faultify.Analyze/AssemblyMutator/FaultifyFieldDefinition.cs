@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.Groupings;
+using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
 using FieldDefinition = Mono.Cecil.FieldDefinition;
 
@@ -31,7 +31,7 @@ namespace Faultify.Analyze.AssemblyMutator
         public string Name => _fieldDefinition.Name;
         public EntityHandle Handle => MetadataTokens.EntityHandle(_fieldDefinition.MetadataToken.ToInt32());
 
-        public IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
             return ConstantFieldMutations(mutationLevel);
         }
@@ -40,19 +40,14 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Returns possible constant field mutations.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ConstGrouping> ConstantFieldMutations(MutationLevel mutationLevel)
+        public IEnumerable<ConstGroup> ConstantFieldMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _fieldAnalyzers)
             {
-                var mutations = analyzer.AnalyzeMutations(_fieldDefinition, mutationLevel);
+                ConstGroup mutations = (ConstGroup) analyzer.GenerateMutations(_fieldDefinition, mutationLevel);
 
                 if (mutations.Any())
-                    yield return new ConstGrouping  // TODO: Violates encapsulation
-                    {
-                        Mutations = mutations,
-                        Name = analyzer.Name,
-                        Description = analyzer.Description
-                    };
+                    yield return mutations;
             }
         }
     }

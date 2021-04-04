@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
 
 namespace Faultify.Analyze.ConstantAnalyzer
@@ -15,17 +16,30 @@ namespace Faultify.Analyze.ConstantAnalyzer
 
         public override string Name => "Boolean ConstantMutation Analyzer";
 
-        public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
-            MutationLevel mutationLevel)
+        public override IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel)
         {
+
+            var mutations = new List<ConstantMutation>();
+
             if (field.Constant is bool original)
-                yield return new ConstantMutation
+            {
+                mutations.Add(new ConstantMutation
                 {
                     Original = original,
                     ConstantName = field.Name,
                     Replacement = !original,
                     ConstantField = field
-                };
+                });
+
+            }
+
+            return new MutationGroup<ConstantMutation>
+            {
+                Name = Name,
+                Description = Description,
+                Mutations = mutations
+            };
+                
         }
     }
 }
