@@ -106,9 +106,9 @@ namespace Faultify.Tests.UnitTests
             var mutations = method1.OpCodeMutations(MutationLevel.Detailed).Select(x => x).ToList();
 
             var arithmeticMutations =
-                mutations.FirstOrDefault(x => x.AnalyzerName == new ArithmeticMutationAnalyzer().Name);
+                mutations.FirstOrDefault(x => x.Name == new ArithmeticMutationAnalyzer().Name);
             var comparisonMutations =
-                mutations.FirstOrDefault(x => x.AnalyzerName == new ComparisonMutationAnalyzer().Name);
+                mutations.FirstOrDefault(x => x.Name == new ComparisonMutationAnalyzer().Name);
 
             Assert.AreEqual(mutations.Count, 2);
             Assert.IsNotNull(arithmeticMutations, null);
@@ -126,7 +126,7 @@ namespace Faultify.Tests.UnitTests
             var mutations = field.ConstantFieldMutations(MutationLevel.Detailed);
 
             var arithmeticMutations =
-                mutations.FirstOrDefault(x => x.AnalyzerName == new BooleanConstantMutationAnalyzer().Name);
+                mutations.FirstOrDefault(x => x.Name == new BooleanConstantMutationAnalyzer().Name);
 
             Assert.AreEqual(mutations.Count(), 1);
             Assert.IsNotNull(arithmeticMutations, null);

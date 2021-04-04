@@ -47,12 +47,11 @@ namespace Faultify.Analyze.AssemblyMutator
                 var mutations = analyzer.AnalyzeMutations(_fieldDefinition, mutationLevel);
 
                 if (mutations.Any())
-                    yield return new ConstGrouping
+                    yield return new ConstGrouping  // TODO: Violates encapsulation
                     {
                         Mutations = mutations,
-                        Key = analyzer.Name,
-                        AnalyzerName = analyzer.Name,
-                        AnalyzerDescription = analyzer.Description
+                        Name = analyzer.Name,
+                        Description = analyzer.Description
                     };
             }
         }

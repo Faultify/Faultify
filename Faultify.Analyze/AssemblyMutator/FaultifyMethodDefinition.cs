@@ -83,12 +83,11 @@ namespace Faultify.Analyze.AssemblyMutator
                         var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel).ToList();
 
                         if (mutations.Any())
-                            yield return new OpCodeGrouping
+                            yield return new OpCodeGrouping // TODO: Violates encapsulation
                             {
-                                Key = instruction.OpCode.ToString(),
                                 Mutations = mutations,
-                                AnalyzerName = analyzer.Name,
-                                AnalyzerDescription = analyzer.Description
+                                Name = analyzer.Name,
+                                Description = analyzer.Description
                             };
                     }
         }
@@ -103,11 +102,10 @@ namespace Faultify.Analyze.AssemblyMutator
             {
                 var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
 
-                yield return new ConstGrouping
+                yield return new ConstGrouping // TODO: Violates encapsulation
                 {
-                    AnalyzerName = analyzer.Name,
-                    AnalyzerDescription = analyzer.Description,
-                    Key = field.Name,
+                    Name = analyzer.Name,
+                    Description = analyzer.Description,
                     Mutations = mutations
                 };
             }
@@ -117,10 +115,9 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             return _variableMutationAnalyzers.Select(analyzer => new VariableMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel),
-                Key = MethodDefinition.Name,
-                AnalyzerName = analyzer.Name,
-                AnalyzerDescription = analyzer.Description
+                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel), // TODO: Violates encapsulation
+                Name = analyzer.Name,
+                Description = analyzer.Description
             });
         }
 
@@ -128,19 +125,10 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             return _arrayMutationAnalyzers.Select(analyzer => new ArrayMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel),
-                Key = MethodDefinition.Name,
-                AnalyzerName = analyzer.Name,
-                AnalyzerDescription = analyzer.Description
+                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel),  // TODO: Violates encapsulation
+                Name = analyzer.Name,
+                Description = analyzer.Description
             });
-        }
-
-        public class VariableMutationGrouping : BaseGrouping<VariableMutation>
-        {
-        }
-
-        public class ArrayMutationGrouping : BaseGrouping<ArrayMutation>
-        {
         }
     }
 }
