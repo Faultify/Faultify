@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
 
 namespace Faultify.Analyze.ConstantAnalyzer
@@ -27,7 +28,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
 
         public TypeCollection Mapped { get; }
 
-        public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
+        public override IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field,
             MutationLevel mutationLevel)
         {
             var constantMutation = new ConstantMutation
@@ -39,11 +40,17 @@ namespace Faultify.Analyze.ConstantAnalyzer
             };
 
             if (Mapped.Types.TryGetValue(field.Constant.GetType(), out var fieldType))
-            {
                 constantMutation.Replacement = _rng.GenerateValueForField(fieldType, field.Constant);
 
-                yield return constantMutation;
-            }
+            var mutations = new List<ConstantMutation>();
+            mutations.Add(constantMutation);
+
+            return new MutationGroup<ConstantMutation>
+            {
+                Name = Name,
+                Description = Description,
+                Mutations = mutations
+            };
         }
     }
 }

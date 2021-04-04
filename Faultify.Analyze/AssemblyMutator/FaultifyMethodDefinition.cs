@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.Groupings;
+using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -13,17 +13,13 @@ using MethodDefinition = Mono.Cecil.MethodDefinition;
 namespace Faultify.Analyze.AssemblyMutator
 {
     /// <summary>
-    ///     Represents a raw method definition.
+    ///     Contains all of the instructions and mutations within the scope of a method definition.
     /// </summary>
     public class FaultifyMethodDefinition : IMutationProvider, IFaultifyMemberDefinition
     {
         private readonly HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
-
-        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>>
-            _constantReferenceMutationAnalyers;
-
-        private readonly HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> _opcodeMethodAnalyzers;
-
+        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers;
+        private readonly HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> _opCodeMethodAnalyzers;
         private readonly HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
 
 
@@ -32,7 +28,8 @@ namespace Faultify.Analyze.AssemblyMutator
         /// </summary>
         public readonly MethodDefinition MethodDefinition;
 
-        public FaultifyMethodDefinition(MethodDefinition methodDefinition,
+        public FaultifyMethodDefinition(
+            MethodDefinition methodDefinition,
             HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> constantReferenceMutationAnalyers,
             HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> opcodeMethodAnalyzers,
             HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
@@ -40,7 +37,7 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             MethodDefinition = methodDefinition;
             _constantReferenceMutationAnalyers = constantReferenceMutationAnalyers;
-            _opcodeMethodAnalyzers = opcodeMethodAnalyzers;
+            _opCodeMethodAnalyzers = opcodeMethodAnalyzers;
             _variableMutationAnalyzers = variableMutationAnalyzers;
             _arrayMutationAnalyzers = arrayMutationAnalyzers;
         }
@@ -56,43 +53,47 @@ namespace Faultify.Analyze.AssemblyMutator
 
         public EntityHandle Handle => MetadataTokens.EntityHandle(IntHandle);
 
-        public IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel)
+        /// <summary>
+        ///     Returns all available mutations within the scope of this method.
+        /// </summary>
+        public IEnumerable<IMutationGroup<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
             if (MethodDefinition.Body == null)
-                return Enumerable.Empty<IMutationGrouping<IMutation>>();
+                return Enumerable.Empty<IMutationGroup<IMutation>>();
 
             MethodDefinition.Body.SimplifyMacros();
 
-            IEnumerable<IMutationGrouping<IMutation>> opcodeMutations = OpCodeMutations(mutationLevel);
-            IEnumerable<IMutationGrouping<IMutation>> variableMutations = VariableMutations(mutationLevel);
-            IEnumerable<IMutationGrouping<IMutation>> arrayMutations = ArrayMutations(mutationLevel);
+            IEnumerable<IMutationGroup<IMutation>> opcodeMutations = OpCodeMutations(mutationLevel);
+            IEnumerable<IMutationGroup<IMutation>> constantMutations = ConstantReferenceMutations(mutationLevel);
+            IEnumerable<IMutationGroup<IMutation>> variableMutations = VariableMutations(mutationLevel);
+            IEnumerable<IMutationGroup<IMutation>> arrayMutations = ArrayMutations(mutationLevel);
 
-            return opcodeMutations.Concat(variableMutations).Concat(arrayMutations);
+            return opcodeMutations
+                // .Concat(constantMutations) // TODO: Why was this nopt used in the original?
+                .Concat(variableMutations)
+                .Concat(arrayMutations);
         }
 
         /// <summary>
-        ///     Returns all possible mutations from the method its instructions.
+        ///     Returns all operator mutations within the scope of this method.
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<OpCodeGrouping> OpCodeMutations(MutationLevel mutationLevel)
+        public IEnumerable<OpCodeGroup> OpCodeMutations(MutationLevel mutationLevel)
         {
-            foreach (var analyzer in _opcodeMethodAnalyzers)
+            foreach (var analyzer in _opCodeMethodAnalyzers)
                 if (MethodDefinition.Body?.Instructions != null)
                     foreach (var instruction in MethodDefinition.Body?.Instructions)
                     {
-                        var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel).ToList();
+                        OpCodeGroup mutations = (OpCodeGroup) analyzer.GenerateMutations(instruction, mutationLevel);
 
                         if (mutations.Any())
-                            yield return new OpCodeGrouping // TODO: Violates encapsulation
-                            {
-                                Mutations = mutations,
-                                Name = analyzer.Name,
-                                Description = analyzer.Description
-                            };
+                            yield return mutations;
                     }
         }
 
-        public IEnumerable<ConstGrouping> ConstantReferenceMutations(MutationLevel mutationLevel)
+        /// <summary>
+        ///     Returns all literal value mutations within the scope of this method.
+        /// </summary>
+        public IEnumerable<ConstGroup> ConstantReferenceMutations(MutationLevel mutationLevel)
         {
             var fieldReferences = MethodDefinition.Body.Instructions
                 .OfType<FieldReference>();
@@ -100,35 +101,35 @@ namespace Faultify.Analyze.AssemblyMutator
             foreach (var field in fieldReferences)
             foreach (var analyzer in _constantReferenceMutationAnalyers)
             {
-                var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
+                ConstGroup mutations = (ConstGroup) analyzer.GenerateMutations(field.Resolve(), mutationLevel);
 
-                yield return new ConstGrouping // TODO: Violates encapsulation
+                if (mutations.Any())
                 {
-                    Name = analyzer.Name,
-                    Description = analyzer.Description,
-                    Mutations = mutations
-                };
+                    yield return mutations;
+                }
             }
         }
 
-        public IEnumerable<VariableMutationGrouping> VariableMutations(MutationLevel mutationLevel)
+        /// <summary>
+        ///     Returns all variable mutations within the scope of this method.
+        /// </summary>
+        public IEnumerable<VarMutationGroup> VariableMutations(MutationLevel mutationLevel)
         {
-            return _variableMutationAnalyzers.Select(analyzer => new VariableMutationGrouping
-            {
-                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel), // TODO: Violates encapsulation
-                Name = analyzer.Name,
-                Description = analyzer.Description
-            });
+            return
+                from analyzer
+                in _variableMutationAnalyzers
+                select (VarMutationGroup) analyzer.GenerateMutations(MethodDefinition, mutationLevel);
         }
 
-        public IEnumerable<ArrayMutationGrouping> ArrayMutations(MutationLevel mutationLevel)
+        /// <summary>
+        ///     Returns all array mutations within the scope of this method.
+        /// </summary>
+        public IEnumerable<ArrayMutationGroup> ArrayMutations(MutationLevel mutationLevel)
         {
-            return _arrayMutationAnalyzers.Select(analyzer => new ArrayMutationGrouping
-            {
-                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel),  // TODO: Violates encapsulation
-                Name = analyzer.Name,
-                Description = analyzer.Description
-            });
+            return
+                from analyzer
+                in _arrayMutationAnalyzers
+                select (ArrayMutationGroup) analyzer.GenerateMutations(MethodDefinition, mutationLevel);
         }
     }
 }

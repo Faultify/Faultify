@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze.OpcodeAnalyzer
@@ -20,21 +22,39 @@ namespace Faultify.Analyze.OpcodeAnalyzer
         }
 
         public abstract string Description { get; }
-
         public abstract string Name { get; }
 
-        public IEnumerable<OpCodeMutation> AnalyzeMutations(Instruction scope, MutationLevel mutationLevel)
+        public IMutationGroup<OpCodeMutation> GenerateMutations(Instruction scope, MutationLevel mutationLevel)
         {
-            // Store original opcode for a reset later on.
             var original = scope.OpCode;
+            IEnumerable<OpCodeMutation> mutations;
 
-            // Try to get the instruction opcode from the mapped mappedOpCodes.
-            return _mappedOpCodes.TryGetValue(original, out var mutations)
-                ? mutations
-                    .Where(mutant => mutationLevel.HasFlag(mutant.Item1))
-                    .Select(mutant => new OpCodeMutation
-                        {Original = original, Replacement = mutant.Item2, Instruction = scope})
-                : Enumerable.Empty<OpCodeMutation>();
+            try
+            {
+                var targets = _mappedOpCodes[original];
+                mutations =
+                    from target
+                    in targets
+                    where mutationLevel.HasFlag(target.Item1)
+                    select new OpCodeMutation
+                    {
+                        Original = original,
+                        Replacement = target.Item2,
+                        Instruction = scope
+                    };
+            } 
+            catch
+            {
+                Console.Error.WriteLine($"Could not find key in Dictionary: {original}."); // TODO: Use proper logging.
+                mutations = Enumerable.Empty<OpCodeMutation>();
+            }
+
+            return new MutationGroup<OpCodeMutation>
+            {
+                Name = Name,
+                Description = Description,
+                Mutations = mutations
+            };
         }
     }
 }
