@@ -58,10 +58,9 @@ namespace Faultify.Analyze.AssemblyMutator
             foreach (var field in TypeDefinition.Fields)
                 yield return new ConstGrouping
                 {
-                    Mutations = analyzer.AnalyzeMutations(field, mutationLevel),
-                    Key = field.Name,
-                    AnalyzerName = analyzer.Name,
-                    AnalyzerDescription = analyzer.Description
+                    Mutations = analyzer.AnalyzeMutations(field, mutationLevel), // TODO: violates encapsulation
+                    Name = analyzer.Name,
+                    Description = analyzer.Description
                 };
         }
     }
