@@ -82,37 +82,37 @@ namespace Faultify.TestRunner.ProjectDuplication
         public IList<MutationVariant> GetMutationVariants(IList<MutationVariantIdentifier> mutationIdentifiers,
             MutationLevel mutationLevel)
         {
-            var foundMutations = new List<MutationVariant>();
+            List<MutationVariant> foundMutations = new List<MutationVariant>();
 
             foreach (var reference in TestProjectReferences)
             {
-                // Read the reference its contents
+                // Read the reference and its contents
                 using var stream = reference.OpenReadStream();
                 using var binReader = new BinaryReader(stream);
-                var data = binReader.ReadBytes((int) stream.Length);
+                byte[] data = binReader.ReadBytes((int) stream.Length);
 
                 var decompiler = new CodeDecompiler(reference.FullFilePath(), new MemoryStream(data));
 
                 // Create assembly mutator and look up the mutations according to the passed identifiers.
-                var assembly = new AssemblyMutator(new MemoryStream(data));
+                AssemblyMutator assembly = new AssemblyMutator(new MemoryStream(data));
 
-                foreach (var type in assembly.Types)
+                foreach (FaultifyTypeDefinition type in assembly.Types)
                 {
                     var toMutateMethods = new HashSet<string>(
                         mutationIdentifiers.Select(x => x.MemberName)
                     );
 
-                    foreach (var method in type.Methods)
+                    foreach (FaultifyMethodDefinition method in type.Methods)
                     {
                         if (!toMutateMethods.Contains(method.AssemblyQualifiedName))
                             continue;
 
                         var methodMutationId = 0;
 
-                        foreach (var group in method.AllMutations(mutationLevel))
-                        foreach (var mutation in group)
+                        foreach (var mutationGroup in method.AllMutations(mutationLevel))
+                        foreach (var mutation in mutationGroup)
                         {
-                            var mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
+                                MutationVariantIdentifier mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
                                 x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
                             if (mutationIdentifier.MemberName != null)
@@ -126,8 +126,8 @@ namespace Faultify.TestRunner.ProjectDuplication
                                     Mutation = mutation,
                                     MutationAnalyzerInfo = new MutationAnalyzerInfo
                                     {
-                                        AnalyzerDescription = group.Description,
-                                        AnalyzerName = group.Name
+                                        AnalyzerDescription = mutationGroup.Description,
+                                        AnalyzerName = mutationGroup.Name
                                     },
                                     MutationIdentifier = mutationIdentifier
                                 });
@@ -148,7 +148,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         public void FlushMutations(IList<MutationVariant> mutationVariants)
         {
             var assemblies = new HashSet<AssemblyMutator>(mutationVariants.Select(x => x.Assembly));
-            foreach (var assembly in assemblies)
+            foreach (AssemblyMutator assembly in assemblies)
             {
                 var fileDuplication = TestProjectReferences.FirstOrDefault(x =>
                     assembly.Module.Name == x.Name);

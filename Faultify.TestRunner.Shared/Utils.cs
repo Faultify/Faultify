@@ -11,8 +11,8 @@ namespace Faultify.TestRunner.Shared
         /// <returns></returns>
         public static MutationCoverage ReadMutationCoverageFile()
         {
-            using var mmf = MemoryMappedFile.OpenExisting("CoverageFile");
-            using var stream = mmf.CreateViewStream();
+            using MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("CoverageFile");
+            using MemoryMappedViewStream stream = mmf.CreateViewStream();
             using MemoryStream memoryStream = new MemoryStream();
             stream.CopyTo(memoryStream);
             memoryStream.Position = 0;
@@ -26,7 +26,7 @@ namespace Faultify.TestRunner.Shared
         /// <returns></returns>
         public static void WriteMutationCoverageFile(MutationCoverage mutationCoverage)
         {
-            using var mmf = MemoryMappedFile.OpenExisting("CoverageFile", MemoryMappedFileRights.ReadWrite);
+            using MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("CoverageFile", MemoryMappedFileRights.ReadWrite);
             WriteMutationCoverageFile(mutationCoverage, mmf);
         }
 
@@ -43,10 +43,10 @@ namespace Faultify.TestRunner.Shared
 
         public static MemoryMappedFile CreateCoverageMemoryMappedFile()
         {
-            var file = File.Create(TestRunnerConstants.CoverageFileName);
+            FileStream file = File.Create(TestRunnerConstants.CoverageFileName);
             file.Dispose();
 
-            var fileStream = new FileStream(TestRunnerConstants.CoverageFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            FileStream fileStream = new FileStream(TestRunnerConstants.CoverageFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             return MemoryMappedFile.CreateFromFile(fileStream, "CoverageFile", 20000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, true);
         }
     }

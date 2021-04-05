@@ -10,9 +10,8 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TestResult = Faultify.TestRunner.Shared.TestResult;
 
-namespace Faultify.TestRunner.NUnit
+namespace Faultify.TestRunner.TestRun.TestHostRunners
 {
-    [Obsolete("Moved into TestRunner.TestRun.TestHostRunners")]
     public class NUnitTestHostRunner : ITestHostRunner
     {
         private readonly string _testProjectAssemblyPath;
@@ -21,7 +20,7 @@ namespace Faultify.TestRunner.NUnit
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
         public TestFramework TestFramework => TestFramework.NUnit;
 
-        public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger _)
+        public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
             _testProjectAssemblyPath = testProjectAssemblyPath;
             _timeout = timeout;

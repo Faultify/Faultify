@@ -46,7 +46,7 @@ namespace Faultify.TestRunner.Collector
         {
             try
             {
-                var serialized = _testResults.Serialize();
+                byte[] serialized = _testResults.Serialize();
                 File.WriteAllBytes(TestRunnerConstants.TestsFileName, serialized);
             }
             catch (Exception)

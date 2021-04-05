@@ -26,7 +26,7 @@ namespace Faultify.TestRunner
             {
                 foreach (var testResult in testResults.Tests)
                 {
-                    var mutation =
+                    MutationVariant mutation =
                         mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Any(y => y == testResult.Name));
 
                     if (mutation?.Mutation == null)

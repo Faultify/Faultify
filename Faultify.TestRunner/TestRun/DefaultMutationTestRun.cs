@@ -23,16 +23,16 @@ namespace Faultify.TestRunner.TestRun
         public int MutationCount => MutationIdentifiers.Count;
 
         public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
-            MutationSessionProgressTracker sessionProgressTracker, ITestHostRunFactory testHostRunnerFactory,
-            TestProjectDuplication testProject, ILogger logger)
+            MutationSessionProgressTracker sessionProgressTracker, TestHost testHost,
+            TestProjectDuplication testProject, NLog.ILogger logger)
         {
             ExecuteMutations(testProject);
 
             var runningTests = _mutationVariants.Where(y => !y.CausesTimeOut)
                 .SelectMany(x => x.MutationIdentifier.TestCoverage);
 
-            var testRunner = testHostRunnerFactory.CreateTestRunner(testProject.TestProjectFile.FullFilePath(),
-                timeout, logger);
+            var testRunner = TestHostRunnerFactory.CreateTestRunner(testProject.TestProjectFile.FullFilePath(), TimeSpan.FromSeconds(12),
+                testHost);
 
             var testResults =
                 await testRunner.RunTests(timeout, sessionProgressTracker, runningTests);

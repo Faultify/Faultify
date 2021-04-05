@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Faultify.TestRunner.Dotnet
+namespace Faultify.TestRunner.TestRun.TestHostRunners
 {
-    [Obsolete("Moved into TestRunner.TestRun.TestHostRunners")]
     /// <summary>
     ///     Dotnet command argument builder.
     /// </summary>

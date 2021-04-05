@@ -32,8 +32,9 @@ namespace Faultify.Injection
             {
                 Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
             }
-            catch (Exception _)
+            catch (Exception ex)
             {
+                Console.WriteLine("previously ignored Exception caught in CoverageRegistry: {0}", ex);
                 // ignored
             }
         }
@@ -60,6 +61,7 @@ namespace Faultify.Injection
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine("previously ignored Exception-2 caught in CoverageRegistry: {0}", ex);
                     // ignored
                 }
             }

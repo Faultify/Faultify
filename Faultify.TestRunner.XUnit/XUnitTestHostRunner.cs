@@ -11,11 +11,13 @@ using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.XUnit
 {
+    [Obsolete("Moved into TestRunner.TestRun.TestHostRunners")]
     public class XUnitTestHostRunner : ITestHostRunner
     {
         private readonly string _testProjectAssemblyPath;
         private readonly TestResults _testResults = new TestResults();
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
+        public TestFramework TestFramework => TestFramework.XUnit;
 
         public XUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan _0, ILogger _1)
         {
