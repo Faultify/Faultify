@@ -20,15 +20,6 @@ namespace Faultify.Analyze
     /// </summary>
     public class ArrayMutationAnalyzer : IMutationAnalyzer<ArrayMutation, MethodDefinition>
     {
-        public ArrayMutationAnalyzer()
-        {
-            Mapped = new TypeCollection();
-            Mapped.Types.Add(typeof(char));
-            Mapped.AddBooleanTypes();
-            Mapped.AddIntegerTypes();
-        }
-
-        public TypeCollection Mapped { get; }
 
         public string Description => "Analyzer that searches for possible array mutations.";
 
@@ -40,7 +31,7 @@ namespace Faultify.Analyze
             IEnumerable<ArrayMutation> arrayMutations =
                 from instruction
                 in method.Body.Instructions
-                where instruction.IsDynamicArray() && SupportedTypeCheck(instruction)
+                where instruction.IsDynamicArray() && isArrayType(instruction)
                 select new ArrayMutation(new DynamicArrayRandomizerStrategy(method), method);
 
             // Build Mutation Group
@@ -52,15 +43,11 @@ namespace Faultify.Analyze
             };
         }
 
-        /// <summary>
-        ///     Checks if the to be mutated array is of a supported type
-        /// </summary>
-        /// <param name="newarr"></param>
-        /// <returns></returns>
-        private bool SupportedTypeCheck(Instruction newarr)
+        private bool isArrayType(Instruction newarr)
         {
+            // Cast generic operand into its system type
             var type = ((TypeReference) newarr.Operand).ToSystemType();
-            return Mapped.Types.Contains(type);
+            return TypeChecker.IsArrayType(type);
         }
     }
 }
