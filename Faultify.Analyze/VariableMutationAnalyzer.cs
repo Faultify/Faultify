@@ -20,11 +20,7 @@ namespace Faultify.Analyze
         public VariableMutationAnalyzer()
         {
             _valueGenerator = new RandomValueGenerator();
-            Mapped = new TypeCollection();
-            Mapped.AddBooleanTypes();
         }
-
-        public TypeCollection Mapped { get; }
 
         public string Description =>
             "Analyzer that searches for possible variable mutations such as 'true' to 'false'.";
@@ -48,14 +44,10 @@ namespace Faultify.Analyze
 
                 if (instruction.OpCode != OpCodes.Stloc) continue;
 
-                var variableDefinition = instruction.Operand as VariableDefinition;
-
-                if (variableDefinition == null) continue;
-
                 try
                 {
-                    // Get variable type.
-                    var variableType = Type.GetType(variableDefinition.VariableType.ToString());
+                    // Get variable type. Might throw InvalidCastException
+                    var type = ((TypeReference) instruction.Operand).ToSystemType();
 
                     // Get previous instruction.
                     var variableInstruction = instruction.Previous;
@@ -64,17 +56,18 @@ namespace Faultify.Analyze
                     if (!variableInstruction.IsLdc()) continue;
 
                     // If the value is mapped then mutate it.
-                    if (Mapped.Types.TryGetValue(variableType, out var type))
-                        mutations.Add(new VariableMutation
-                        {
-                            Original = variableInstruction.Operand,
-                            Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
-                            Variable = variableInstruction
-                        });
+                    if (TypeChecker.IsVariableType(type))
+                        mutations.Add(
+                            new VariableMutation
+                            {
+                                Original = variableInstruction.Operand,
+                                Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
+                                Variable = variableInstruction
+                            });
                 }
-                catch
+                catch (InvalidCastException e)
                 {
-                    Console.Error.WriteLine($"GetType() failed to get the type of {variableDefinition.VariableType}"); // TODO: Use proper logging
+                    Console.Error.WriteLine($"{e} exception caught."); // TODO: Use proper logging
                 }
             }
 
