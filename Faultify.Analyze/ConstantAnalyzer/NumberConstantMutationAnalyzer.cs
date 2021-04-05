@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
@@ -15,18 +16,11 @@ namespace Faultify.Analyze.ConstantAnalyzer
     {
         private readonly RandomValueGenerator _rng = new RandomValueGenerator();
 
-        public NumberConstantMutationAnalyzer()
-        {
-            Mapped = new TypeCollection();
-            Mapped.AddIntegerTypes();
-        }
-
         public override string Description =>
             "Analyzer that searches for possible number constant mutations such as '5' to a random int like '971231'.";
 
         public override string Name => "Number ConstantMutation Analyzer";
 
-        public TypeCollection Mapped { get; }
 
         public override IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field,
             MutationLevel mutationLevel)
@@ -39,11 +33,15 @@ namespace Faultify.Analyze.ConstantAnalyzer
                 ConstantField = field
             };
 
-            if (Mapped.Types.TryGetValue(field.Constant.GetType(), out var fieldType))
-                constantMutation.Replacement = _rng.GenerateValueForField(fieldType, field.Constant);
+            Type type = field.Constant.GetType();
 
-            var mutations = new List<ConstantMutation>();
-            mutations.Add(constantMutation);
+            if (TypeChecker.IsConstantType(type))
+                constantMutation.Replacement = _rng.GenerateValueForField(type, field.Constant);
+
+            var mutations = new List<ConstantMutation>
+            {
+                constantMutation
+            };
 
             return new MutationGroup<ConstantMutation>
             {
