@@ -28,5 +28,10 @@ namespace Faultify.TestRunner
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Identifies what test framework is being used
+        /// </summary>
+        public TestFramework TestFramework { get;}
     }
 }

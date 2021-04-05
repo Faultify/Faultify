@@ -102,7 +102,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         {
             var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i + 1}"); //TODO: adjust the folder number
             CopyFilesRecursively(newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
-            var duplicatedAsseblies = projectInfo.ProjectReferences
+            IEnumerable<FileDuplication> duplicatedAsseblies = projectInfo.ProjectReferences
                 .Select(x =>
                     new FileDuplication(duplicatedDirectoryPath, Path.GetFileNameWithoutExtension(x) + ".dll"));
 

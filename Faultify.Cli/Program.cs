@@ -142,14 +142,10 @@ namespace Faultify.Cli
         private async Task<TestProjectReportModel> RunMutationTest(Settings settings,
             MutationSessionProgressTracker progressTracker)
         {
-            ITestHostRunFactory testHost = settings.TestHost switch
-            {
-                _ => new NUnitTestHostRunnerFactory() // TODO: Use Faultify.TestRunner.XUnit/NUnit for in memory testing. 
-            };
 
             var mutationTestProject =
                 new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
-                    _loggerFactory, testHost);
+                    _loggerFactory, settings.TestHost);
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }

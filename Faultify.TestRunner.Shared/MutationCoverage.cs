@@ -41,11 +41,11 @@ namespace Faultify.TestRunner.Shared
             var memoryStream = new MemoryStream();
             var binaryWriter = new BinaryWriter(memoryStream);
             binaryWriter.Write(Coverage.Count);
-            foreach (var (key, value) in Coverage)
+            foreach ((string key, List<RegisteredCoverage> value) in Coverage)
             {
                 binaryWriter.Write(key);
                 binaryWriter.Write(value.Count);
-                foreach (var entityHandle in value)
+                foreach (RegisteredCoverage entityHandle in value)
                 {
                     binaryWriter.Write(entityHandle.AssemblyName);
                     binaryWriter.Write(entityHandle.EntityHandle);
@@ -64,13 +64,13 @@ namespace Faultify.TestRunner.Shared
             var count = binaryReader.ReadInt32();
             for (var i = 0; i < count; i++)
             {
-                var key = binaryReader.ReadString();
+                string key = binaryReader.ReadString();
                 var listCount = binaryReader.ReadInt32();
-                var entityHandles = new List<RegisteredCoverage>(listCount);
+                List<RegisteredCoverage> entityHandles = new List<RegisteredCoverage>(listCount);
                 for (var j = 0; j < listCount; j++)
                 {
-                    var fullQualifiedName = binaryReader.ReadString();
-                    var entityHandle = binaryReader.ReadInt32();
+                    string fullQualifiedName = binaryReader.ReadString();
+                    int entityHandle = binaryReader.ReadInt32();
                     entityHandles.Add(new RegisteredCoverage(fullQualifiedName, entityHandle));
                 }
 

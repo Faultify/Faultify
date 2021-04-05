@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestProcess;
 using Microsoft.Extensions.Logging;
+using NLog;
 
-namespace Faultify.TestRunner.Dotnet
+namespace Faultify.TestRunner.TestRun.TestHostRunners
 {
-    [Obsolete("Moved into TestRunner.TestRun.TestHostRunners")]
     /// <summary>
     ///     Runs the mutation test with 'dotnet test'.
     /// </summary>
     public class DotnetTestHostRunner : ITestHostRunner
     {
         private static readonly bool DisableOutput = true;
-        private readonly ILogger _logger;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string _testAdapterPath;
         private readonly DirectoryInfo _testDirectoryInfo;
 
@@ -27,13 +27,13 @@ namespace Faultify.TestRunner.Dotnet
         private readonly TimeSpan _timeout;
         public TestFramework TestFramework => TestFramework.None;
 
-        public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
             _testFileInfo = new FileInfo(testProjectAssemblyPath);
             _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName);
 
             _timeout = timeout;
-            _logger = logger;
+             
             _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
@@ -136,7 +136,7 @@ namespace Faultify.TestRunner.Dotnet
         /// <returns></returns>
         private ProcessRunner BuildTestProcessRunner(IEnumerable<string> tests)
         {
-            string testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
+            var testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
                 .WithTimeout(_timeout)
@@ -146,7 +146,7 @@ namespace Faultify.TestRunner.Dotnet
                 .DisableDump()
                 .Build();
 
-            ProcessStartInfo testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
+            var testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -166,7 +166,7 @@ namespace Faultify.TestRunner.Dotnet
         /// <returns></returns>
         private ProcessRunner BuildCodeCoverageTestProcessRunner()
         {
-            string coverageArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
+            var coverageArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
                 .WithTimeout(_timeout)
@@ -175,7 +175,7 @@ namespace Faultify.TestRunner.Dotnet
                 .DisableDump()
                 .Build();
 
-            ProcessStartInfo coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
+            var coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
