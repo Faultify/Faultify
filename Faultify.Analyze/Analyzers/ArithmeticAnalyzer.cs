@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mono.Cecil.Cil;
 
-namespace Faultify.Analyze.Analyzers.Analyzers
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible arithmetic mutations inside a method definition.

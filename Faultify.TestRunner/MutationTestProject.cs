@@ -1,4 +1,5 @@
-﻿using System;
+﻿extern alias MC;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,7 +18,7 @@ using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
 using Faultify.TestRunner.TestRun.TestHostRunners;
 using Microsoft.Extensions.Logging;
-using Mono.Cecil;
+using MC.Mono.Cecil;
 using Newtonsoft.Json.Linq;
 using NLog;
 
@@ -62,10 +63,10 @@ namespace Faultify.TestRunner
 
             // Copy project N times
             var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
-            var duplications = testProjectCopier.MakeInitialCopy(projectInfo);
+            //var duplications = testProjectCopier.MakeInitialCopy(projectInfo); TODO: remove altogether
 
             // Begin code coverage on first project.
-            TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(0);
+            TestProjectDuplication coverageProject = testProjectCopier.MakeInitialCopy(projectInfo);
             TestProjectInfo coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 

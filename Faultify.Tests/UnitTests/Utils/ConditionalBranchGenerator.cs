@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+﻿extern alias MC;
+using System.Collections.Generic;
+using MC.Mono.Cecil;
+using MC.Mono.Cecil.Cil;
 
 namespace Faultify.Tests.UnitTests.Utils
 {

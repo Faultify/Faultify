@@ -98,41 +98,47 @@ namespace Faultify.TestRunner.ProjectDuplication
 
                 foreach (FaultifyTypeDefinition type in assembly.Types)
                 {
+                    // this might want to be moved outside.
+                    // The operation is entirely a read operation that doesn't have to be done multiple times.
                     var toMutateMethods = new HashSet<string>(
                         mutationIdentifiers.Select(x => x.MemberName)
                     );
 
                     foreach (FaultifyMethodDefinition method in type.Methods)
                     {
-                        if (!toMutateMethods.Contains(method.AssemblyQualifiedName))
-                            continue;
+                        //maybe move this out but probably impossibru
+                        if (!toMutateMethods.Contains(method.AssemblyQualifiedName)) continue;
 
                         var methodMutationId = 0;
 
                         foreach (var mutationGroup in method.AllMutations(mutationLevel))
-                        foreach (var mutation in mutationGroup)
                         {
+                            foreach (var mutation in mutationGroup)
+                            {
                                 MutationVariantIdentifier mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
                                 x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
-                            if (mutationIdentifier.MemberName != null)
-                                foundMutations.Add(new MutationVariant
+                                if (mutationIdentifier.MemberName != null)
                                 {
-                                    Assembly = assembly,
-                                    CausesTimeOut = false,
-                                    MemberHandle = method.Handle,
-                                    OriginalSource = decompiler.Decompile(method.Handle),
-                                    MutatedSource = "",
-                                    Mutation = mutation,
-                                    MutationAnalyzerInfo = new MutationAnalyzerInfo
+                                    foundMutations.Add(new MutationVariant
                                     {
-                                        AnalyzerDescription = mutationGroup.Description,
-                                        AnalyzerName = mutationGroup.Name
-                                    },
-                                    MutationIdentifier = mutationIdentifier
-                                });
+                                        Assembly = assembly,
+                                        CausesTimeOut = false,
+                                        MemberHandle = method.Handle,
+                                        OriginalSource = decompiler.Decompile(method.Handle), // this might not be a good idea
+                                        MutatedSource = "",
+                                        Mutation = mutation,
+                                        MutationAnalyzerInfo = new MutationAnalyzerInfo
+                                        {
+                                            AnalyzerDescription = mutationGroup.Description,
+                                            AnalyzerName = mutationGroup.Name
+                                        },
+                                        MutationIdentifier = mutationIdentifier
+                                    });
+                                }
 
-                            methodMutationId++;
+                                methodMutationId++;
+                            }
                         }
                     }
                 }

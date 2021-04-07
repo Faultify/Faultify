@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Faultify.Analyze.Analyzers;
-using Faultify.Analyze.ConstantAnalyzer;
 using Faultify.Analyze.Mutation;
 using Mono.Cecil;
 using Mono.Cecil.Cil;

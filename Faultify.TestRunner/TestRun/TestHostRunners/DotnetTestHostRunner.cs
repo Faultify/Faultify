@@ -58,8 +58,8 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                     ProcessRunner testProcessRunner = BuildTestProcessRunner(remainingTests);
 
                     await testProcessRunner.RunAsync();
-                    _logger.LogDebug(testProcessRunner.Output.ToString());
-                    _logger.LogError(testProcessRunner.Error.ToString());
+                    _logger.Debug(testProcessRunner.Output.ToString());
+                    _logger.Error(testProcessRunner.Error.ToString());
 
                     byte[] testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath,
                         new CancellationTokenSource(timeout).Token);
@@ -75,7 +75,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 }
                 catch (FileNotFoundException)
                 {
-                    _logger.LogError(
+                    _logger.Error(
                         "The file 'test_results.bin' was not generated." +
                         "This implies that the test run can not be completed. " +
                         "Consider opening up an issue with the logs found in the output folder."
@@ -108,8 +108,8 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
 
                 string output = coverageProcessRunner.Output.ToString();
 
-                _logger.LogDebug(output);
-                _logger.LogError(coverageProcessRunner.Error.ToString());
+                _logger.Debug(output);
+                _logger.Error(coverageProcessRunner.Error.ToString());
 
                 if (process.ExitCode != 0)
                 {
@@ -120,7 +120,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
             }
             catch (FileNotFoundException)
             {
-                _logger.LogError(
+                _logger.Error(
                     "The file 'coverage.bin' was not generated." +
                     "This implies that the test run can not be completed. " +
                     "Consider opening up an issue with the logs found in the output folder."
@@ -155,7 +155,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 RedirectStandardError = DisableOutput
             };
 
-            _logger.LogDebug($"Test process process arguments: {testArguments}");
+            _logger.Debug($"Test process process arguments: {testArguments}");
 
             return new ProcessRunner(testProcessStartInfo);
         }
@@ -184,7 +184,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 WorkingDirectory = _testDirectoryInfo.FullName
             };
 
-            _logger.LogDebug($"Coverage test process arguments: {coverageArguments}");
+            _logger.Debug($"Coverage test process arguments: {coverageArguments}");
 
             return new ProcessRunner(coverageProcessStartInfo);
         }
