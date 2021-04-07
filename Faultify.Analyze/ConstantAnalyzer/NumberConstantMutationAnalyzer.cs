@@ -35,13 +35,11 @@ namespace Faultify.Analyze.ConstantAnalyzer
 
             Type type = field.Constant.GetType();
 
-            if (TypeChecker.IsConstantType(type))
+            if (TypeChecker.IsConstantType(type)) {
                 constantMutation.Replacement = _rng.GenerateValueForField(type, field.Constant);
+            }
 
-            var mutations = new List<ConstantMutation>
-            {
-                constantMutation
-            };
+            var mutations = new List<ConstantMutation>{ constantMutation };
 
             return new MutationGroup<ConstantMutation>
             {
