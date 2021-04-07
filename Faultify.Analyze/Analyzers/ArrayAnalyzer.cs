@@ -8,7 +8,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 
-namespace Faultify.Analyze
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible array mutations inside a method definition.
@@ -18,7 +18,7 @@ namespace Faultify.Analyze
     ///     - Only array of the following types: double, float, long, ulong, int, uint, byte, sbyte, short, ushort, char,
     ///     boolean.
     /// </summary>
-    public class ArrayMutationAnalyzer : IMutationAnalyzer<ArrayMutation, MethodDefinition>
+    public class ArrayAnalyzer : IAnalyzer<ArrayMutation, MethodDefinition>
     {
 
         public string Description => "Analyzer that searches for possible array mutations.";
@@ -46,7 +46,7 @@ namespace Faultify.Analyze
         private bool isArrayType(Instruction newarr)
         {
             // Cast generic operand into its system type
-            var type = ((TypeReference) newarr.Operand).ToSystemType();
+            var type = ((TypeReference)newarr.Operand).ToSystemType();
             return TypeChecker.IsArrayType(type);
         }
     }

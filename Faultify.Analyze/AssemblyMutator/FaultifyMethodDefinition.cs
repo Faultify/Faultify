@@ -17,10 +17,10 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyMethodDefinition : IMutationProvider, IFaultifyMemberDefinition
     {
-        private readonly HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
-        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers;
-        private readonly HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> _opCodeMethodAnalyzers;
-        private readonly HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
+        private readonly HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
+        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers;
+        private readonly HashSet<IAnalyzer<OpCodeMutation, Instruction>> _opCodeMethodAnalyzers;
+        private readonly HashSet<IAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
 
 
         /// <summary>
@@ -30,10 +30,10 @@ namespace Faultify.Analyze.AssemblyMutator
 
         public FaultifyMethodDefinition(
             MethodDefinition methodDefinition,
-            HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> constantReferenceMutationAnalyers,
-            HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> opcodeMethodAnalyzers,
-            HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
-            HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers)
+            HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> constantReferenceMutationAnalyers,
+            HashSet<IAnalyzer<OpCodeMutation, Instruction>> opcodeMethodAnalyzers,
+            HashSet<IAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
+            HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers)
         {
             MethodDefinition = methodDefinition;
             _constantReferenceMutationAnalyers = constantReferenceMutationAnalyers;

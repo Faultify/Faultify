@@ -1,4 +1,4 @@
-﻿namespace Faultify.Analyze.OpcodeAnalyzer
+﻿namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible logical mutations inside a method definition.
@@ -6,7 +6,7 @@
     ///     The logical operators are compiled to bitwise operations in IL-code.
     ///     Therefore the same mutation logic can be applied.
     /// </summary>
-    public class LogicalMutationAnalyzer : BitwiseMutationAnalyzer
+    public class LogicalAnalyzer : BitwiseAnalyzer
     {
         public override string Description =>
             "Analyzer that searches for possible logical mutations such as '&&' to '||'.";

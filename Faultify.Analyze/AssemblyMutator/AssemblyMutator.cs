@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Faultify.Analyze.Analyzers;
 using Faultify.Analyze.ConstantAnalyzer;
 using Faultify.Analyze.Mutation;
-using Faultify.Analyze.OpcodeAnalyzer;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -15,10 +15,10 @@ namespace Faultify.Analyze.AssemblyMutator
     ///     It can be extended with custom analyzers.
     ///     Though an extension must correspond to one of the following collections in `AssemblyMutator`:
     ///     <br /><br />
-    ///     - ArrayMutationAnalyzers(<see cref="ArrayMutationAnalyzer" />)<br />
-    ///     - ConstantAnalyzers(<see cref="VariableMutationAnalyzer" />)<br />
-    ///     - VariableMutationAnalyzer(<see cref="ConstantMutationAnalyzer" />)<br />
-    ///     - OpCodeMutationAnalyzer(<see cref="OpCodeMutationAnalyzer" />)<br />
+    ///     - ArrayMutationAnalyzers(<see cref="ArrayAnalyzer" />)<br />
+    ///     - ConstantAnalyzers(<see cref="VariableAnalyzer" />)<br />
+    ///     - VariableMutationAnalyzer(<see cref="Analyzers.ConstantAnalyzer" />)<br />
+    ///     - OpCodeMutationAnalyzer(<see cref="OpCodeAnalyzer" />)<br />
     ///     <br /><br />
     ///     If you add your analyzer to one of those collections then it will be used in the process of analyzing.
     ///     Unfortunately, if your analyzer does not fit the interfaces, it can not be used with the `AssemblyMutator`.
@@ -28,41 +28,41 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <summary>
         ///     Analyzers that search for possible array mutations inside a method definition.
         /// </summary>
-        public HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> ArrayMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>>
+        public HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> ArrayMutationAnalyzers =
+            new HashSet<IAnalyzer<ArrayMutation, MethodDefinition>>
             {
-                new ArrayMutationAnalyzer()
+                new ArrayAnalyzer()
             };
 
         /// <summary>
         ///     Analyzers that search for possible constant mutations.
         /// </summary>
-        public HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
-            new HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>>
+        public HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
+            new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
             {
-                new BooleanConstantMutationAnalyzer(),
-                new NumberConstantMutationAnalyzer(),
-                new StringConstantMutationAnalyzer()
+                new BooleanConstantAnalyzer(),
+                new NumberConstantAnalyzer(),
+                new StringConstantAnalyzer()
             };
 
         /// <summary>
         ///     Analyzers that search for possible opcode mutations.
         /// </summary>
-        public HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> OpCodeMethodAnalyzers =
-            new HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>>
+        public HashSet<IAnalyzer<OpCodeMutation, Instruction>> OpCodeMethodAnalyzers =
+            new HashSet<IAnalyzer<OpCodeMutation, Instruction>>
             {
-                new ArithmeticMutationAnalyzer(),
-                new ComparisonMutationAnalyzer(),
-                new BitwiseMutationAnalyzer()
+                new ArithmeticAnalyzer(),
+                new ComparisonAnalyzer(),
+                new BitwiseAnalyzer()
             };
 
         /// <summary>
         ///     Analyzers that search for possible variable mutations.
         /// </summary>
-        public HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> VariableMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>>
+        public HashSet<IAnalyzer<VariableMutation, MethodDefinition>> VariableMutationAnalyzers =
+            new HashSet<IAnalyzer<VariableMutation, MethodDefinition>>
             {
-                new VariableMutationAnalyzer()
+                new VariableAnalyzer()
             };
 
         public AssemblyMutator(Stream stream)

@@ -8,18 +8,18 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NLog;
 
-namespace Faultify.Analyze
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible variable mutations.
     ///     Mutations such as 'true' to 'false'
     /// </summary>
-    public class VariableMutationAnalyzer : IMutationAnalyzer<VariableMutation, MethodDefinition>
+    public class VariableAnalyzer : IAnalyzer<VariableMutation, MethodDefinition>
     {
         private readonly RandomValueGenerator _valueGenerator;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public VariableMutationAnalyzer()
+        public VariableAnalyzer()
         {
             _valueGenerator = new RandomValueGenerator();
         }
@@ -49,7 +49,7 @@ namespace Faultify.Analyze
                 try
                 {
                     // Get variable type. Might throw InvalidCastException
-                    Type type = ((TypeReference) instruction.Operand).ToSystemType();
+                    Type type = ((TypeReference)instruction.Operand).ToSystemType();
 
                     // Get previous instruction.
                     Instruction variableInstruction = instruction.Previous;
@@ -75,7 +75,8 @@ namespace Faultify.Analyze
                 }
             }
 
-            return new MutationGroup<VariableMutation> {
+            return new MutationGroup<VariableMutation>
+            {
                 Name = Name,
                 Description = Description,
                 Mutations = mutations

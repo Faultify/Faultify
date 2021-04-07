@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Mono.Cecil.Cil;
 
-namespace Faultify.Analyze.OpcodeAnalyzer
+namespace Faultify.Analyze.Analyzers.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible arithmetic mutations inside a method definition.
     ///     Mutations such as '+' to '-', '*', '/', and '%'.
     /// </summary>
-    public class ArithmeticMutationAnalyzer : OpCodeMutationAnalyzer
+    public class ArithmeticAnalyzer : OpCodeAnalyzer
     {
         private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Arithmetic =
             new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
@@ -68,7 +68,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                 }
             };
 
-        public ArithmeticMutationAnalyzer() : base(Arithmetic)
+        public ArithmeticAnalyzer() : base(Arithmetic)
         {
         }
 

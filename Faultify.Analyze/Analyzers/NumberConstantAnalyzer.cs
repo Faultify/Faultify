@@ -4,7 +4,7 @@ using Faultify.Analyze.Mutation;
 using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
 
-namespace Faultify.Analyze.ConstantAnalyzer
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible integer constant mutations inside a type definition.
@@ -12,7 +12,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
     ///     Supports: int, double, long, short, sbyte, uint, ulong, ushort, byte and float.
     ///     It is possible to choose what types to mutate by initiating the class with a hashset of types
     /// </summary>
-    public class NumberConstantMutationAnalyzer : ConstantMutationAnalyzer
+    public class NumberConstantAnalyzer : ConstantAnalyzer
     {
         private readonly RandomValueGenerator _rng = new RandomValueGenerator();
 
@@ -35,11 +35,12 @@ namespace Faultify.Analyze.ConstantAnalyzer
 
             Type type = field.Constant.GetType();
 
-            if (TypeChecker.IsConstantType(type)) {
+            if (TypeChecker.IsConstantType(type))
+            {
                 constantMutation.Replacement = _rng.GenerateValueForField(type, field.Constant);
             }
 
-            var mutations = new List<ConstantMutation>{ constantMutation };
+            var mutations = new List<ConstantMutation> { constantMutation };
 
             return new MutationGroup<ConstantMutation>
             {
