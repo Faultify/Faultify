@@ -38,7 +38,7 @@ namespace Faultify.Tests.UnitTests
             var expected = true;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<LogicalAnalyzer>(binary, "AndOperator", OpCodes.Or);
+            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Or);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var instance = binaryInteractor.CreateInstance(nameSpace);
@@ -57,7 +57,7 @@ namespace Faultify.Tests.UnitTests
             var expected = false;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<LogicalAnalyzer>(binary, "AndOperator", OpCodes.Xor);
+            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Xor);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var instance = binaryInteractor.CreateInstance(nameSpace);
@@ -113,7 +113,7 @@ namespace Faultify.Tests.UnitTests
             var expected = true;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<LogicalAnalyzer>(binary, "OrOperator", OpCodes.And);
+            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "OrOperator", OpCodes.And);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var instance = binaryInteractor.CreateInstance(nameSpace);
@@ -132,7 +132,7 @@ namespace Faultify.Tests.UnitTests
             var expected = false;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<LogicalAnalyzer>(binary, "OrOperator", OpCodes.Xor);
+            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "OrOperator", OpCodes.Xor);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var instance = binaryInteractor.CreateInstance(nameSpace);

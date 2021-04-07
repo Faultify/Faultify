@@ -28,5 +28,7 @@ namespace Faultify.Analyze.Mutation
         {
             Variable.Operand = Original;
         }
+
+        public string Report => $"Change variable from: '{Original}' to: '{Replacement}'.";
     }
 }

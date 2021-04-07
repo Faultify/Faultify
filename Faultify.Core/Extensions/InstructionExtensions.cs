@@ -8,11 +8,18 @@ namespace Faultify.Core.Extensions
     {
         public static bool IsDynamicArray(this Instruction instruction)
         {
-            return
-                instruction.OpCode == OpCodes.Newarr &&
-                instruction.Next.OpCode == OpCodes.Dup &&
-                instruction.Next.Next.OpCode == OpCodes.Ldtoken &&
-                instruction.Next.Next.Next.OpCode == OpCodes.Call;
+            try
+            {
+                return
+                    instruction.OpCode == OpCodes.Newarr &&
+                    instruction.Next.OpCode == OpCodes.Dup &&
+                    instruction.Next.Next.OpCode == OpCodes.Ldtoken &&
+                    instruction.Next.Next.Next.OpCode == OpCodes.Call;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static Type ToSystemType(this TypeReference typeRef)

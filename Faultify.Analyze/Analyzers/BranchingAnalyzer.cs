@@ -21,9 +21,7 @@ namespace Faultify.Analyze.Analyzers
                 {OpCodes.Brfalse_S, new[] {(MutationLevel.Simple, OpCodes.Brtrue_S)}}
             };
 
-        public BranchingAnalyzer() : base(Bitwise)
-        {
-        }
+        public BranchingAnalyzer() : base(Bitwise) { }
 
         public override string Description =>
             "Analyzer that searches for possible boolean branch mutations such as such as 'if(condition)' to 'if(!condition).";

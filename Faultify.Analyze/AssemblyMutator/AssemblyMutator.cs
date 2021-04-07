@@ -39,9 +39,7 @@ namespace Faultify.Analyze.AssemblyMutator
         public HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
             new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
             {
-                new BooleanConstantAnalyzer(),
-                new NumberConstantAnalyzer(),
-                new StringConstantAnalyzer()
+                new ConstantAnalyzer()
             };
 
         /// <summary>

@@ -77,9 +77,7 @@ namespace Faultify.Analyze.Analyzers
                 {OpCodes.Cgt_Un, new[] {(MutationLevel.Simple, OpCodes.Clt_Un)}}
             };
 
-        public ComparisonAnalyzer() : base(Branch)
-        {
-        }
+        public ComparisonAnalyzer() : base(Branch) { }
 
         public override string Description =>
             "Analyzer that searches for possible comparison mutations to invalidate a condition such as '<' to '>'.";
