@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
@@ -9,29 +10,34 @@ namespace Faultify.Analyze.Analyzers
     ///     Analyzer that searches for possible boolean constant mutations inside a type definition.
     ///     Mutations such as 'true' to 'false'.
     /// </summary>
+    [Obsolete("Use ConstantAnalyzer", true)]
     public class BooleanConstantAnalyzer : ConstantAnalyzer
     {
-        public override string Description =>
+        private readonly RandomValueGenerator _rng = new RandomValueGenerator();
+
+        public new string Description =>
             "Analyzer that searches for possible boolean constant mutations such as 'true' to 'false'.";
 
-        public override string Name => "Boolean ConstantMutation Analyzer";
+        public new string Name => "Boolean ConstantMutation Analyzer";
 
-        public override IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel)
+        public new IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel)
         {
-
-            var mutations = new List<ConstantMutation>();
-
-            if (field.Constant is bool original)
+            var constantMutation = new ConstantMutation
             {
-                mutations.Add(new ConstantMutation
-                {
-                    Original = original,
-                    ConstantName = field.Name,
-                    Replacement = !original,
-                    ConstantField = field
-                });
+                Original = field.Constant,
+                ConstantName = field.Name,
+                Replacement = null,
+                ConstantField = field
+            };
 
+            Type type = field.Constant.GetType();
+
+            if (type == typeof(bool))
+            {
+                constantMutation.Replacement = _rng.GenerateValueForField(type, field.Constant);
             }
+
+            var mutations = new List<ConstantMutation> { constantMutation };
 
             return new MutationGroup<ConstantMutation>
             {
@@ -39,7 +45,6 @@ namespace Faultify.Analyze.Analyzers
                 Description = Description,
                 Mutations = mutations
             };
-
         }
     }
 }

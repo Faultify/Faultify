@@ -40,9 +40,8 @@ namespace Faultify.Analyze.ArrayMutationStrategy
                 {
                     beforeArray.Add(instruction);
                 }
-
                 // if dynamic array add all instructions after the array initialisation.
-                else if (instruction.IsDynamicArray())
+                else
                 {
                     beforeArray.Remove(instruction.Previous);
                     // get type of array

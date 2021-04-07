@@ -54,7 +54,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateField<BooleanConstantAnalyzer>(binary, ConstantBoolTrueName, false);
+                DllTestHelper.MutateField<ConstantAnalyzer>(binary, ConstantBoolTrueName, false);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -74,7 +74,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateField<BooleanConstantAnalyzer>(binary, ConstantBoolFalseName, true);
+                DllTestHelper.MutateField<ConstantAnalyzer>(binary, ConstantBoolFalseName, true);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -110,7 +110,7 @@ namespace Faultify.Tests.UnitTests
             var expected = 1;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantIntName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantIntName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -147,7 +147,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantDoubleName);
+                DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantDoubleName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -183,7 +183,7 @@ namespace Faultify.Tests.UnitTests
             long expected = 300000;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantLongName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantLongName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -219,7 +219,7 @@ namespace Faultify.Tests.UnitTests
             short expected = 1;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantShortName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantShortName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -255,7 +255,7 @@ namespace Faultify.Tests.UnitTests
             var expected = 1.12f;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantFloatName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantFloatName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -291,7 +291,7 @@ namespace Faultify.Tests.UnitTests
             uint expected = 1;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantUintName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantUintName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -327,7 +327,7 @@ namespace Faultify.Tests.UnitTests
             ulong expected = 1;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantUlongName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantUlongName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -364,7 +364,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantUshortName);
+                DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantUshortName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -400,7 +400,7 @@ namespace Faultify.Tests.UnitTests
             sbyte expected = 1;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantSbyteName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantSbyteName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -436,7 +436,7 @@ namespace Faultify.Tests.UnitTests
             byte expected = 240;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateConstant<NumberConstantAnalyzer>(binary, ConstantByteName);
+            var mutatedBinary = DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantByteName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -473,7 +473,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateConstant<StringConstantAnalyzer>(binary, ConstantStringName);
+                DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantStringName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -510,7 +510,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateConstant<StringConstantAnalyzer>(binary, ConstantStringSingleCharacterName);
+                DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantStringSingleCharacterName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
@@ -547,7 +547,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateConstant<StringConstantAnalyzer>(binary, ConstantStringTwoCharactersName);
+                DllTestHelper.MutateConstant<ConstantAnalyzer>(binary, ConstantStringTwoCharactersName);
 
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {

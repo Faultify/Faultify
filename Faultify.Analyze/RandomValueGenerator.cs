@@ -52,7 +52,7 @@ namespace Faultify.Analyze
                 }
                 else
                 {
-                    _logger.Warn($"Could not detect type {type}");
+                    _logger.Warn($"Type {type} is not supported");
                 }
             }
             catch (Exception e)
@@ -68,7 +68,7 @@ namespace Faultify.Analyze
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        public object ChangeBoolean(object reference)
+        private object ChangeBoolean(object reference)
         {
             bool value = Convert.ToBoolean(reference);
             return Convert.ToInt32(!value);
@@ -78,7 +78,7 @@ namespace Faultify.Analyze
         ///     Generates a new random string.
         /// </summary>
         /// <returns>The random string</returns>
-        public object ChangeString()
+        private object ChangeString()
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var stringChars = new char[32];
@@ -96,7 +96,7 @@ namespace Faultify.Analyze
         /// </summary>
         /// <param name="originalRef">Reference to the orginial char</param>
         /// <returns>The random character</returns>
-        public object ChangeChar(object originalRef)
+        private object ChangeChar(object originalRef)
         {
             var original = Convert.ToChar(originalRef);
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -113,7 +113,7 @@ namespace Faultify.Analyze
         /// <param name="originalType">Type of the number</param>
         /// <param name="original">Original number</param>
         /// <returns>The random numeric object</returns>
-        public object ChangeNumber(Type originalType, object original)
+        private object ChangeNumber(Type originalType, object original)
         {
             Type type = TypeChecker.NumericTypes.First(type => type == originalType);
             object generated = Convert.ChangeType(_rng.Next(), type);
