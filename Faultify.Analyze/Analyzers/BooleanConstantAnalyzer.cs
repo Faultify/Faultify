@@ -1,34 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
 
-namespace Faultify.Analyze.ConstantAnalyzer
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
-    ///     Analyzer that searches for possible string constant mutations inside a type definition.
-    ///     Mutations such as 'hello' to a GUID like '0f8fad5b-d9cb-469f-a165-70867728950e'.
+    ///     Analyzer that searches for possible boolean constant mutations inside a type definition.
+    ///     Mutations such as 'true' to 'false'.
     /// </summary>
-    public class StringConstantMutationAnalyzer : ConstantMutationAnalyzer
+    public class BooleanConstantAnalyzer : ConstantAnalyzer
     {
         public override string Description =>
-            "Analyzer that searches for possible string constant mutations such as 'hello' to a GUID like '0f8fad5b-d9cb-469f-a165-70867728950e'.";
+            "Analyzer that searches for possible boolean constant mutations such as 'true' to 'false'.";
 
-        public override string Name => "String ConstantMutation Analyzer";
+        public override string Name => "Boolean ConstantMutation Analyzer";
 
         public override IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel)
         {
 
             var mutations = new List<ConstantMutation>();
 
-            if (field.Constant is string original)
+            if (field.Constant is bool original)
             {
                 mutations.Add(new ConstantMutation
                 {
                     Original = original,
                     ConstantName = field.Name,
-                    Replacement = Guid.NewGuid().ToString(),
+                    Replacement = !original,
                     ConstantField = field
                 });
 
@@ -40,6 +39,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
                 Description = Description,
                 Mutations = mutations
             };
+
         }
     }
 }

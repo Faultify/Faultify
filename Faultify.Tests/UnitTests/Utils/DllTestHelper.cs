@@ -77,7 +77,7 @@ namespace Faultify.Tests.UnitTests.Utils
         /// <param name="expected"></param>
         /// <returns></returns>
         public static byte[] MutateMethod<TMutator>(byte[] binary, string method, OpCode expected,
-            bool simplefy = false) where TMutator : IMutationAnalyzer<OpCodeMutation, Instruction>
+            bool simplefy = false) where TMutator : IAnalyzer<OpCodeMutation, Instruction>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
             var mutateMethod = module.Types.SelectMany(x => x.Methods).FirstOrDefault(x => x.Name == method);
@@ -117,7 +117,7 @@ namespace Faultify.Tests.UnitTests.Utils
         /// <param name="expected"></param>
         /// <returns></returns>
         public static byte[] MutateMethodVariables<TMutator>(byte[] binary, string method, bool simplify = false)
-            where TMutator : IMutationAnalyzer<VariableMutation, MethodDefinition>
+            where TMutator : IAnalyzer<VariableMutation, MethodDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
             var mutateMethod = module.Types.SelectMany(x => x.Methods).FirstOrDefault(x => x.Name == method);
@@ -143,7 +143,7 @@ namespace Faultify.Tests.UnitTests.Utils
         }
 
         public static byte[] MutateField<TMutator>(byte[] binary, string fieldName, object expected)
-            where TMutator : IMutationAnalyzer<ConstantMutation, FieldDefinition>
+            where TMutator : IAnalyzer<ConstantMutation, FieldDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
 
@@ -172,7 +172,7 @@ namespace Faultify.Tests.UnitTests.Utils
         }
 
         public static byte[] MutateConstant<TMutator>(byte[] binary, string fieldName)
-            where TMutator : IMutationAnalyzer<ConstantMutation, FieldDefinition>
+            where TMutator : IAnalyzer<ConstantMutation, FieldDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
 
@@ -189,7 +189,7 @@ namespace Faultify.Tests.UnitTests.Utils
         }
 
         public static byte[] MutateArray<TMutator>(byte[] binary, string methodName)
-            where TMutator : IMutationAnalyzer<ArrayMutation, MethodDefinition>
+            where TMutator : IAnalyzer<ArrayMutation, MethodDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
 
