@@ -38,7 +38,7 @@ namespace Faultify.TestRunner
                         x.MutationId == mutation.MutationIdentifier.MutationId &&
                         mutation.MutationIdentifier.MemberName == x.MemberName))
                         _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
-                            mutation.Mutation.ToString(), "",
+                            mutation.Mutation.Report, "",
                             new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
                                 mutation.MutationAnalyzerInfo.AnalyzerDescription),
                             mutationStatus,

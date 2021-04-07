@@ -13,3 +13,7 @@ Renamed all XyzMutationAnalyzer to XyzAnalyzer
 Moved all analyzers into their own shared namespace within Analyze
 Added null pointer exception handling to isDynamicArray extension function
 Added RandomValueGenerator instance to StringConstantAnalyzer, replacing the local randomizer implementation
+Consolidated the various XyzConstantAnalyzer
+Merged Bitwise and logical analyzer
+Simplified ArrayMutationStrategy hierarchy
+Redefined IMutation interface

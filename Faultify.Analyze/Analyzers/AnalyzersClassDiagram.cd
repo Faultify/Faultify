@@ -8,25 +8,18 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Faultify.Analyze.Analyzers.ArrayAnalyzer" BaseTypeListCollapsed="true">
-    <Position X="11" Y="0.5" Width="1.5" />
+    <Position X="14.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAAAgAAAAAQAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analyzers\ArrayAnalyzer.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Faultify.Analyze.Analyzers.BitwiseAnalyzer">
     <Position X="8.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAAAAEAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analyzers\BitwiseAnalyzer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Faultify.Analyze.Analyzers.BooleanConstantAnalyzer">
-    <Position X="6.25" Y="12" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAIAAAQAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Analyzers\BooleanConstantAnalyzer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Faultify.Analyze.Analyzers.BranchingAnalyzer">
@@ -44,7 +37,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Faultify.Analyze.Analyzers.ConstantAnalyzer">
-    <Position X="4" Y="9.5" Width="1.5" />
+    <Position X="8.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAQAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analyzers\ConstantAnalyzer.cs</FileName>
@@ -58,13 +51,6 @@
       <FileName>Analyzers\LogicalAnalyzer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Faultify.Analyze.Analyzers.NumberConstantAnalyzer">
-    <Position X="1.75" Y="12" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAIAAAQAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Analyzers\NumberConstantAnalyzer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Faultify.Analyze.Analyzers.OpCodeAnalyzer">
     <Position X="5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
@@ -73,20 +59,13 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Faultify.Analyze.Analyzers.StringConstantAnalyzer">
-    <Position X="4" Y="12" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAIAAAQAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Analyzers\StringConstantAnalyzer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Faultify.Analyze.Analyzers.VariableAnalyzer" BaseTypeListCollapsed="true">
-    <Position X="12.75" Y="0.5" Width="1.5" />
+    <Position X="1.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAEAAAgAAAAAAAAAAQAIAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analyzers\VariableAnalyzer.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Faultify.Analyze.IAnalyzer&lt;TMutation, TScope&gt;">
     <Position X="11" Y="3.75" Width="1.5" />

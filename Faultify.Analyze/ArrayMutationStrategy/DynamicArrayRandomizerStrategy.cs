@@ -9,7 +9,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
     /// <summary>
     ///     Contains Mutating Strategy for Dynamic Arrays.
     /// </summary>
-    public class DynamicArrayRandomizerStrategy : ArrayMutationStrategy
+    public class DynamicArrayRandomizerStrategy : IArrayMutationStrategy
     {
         private readonly ArrayBuilder _arrayBuilder;
         private readonly MethodDefinition _methodDefinition;
@@ -24,7 +24,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
         /// <summary>
         ///     Mutates a dynamic array by creating a new array with random values with the arraybuilder.
         /// </summary>
-        public override void Mutate()
+        public void Mutate()
         {
             var processor = _methodDefinition.Body.GetILProcessor();
             _methodDefinition.Body.SimplifyMacros();
@@ -76,6 +76,18 @@ namespace Faultify.Analyze.ArrayMutationStrategy
             // append after array.
             foreach (var after in afterArray) processor.Append(after);
             _methodDefinition.Body.OptimizeMacros();
+        }
+
+        /// <summary>
+        ///     Clears the mutated method body and pushes the original method body.
+        /// </summary>
+        /// <param name="mutatedMethodDef"></param>
+        /// <param name="methodClone"></param>
+        public void Reset(MethodDefinition mutatedMethodDef, MethodDefinition methodClone)
+        {
+            mutatedMethodDef.Body.Instructions.Clear();
+            foreach (var instruction in methodClone.Body.Instructions)
+                mutatedMethodDef.Body.Instructions.Add(instruction);
         }
     }
 }
