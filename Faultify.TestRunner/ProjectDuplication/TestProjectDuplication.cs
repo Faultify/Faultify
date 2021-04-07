@@ -96,7 +96,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 // Create assembly mutator and look up the mutations according to the passed identifiers.
                 AssemblyMutator assembly = new AssemblyMutator(new MemoryStream(data));
 
-                foreach (FaultifyTypeDefinition type in assembly.Types)
+                foreach (TypeScope type in assembly.Types)
                 {
                     // this might want to be moved outside.
                     // The operation is entirely a read operation that doesn't have to be done multiple times.
@@ -104,7 +104,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                         mutationIdentifiers.Select(x => x.MemberName)
                     );
 
-                    foreach (FaultifyMethodDefinition method in type.Methods)
+                    foreach (MethodScope method in type.Methods)
                     {
                         //maybe move this out but probably impossibru
                         if (!toMutateMethods.Contains(method.AssemblyQualifiedName)) continue;
@@ -161,26 +161,29 @@ namespace Faultify.TestRunner.ProjectDuplication
                 try
                 {
                     using var writeStream = fileDuplication.OpenReadWriteStream();
-                    using var ms = new MemoryStream();
-                    assembly.Module.Write(ms);
-                    writeStream.Write(ms.ToArray());
+                    using var stream = new MemoryStream();
+                    assembly.Module.Write(stream);
+                    writeStream.Write(stream.ToArray());
 
-                    ms.Position = 0;
-                    var decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), ms);
+                    stream.Position = 0;
+                    var decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), stream);
 
                     foreach (var mutationVariant in mutationVariants)
+                    {
                         if (assembly == mutationVariant.Assembly && string.IsNullOrEmpty(mutationVariant.MutatedSource))
+                        {
                             mutationVariant.MutatedSource = decompiler.Decompile(mutationVariant.MemberHandle);
-
-                    } 
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    } 
-                    finally
-                    {
-                        fileDuplication.Dispose();
+                        }
                     }
+                } 
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                } 
+                finally
+                {
+                    fileDuplication.Dispose();
+                }
             }
 
             TestProjectFile.Dispose();

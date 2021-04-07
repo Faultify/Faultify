@@ -82,20 +82,31 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <summary>
         ///     The types in the assembly.
         /// </summary>
-        public List<FaultifyTypeDefinition> Types { get; }
+        public List<TypeScope> Types { get; }
 
         public void Dispose()
         {
             Module?.Dispose();
         }
 
-        private List<FaultifyTypeDefinition> LoadTypes()
+        /// <summary>
+        /// Loads all of the types within the raw module definition into the class
+        /// </summary>
+        /// <returns>A List<TypeScope> of types in the module</returns>
+        private List<TypeScope> LoadTypes()
         {
-            return Module.Types
-                .Where(type => !type.FullName.StartsWith("<"))
-                .Select(type => new FaultifyTypeDefinition(type, OpCodeMethodAnalyzers, FieldAnalyzers,
-                    VariableMutationAnalyzers, ArrayMutationAnalyzers))
-                .ToList();
+            return (
+                from type
+                in Module.Types
+                where !type.FullName.StartsWith("<")
+                select new TypeScope(
+                    type,
+                    OpCodeMethodAnalyzers,
+                    FieldAnalyzers,
+                    VariableMutationAnalyzers,
+                    ArrayMutationAnalyzers
+                )
+            ).ToList();
         }
 
         public void Open(Stream stream)

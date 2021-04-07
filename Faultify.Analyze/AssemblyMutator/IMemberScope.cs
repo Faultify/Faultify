@@ -2,7 +2,7 @@
 
 namespace Faultify.Analyze.AssemblyMutator
 {
-    public interface IFaultifyMemberDefinition
+    public interface IMemberScope
     {
         /// <summary>
         ///     Full assembly name of this member.

@@ -1,6 +1,8 @@
-﻿using System;
+﻿extern alias MC;
+
+using MC::Mono.Cecil.Cil;
+using System;
 using System.Linq;
-using Mono.Cecil.Cil;
 
 namespace Faultify.Tests.UnitTests.Utils
 {
