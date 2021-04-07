@@ -6,6 +6,7 @@ using Faultify.Analyze.MutationGroups;
 using Faultify.Core.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using NLog;
 
 namespace Faultify.Analyze
 {
@@ -16,6 +17,7 @@ namespace Faultify.Analyze
     public class VariableMutationAnalyzer : IMutationAnalyzer<VariableMutation, MethodDefinition>
     {
         private readonly RandomValueGenerator _valueGenerator;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public VariableMutationAnalyzer()
         {
@@ -47,16 +49,17 @@ namespace Faultify.Analyze
                 try
                 {
                     // Get variable type. Might throw InvalidCastException
-                    var type = ((TypeReference) instruction.Operand).ToSystemType();
+                    Type type = ((TypeReference) instruction.Operand).ToSystemType();
 
                     // Get previous instruction.
-                    var variableInstruction = instruction.Previous;
+                    Instruction variableInstruction = instruction.Previous;
 
                     // If the previous instruction is 'ldc' its loading a boolean or integer on the stack. 
                     if (!variableInstruction.IsLdc()) continue;
 
                     // If the value is mapped then mutate it.
                     if (TypeChecker.IsVariableType(type))
+                    {
                         mutations.Add(
                             new VariableMutation
                             {
@@ -64,10 +67,11 @@ namespace Faultify.Analyze
                                 Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
                                 Variable = variableInstruction
                             });
+                    }
                 }
                 catch (InvalidCastException e)
                 {
-                    Console.Error.WriteLine($"{e} exception caught."); // TODO: Use proper logging
+                    _logger.Error(e, $"Failed to get the type of {instruction.Operand}");
                 }
             }
 

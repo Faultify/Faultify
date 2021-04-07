@@ -10,15 +10,17 @@ namespace Faultify.Analyze
     public class TypeChecker
     {
 
-        private static readonly ISet<Type> _integerTypes = new HashSet<Type>
+        public static readonly ICollection<Type> NumericTypes = new HashSet<Type>
         {
             typeof(float), typeof(double),
-            typeof(byte), typeof(short), typeof(int), typeof(long),
-            typeof(sbyte), typeof(ushort), typeof(uint), typeof(ulong)
+            typeof(sbyte), typeof(byte),
+            typeof(short), typeof(ushort),
+            typeof(int),   typeof(uint),
+            typeof(long),  typeof(ulong)
         };
 
         // TODO: Why is this never used?
-        private static readonly ISet<Type> _stringTypes = new HashSet<Type>
+        public static readonly ICollection<Type> stringTypes = new HashSet<Type>
         {
             typeof(string), typeof(char)
         };
@@ -31,9 +33,8 @@ namespace Faultify.Analyze
         public static bool IsArrayType(Type t)
         {
             ISet<Type> arrayTypes = new HashSet<Type>();
-            arrayTypes.UnionWith(_integerTypes);
+            arrayTypes.UnionWith(NumericTypes);
             arrayTypes.Add(typeof(bool));
-            arrayTypes.Add(typeof(char));
 
             return arrayTypes.Contains(t);
         }
@@ -46,8 +47,11 @@ namespace Faultify.Analyze
         /// <returns>True if a valid variable type, false otherwise</returns>
         public static bool IsVariableType(Type t)
         {
-            // TODO: Why just bools?
-            return t == typeof(bool);
+            ISet<Type> arrayTypes = new HashSet<Type>();
+            arrayTypes.UnionWith(NumericTypes);
+            arrayTypes.Add(typeof(bool));
+
+            return arrayTypes.Contains(t);
         }
 
 
@@ -58,7 +62,7 @@ namespace Faultify.Analyze
         /// <returns>True if a valid constant type, false otherwise</returns>
         public static bool IsConstantType(Type t)
         {
-            return _integerTypes.Contains(t);
+            return NumericTypes.Contains(t);
         }
     }
 }
