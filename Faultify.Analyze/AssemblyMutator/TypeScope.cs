@@ -14,11 +14,12 @@ namespace Faultify.Analyze.AssemblyMutator
     /// <summary>
     ///     Represents a raw type definition and provides access to its fields and methods..
     /// </summary>
-    public class FaultifyTypeDefinition : IFaultifyMemberDefinition, IMutationProvider
+    public class TypeScope : IMemberScope, IMutationProvider
     {
         private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantAnalyzers;
 
-        public FaultifyTypeDefinition(TypeDefinition typeDefinition,
+        public TypeScope(
+            TypeDefinition typeDefinition,
             HashSet<IAnalyzer<OpCodeMutation, Instruction>> opcodeAnalyzers,
             HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers,
             HashSet<IAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
@@ -26,28 +27,37 @@ namespace Faultify.Analyze.AssemblyMutator
         )
         {
             _constantAnalyzers = fieldAnalyzers;
+
             TypeDefinition = typeDefinition;
 
-            Fields = TypeDefinition.Fields.Select(x => new FaultifyFieldDefinition(x, fieldAnalyzers)).ToList();
+            Fields = TypeDefinition.Fields.Select(x =>
+                new FieldScope(
+                    x,
+                    fieldAnalyzers)
+            ).ToList();
+
             Methods = TypeDefinition.Methods.Select(x =>
-                    new FaultifyMethodDefinition(x, fieldAnalyzers, opcodeAnalyzers, variableMutationAnalyzers,
-                        arrayMutationAnalyzers))
-                .ToList();
+                new MethodScope(
+                    x,
+                    fieldAnalyzers,
+                    opcodeAnalyzers,
+                    variableMutationAnalyzers,
+                    arrayMutationAnalyzers)
+            ).ToList();
         }
 
         /// <summary>
         ///     The fields in this type.
         ///     For example: const, static, non-static fields.
         /// </summary>
-        public List<FaultifyFieldDefinition> Fields { get; }
+        public List<FieldScope> Fields { get; }
 
         /// <summary>
         ///     The methods in this type.
         /// </summary>
-        public List<FaultifyMethodDefinition> Methods { get; }
+        public List<MethodScope> Methods { get; }
 
         public TypeDefinition TypeDefinition { get; }
-
         public string Name => TypeDefinition.Name;
         public EntityHandle Handle => MetadataTokens.EntityHandle(TypeDefinition.MetadataToken.ToInt32());
         public string AssemblyQualifiedName => TypeDefinition.FullName;
@@ -55,13 +65,15 @@ namespace Faultify.Analyze.AssemblyMutator
         public IEnumerable<IMutationGroup<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _constantAnalyzers)
-            foreach (var field in TypeDefinition.Fields)
             {
-                ConstGroup mutations = (ConstGroup)analyzer.GenerateMutations(field, mutationLevel);
-
-                if (mutations.Any())
+                foreach (var field in TypeDefinition.Fields)
                 {
-                    yield return mutations;
+                    ConstGroup mutations = (ConstGroup)analyzer.GenerateMutations(field, mutationLevel);
+
+                    if (mutations.Any())
+                    {
+                        yield return mutations;
+                    }
                 }
             }
         }

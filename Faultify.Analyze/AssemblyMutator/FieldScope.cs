@@ -11,7 +11,7 @@ namespace Faultify.Analyze.AssemblyMutator
     /// <summary>
     ///     Represents a raw field definition.
     /// </summary>
-    public class FaultifyFieldDefinition : IMutationProvider, IFaultifyMemberDefinition
+    public class FieldScope : IMutationProvider, IMemberScope
     {
         private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _fieldAnalyzers;
 
@@ -20,7 +20,7 @@ namespace Faultify.Analyze.AssemblyMutator
         /// </summary>
         private readonly FieldDefinition _fieldDefinition;
 
-        public FaultifyFieldDefinition(FieldDefinition fieldDefinition,
+        public FieldScope(FieldDefinition fieldDefinition,
             HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers)
         {
             _fieldDefinition = fieldDefinition;

@@ -15,7 +15,7 @@ namespace Faultify.Analyze.AssemblyMutator
     /// <summary>
     ///     Contains all of the instructions and mutations within the scope of a method definition.
     /// </summary>
-    public class FaultifyMethodDefinition : IMutationProvider, IFaultifyMemberDefinition
+    public class MethodScope : IMutationProvider, IMemberScope
     {
         private readonly HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
         private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers;
@@ -28,7 +28,7 @@ namespace Faultify.Analyze.AssemblyMutator
         /// </summary>
         public readonly MethodDefinition MethodDefinition;
 
-        public FaultifyMethodDefinition(
+        public MethodScope(
             MethodDefinition methodDefinition,
             HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> constantReferenceMutationAnalyers,
             HashSet<IAnalyzer<OpCodeMutation, Instruction>> opcodeMethodAnalyzers,
@@ -69,7 +69,7 @@ namespace Faultify.Analyze.AssemblyMutator
             IEnumerable<IMutationGroup<IMutation>> arrayMutations = ArrayMutations(mutationLevel);
 
             return opcodeMutations
-                // .Concat(constantMutations) // TODO: Why was this nopt used in the original?
+                .Concat(constantMutations) // TODO: Why was this not used in the original?
                 .Concat(variableMutations)
                 .Concat(arrayMutations);
         }
