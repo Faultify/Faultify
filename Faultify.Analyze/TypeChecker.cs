@@ -48,6 +48,7 @@ namespace Faultify.Analyze
         public static bool IsVariableType(Type t)
         {
             ISet<Type> arrayTypes = new HashSet<Type>();
+            // TODO: May cause problems
             arrayTypes.UnionWith(NumericTypes);
             arrayTypes.Add(typeof(bool));
 
@@ -62,7 +63,12 @@ namespace Faultify.Analyze
         /// <returns>True if a valid constant type, false otherwise</returns>
         public static bool IsConstantType(Type t)
         {
-            return NumericTypes.Contains(t);
+            ISet<Type> arrayTypes = new HashSet<Type>();
+            arrayTypes.UnionWith(NumericTypes);
+            arrayTypes.Add(typeof(bool));
+            arrayTypes.Add(typeof(string));
+
+            return arrayTypes.Contains(t);
         }
     }
 }

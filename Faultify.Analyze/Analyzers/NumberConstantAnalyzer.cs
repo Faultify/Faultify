@@ -12,18 +12,17 @@ namespace Faultify.Analyze.Analyzers
     ///     Supports: int, double, long, short, sbyte, uint, ulong, ushort, byte and float.
     ///     It is possible to choose what types to mutate by initiating the class with a hashset of types
     /// </summary>
+    [Obsolete("Use ConstantAnalyzer", true)]
     public class NumberConstantAnalyzer : ConstantAnalyzer
     {
         private readonly RandomValueGenerator _rng = new RandomValueGenerator();
 
-        public override string Description =>
+        public new string Description =>
             "Analyzer that searches for possible number constant mutations such as '5' to a random int like '971231'.";
 
-        public override string Name => "Number ConstantMutation Analyzer";
+        public new string Name => "Number ConstantMutation Analyzer";
 
-
-        public override IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field,
-            MutationLevel mutationLevel)
+        public new IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel)
         {
             var constantMutation = new ConstantMutation
             {

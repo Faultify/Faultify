@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using Faultify.Analyze;
+using Faultify.Analyze.Analyzers;
 using Faultify.Analyze.Mutation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
