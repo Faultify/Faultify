@@ -17,3 +17,4 @@ Consolidated the various XyzConstantAnalyzer
 Merged Bitwise and logical analyzer
 Simplified ArrayMutationStrategy hierarchy
 Redefined IMutation interface
+Minor changes to AssemblyMutator regarding encapsulation, code structure, and LINQ queries

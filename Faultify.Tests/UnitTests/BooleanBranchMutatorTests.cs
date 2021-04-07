@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿extern alias MC;
+
+using System.IO;
 using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
-using Mono.Cecil.Cil;
+using MC::Mono.Cecil.Cil;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests

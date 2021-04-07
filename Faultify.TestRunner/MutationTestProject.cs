@@ -166,11 +166,10 @@ namespace Faultify.TestRunner
 
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
-                string dependencyInjectionPath = assembly.Module.FileName;
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
-                assembly.Module.Write(dependencyInjectionPath);
-                assembly.Module.Dispose();
+                assembly.Flush();
+                assembly.Dispose();
             }
 
             if (projectInfo.TestFramework == TestFramework.XUnit)

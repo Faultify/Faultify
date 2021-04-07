@@ -125,7 +125,7 @@ namespace Faultify.Tests.UnitTests
             var mutations = field.ConstantFieldMutations(MutationLevel.Detailed);
 
             var arithmeticMutations =
-                mutations.FirstOrDefault(x => x.Name == new BooleanConstantAnalyzer().Name);
+                mutations.FirstOrDefault(x => x.Name == new ConstantAnalyzer().Name);
 
             Assert.AreEqual(mutations.Count(), 1);
             Assert.IsNotNull(arithmeticMutations, null);
