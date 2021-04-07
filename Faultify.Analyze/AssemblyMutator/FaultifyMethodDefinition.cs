@@ -77,13 +77,13 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <summary>
         ///     Returns all operator mutations within the scope of this method.
         /// </summary>
-        public IEnumerable<OpCodeGroup> OpCodeMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<OpCodeMutation>> OpCodeMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _opCodeMethodAnalyzers)
                 if (MethodDefinition.Body?.Instructions != null)
                     foreach (var instruction in MethodDefinition.Body?.Instructions)
                     {
-                        OpCodeGroup mutations = (OpCodeGroup) analyzer.GenerateMutations(instruction, mutationLevel);
+                        IMutationGroup<OpCodeMutation> mutations = analyzer.GenerateMutations(instruction, mutationLevel);
 
                         if (mutations.Any())
                             yield return mutations;
@@ -93,7 +93,7 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <summary>
         ///     Returns all literal value mutations within the scope of this method.
         /// </summary>
-        public IEnumerable<ConstGroup> ConstantReferenceMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<ConstantMutation>> ConstantReferenceMutations(MutationLevel mutationLevel)
         {
             var fieldReferences = MethodDefinition.Body.Instructions
                 .OfType<FieldReference>();
@@ -101,7 +101,7 @@ namespace Faultify.Analyze.AssemblyMutator
             foreach (var field in fieldReferences)
             foreach (var analyzer in _constantReferenceMutationAnalyers)
             {
-                ConstGroup mutations = (ConstGroup) analyzer.GenerateMutations(field.Resolve(), mutationLevel);
+                    IMutationGroup<ConstantMutation> mutations = analyzer.GenerateMutations(field.Resolve(), mutationLevel);
 
                 if (mutations.Any())
                 {
@@ -113,23 +113,23 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <summary>
         ///     Returns all variable mutations within the scope of this method.
         /// </summary>
-        public IEnumerable<VarMutationGroup> VariableMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<VariableMutation>> VariableMutations(MutationLevel mutationLevel)
         {
             return
                 from analyzer
                 in _variableMutationAnalyzers
-                select (VarMutationGroup) analyzer.GenerateMutations(MethodDefinition, mutationLevel);
+                select analyzer.GenerateMutations(MethodDefinition, mutationLevel);
         }
 
         /// <summary>
         ///     Returns all array mutations within the scope of this method.
         /// </summary>
-        public IEnumerable<ArrayMutationGroup> ArrayMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<ArrayMutation>> ArrayMutations(MutationLevel mutationLevel)
         {
             return
                 from analyzer
                 in _arrayMutationAnalyzers
-                select (ArrayMutationGroup) analyzer.GenerateMutations(MethodDefinition, mutationLevel);
+                select analyzer.GenerateMutations(MethodDefinition, mutationLevel);
         }
     }
 }
