@@ -2,8 +2,7 @@
 using System.Linq;
 using Faultify.Analyze;
 using Faultify.Analyze.AssemblyMutator;
-using Faultify.Analyze.ConstantAnalyzer;
-using Faultify.Analyze.OpcodeAnalyzer;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
 using NUnit.Framework;
 

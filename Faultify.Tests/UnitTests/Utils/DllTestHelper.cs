@@ -1,4 +1,5 @@
-﻿using System;
+﻿extern alias MC;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -7,9 +8,9 @@ using Faultify.Analyze;
 using Faultify.Analyze.Mutation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
+using MC.Mono.Cecil;
+using MC.Mono.Cecil.Cil;
+using MC.Mono.Cecil.Rocks;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests.Utils

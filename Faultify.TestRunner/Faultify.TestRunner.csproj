@@ -15,8 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Cecil" Version="0.11.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.3">
+      <Aliases>MC</Aliases>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.9" />
     <PackageReference Include="MemoryTest.XUnit" Version="0.0.1" />
 	<PackageReference Include="MemoryTest.NUnit" Version="0.0.1" />
