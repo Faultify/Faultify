@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Mono.Cecil.Cil;
 
-namespace Faultify.Analyze.OpcodeAnalyzer
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible bitwise mutations inside a method definition.
     ///     Mutations such as such as 'and' and 'xor'.
     /// </summary>
-    public class BitwiseMutationAnalyzer : OpCodeMutationAnalyzer
+    public class BitwiseAnalyzer : OpCodeAnalyzer
     {
         private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Bitwise =
             new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
@@ -22,7 +22,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                 {OpCodes.Xor, new[] {(MutationLevel.Simple, OpCodes.Or), (MutationLevel.Medium, OpCodes.And)}}
             };
 
-        public BitwiseMutationAnalyzer() : base(Bitwise)
+        public BitwiseAnalyzer() : base(Bitwise)
         {
         }
 

@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Faultify.Analyze;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
 using NUnit.Framework;
 
@@ -19,7 +19,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateMethodVariables<VariableMutationAnalyzer>(binary, methodName, simplify);
+                DllTestHelper.MutateMethodVariables<VariableAnalyzer>(binary, methodName, simplify);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual =

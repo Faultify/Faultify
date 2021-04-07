@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Faultify.Analyze;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
 using NUnit.Framework;
 
@@ -37,7 +37,7 @@ namespace Faultify.Tests.UnitTests
                 original = originalInteractor.DynamicMethodCall(_nameSpace, methodName, null);
             }
 
-            var mutatedBinary = DllTestHelper.MutateArray<ArrayMutationAnalyzer>(binary, methodName);
+            var mutatedBinary = DllTestHelper.MutateArray<ArrayAnalyzer>(binary, methodName);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 actual = binaryInteractor.DynamicMethodCall(_nameSpace, methodName, null);

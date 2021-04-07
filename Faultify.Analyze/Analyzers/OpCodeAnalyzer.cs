@@ -4,25 +4,25 @@ using System.Linq;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.MutationGroups;
 using Mono.Cecil.Cil;
+using NLog;
 
-namespace Faultify.Analyze.OpcodeAnalyzer
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible opcode mutations inside a method definition.
     ///     A list with opcodes definitions can be found here: https://en.wikipedia.org/wiki/List_of_CIL_instructions
     /// </summary>
-    public abstract class
-        OpCodeMutationAnalyzer : IMutationAnalyzer<OpCodeMutation, Instruction>
+    public abstract class OpCodeAnalyzer : IAnalyzer<OpCodeMutation, Instruction>
     {
         private readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> _mappedOpCodes;
+        public abstract string Description { get; }
+        public abstract string Name { get; }
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        protected OpCodeMutationAnalyzer(Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> mappedOpCodes)
+        protected OpCodeAnalyzer(Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> mappedOpCodes)
         {
             _mappedOpCodes = mappedOpCodes;
         }
-
-        public abstract string Description { get; }
-        public abstract string Name { get; }
 
         public IMutationGroup<OpCodeMutation> GenerateMutations(Instruction scope, MutationLevel mutationLevel)
         {
@@ -42,10 +42,10 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                         Replacement = target.Item2,
                         Instruction = scope
                     };
-            } 
-            catch
+            }
+            catch (Exception e)
             {
-                Console.Error.WriteLine($"Could not find key in Dictionary: {original}."); // TODO: Use proper logging.
+                _logger.Error(e, $"Could not find key in Dictionary: {original}.");
                 mutations = Enumerable.Empty<OpCodeMutation>();
             }
 

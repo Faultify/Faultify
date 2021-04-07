@@ -16,13 +16,13 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyTypeDefinition : IFaultifyMemberDefinition, IMutationProvider
     {
-        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _constantAnalyzers;
+        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantAnalyzers;
 
         public FaultifyTypeDefinition(TypeDefinition typeDefinition,
-            HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> opcodeAnalyzers,
-            HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers,
-            HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
-            HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers
+            HashSet<IAnalyzer<OpCodeMutation, Instruction>> opcodeAnalyzers,
+            HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers,
+            HashSet<IAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
+            HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers
         )
         {
             _constantAnalyzers = fieldAnalyzers;

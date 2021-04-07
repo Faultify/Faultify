@@ -13,7 +13,7 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class FaultifyFieldDefinition : IMutationProvider, IFaultifyMemberDefinition
     {
-        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _fieldAnalyzers;
+        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _fieldAnalyzers;
 
         /// <summary>
         ///     Underlying Mono.Cecil FieldDefinition.
@@ -21,7 +21,7 @@ namespace Faultify.Analyze.AssemblyMutator
         private readonly FieldDefinition _fieldDefinition;
 
         public FaultifyFieldDefinition(FieldDefinition fieldDefinition,
-            HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers)
+            HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers)
         {
             _fieldDefinition = fieldDefinition;
             _fieldAnalyzers = fieldAnalyzers;
@@ -40,11 +40,11 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Returns possible constant field mutations.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ConstGroup> ConstantFieldMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<ConstantMutation>> ConstantFieldMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _fieldAnalyzers)
             {
-                ConstGroup mutations = (ConstGroup) analyzer.GenerateMutations(_fieldDefinition, mutationLevel);
+                IMutationGroup<ConstantMutation> mutations = analyzer.GenerateMutations(_fieldDefinition, mutationLevel);
 
                 if (mutations.Any())
                     yield return mutations;

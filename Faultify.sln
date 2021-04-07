@@ -47,6 +47,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Faultify.TestRunner.XUnit",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E2C63F0D-1C41-43F2-87D3-66A8DBAE5B67}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		NLog.config = NLog.config
 		RefactorChanges.md = RefactorChanges.md
 	EndProjectSection
 EndProject

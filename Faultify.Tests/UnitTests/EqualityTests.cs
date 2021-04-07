@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Faultify.Analyze.OpcodeAnalyzer;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
 using Mono.Cecil.Cil;
 using NUnit.Framework;
@@ -78,7 +78,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateMethod<ComparisonMutationAnalyzer>(binary, methodName, opCodeExpected);
+                DllTestHelper.MutateMethod<ComparisonAnalyzer>(binary, methodName, opCodeExpected);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual = (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
@@ -113,7 +113,7 @@ namespace Faultify.Tests.UnitTests
             // Act
             binary = Utils.Utils.ChangeComparisonToBranchOperator(binary, methodName, opCodeDefault);
             var mutatedBinary =
-                DllTestHelper.MutateMethod<ComparisonMutationAnalyzer>(binary, methodName, opCodeExpected);
+                DllTestHelper.MutateMethod<ComparisonAnalyzer>(binary, methodName, opCodeExpected);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var instance = binaryInteractor.CreateInstance(_nameSpace);
