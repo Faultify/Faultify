@@ -18,6 +18,7 @@ namespace Faultify.Analyze.Mutation
         ///     Reference to the variable instruction that can be mutated.
         /// </summary>
         public Instruction Variable { get; set; }
+        public int LineNumber { get; set; }
 
         public void Mutate()
         {
@@ -29,6 +30,19 @@ namespace Faultify.Analyze.Mutation
             Variable.Operand = Original;
         }
 
-        public string Report => $"Change variable from: '{Original}' to: '{Replacement}'.";
+        public string Report
+        {
+            get
+            {
+                if (LineNumber != -1)
+                {
+                    return $"Change variable from: '{Original}' to: '{Replacement}' at line {LineNumber}.";
+                }
+                else
+                {
+                    return $"Change variable from: '{Original}' to: '{Replacement}'.";
+                }
+            }
+        }
     }
 }

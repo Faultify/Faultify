@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil.Cil;
+using System;
 
 namespace Faultify.Analyze.Mutation
 {
@@ -22,6 +23,16 @@ namespace Faultify.Analyze.Mutation
         /// </summary>
         public Instruction Instruction { get; set; }
 
+        private int _lineNumber;
+        public int LineNumber {
+            get => _lineNumber;
+            set
+            {
+                _lineNumber = value;
+                Console.WriteLine($"line {_lineNumber}");
+            }
+        }
+
         public void Mutate()
         {
             Instruction.OpCode = Replacement;
@@ -32,6 +43,19 @@ namespace Faultify.Analyze.Mutation
             Instruction.OpCode = Original;
         }
 
-        public string Report => $"Change operator from: '{Original}' to: '{Replacement}'.";
+        public string Report
+        {
+            get
+            {
+                if (LineNumber != -1)
+                {
+                    return $"Change operator from: '{Original}' to: '{Replacement}' at line {LineNumber}.";
+                }
+                else
+                {
+                    return $"Change operator from: '{Original}' to: '{Replacement}'. !!";
+                }
+            }
+        }
     }
 }

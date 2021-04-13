@@ -9,6 +9,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using FieldDefinition = Mono.Cecil.FieldDefinition;
 using MethodDefinition = Mono.Cecil.MethodDefinition;
+using Faultify.Analyze.Analyzers;
 
 namespace Faultify.Analyze.AssemblyMutator
 {
@@ -17,10 +18,24 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class MethodScope : IMutationProvider, IMemberScope
     {
-        private readonly HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers;
-        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers;
-        private readonly HashSet<IAnalyzer<OpCodeMutation, Instruction>> _opCodeMethodAnalyzers;
-        private readonly HashSet<IAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers;
+        private readonly HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers = new HashSet<IAnalyzer<ArrayMutation, MethodDefinition>>
+            {
+                new ArrayAnalyzer()
+            };
+        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers = new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
+            {
+                new ConstantAnalyzer()
+            };
+        private readonly HashSet<IAnalyzer<OpCodeMutation, Instruction>> _opCodeMethodAnalyzers = new HashSet<IAnalyzer<OpCodeMutation, Instruction>>
+            {
+                new ArithmeticAnalyzer(),
+                new ComparisonAnalyzer(),
+                new BitwiseAnalyzer()
+            };
+        private readonly HashSet<IAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers = new HashSet<IAnalyzer<VariableMutation, MethodDefinition>>
+            {
+                new VariableAnalyzer()
+            };
 
 
         /// <summary>
@@ -28,18 +43,9 @@ namespace Faultify.Analyze.AssemblyMutator
         /// </summary>
         public readonly MethodDefinition MethodDefinition;
 
-        public MethodScope(
-            MethodDefinition methodDefinition,
-            HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> constantReferenceMutationAnalyers,
-            HashSet<IAnalyzer<OpCodeMutation, Instruction>> opcodeMethodAnalyzers,
-            HashSet<IAnalyzer<VariableMutation, MethodDefinition>> variableMutationAnalyzers,
-            HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> arrayMutationAnalyzers)
+        public MethodScope(MethodDefinition methodDefinition)
         {
             MethodDefinition = methodDefinition;
-            _constantReferenceMutationAnalyers = constantReferenceMutationAnalyers;
-            _opCodeMethodAnalyzers = opcodeMethodAnalyzers;
-            _variableMutationAnalyzers = variableMutationAnalyzers;
-            _arrayMutationAnalyzers = arrayMutationAnalyzers;
         }
 
         public int IntHandle => MethodDefinition.MetadataToken.ToInt32();
@@ -83,7 +89,7 @@ namespace Faultify.Analyze.AssemblyMutator
                 if (MethodDefinition.Body?.Instructions != null)
                     foreach (var instruction in MethodDefinition.Body?.Instructions)
                     {
-                        IMutationGroup<OpCodeMutation> mutations = analyzer.GenerateMutations(instruction, mutationLevel);
+                        IMutationGroup<OpCodeMutation> mutations = analyzer.GenerateMutations(instruction, mutationLevel, MethodDefinition.DebugInformation.GetSequencePointMapping());
 
                         if (mutations.Any())
                             yield return mutations;

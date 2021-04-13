@@ -1,8 +1,8 @@
 {
   "profiles": {
     "Faultify.Cli": {
-        "commandName": "Project",
-        "commandLineArgs": "-t  C:\\Users\\Vxvl4\\source\\repos\\Faultify\\Benchmark\\Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj -f pdf"
+      "commandName": "Project",
+      "commandLineArgs": "-t  D:\\Projects\\rug\\softwareEngineering\\Faultify\\Benchmark\\Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj -f html"
     }
   }
 }

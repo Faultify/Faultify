@@ -37,12 +37,7 @@ namespace Faultify.Analyze.AssemblyMutator
             ).ToList();
 
             Methods = TypeDefinition.Methods.Select(x =>
-                new MethodScope(
-                    x,
-                    fieldAnalyzers,
-                    opcodeAnalyzers,
-                    variableMutationAnalyzers,
-                    arrayMutationAnalyzers)
+                new MethodScope(x)
             ).ToList();
         }
 

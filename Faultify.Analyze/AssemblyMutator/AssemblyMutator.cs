@@ -70,7 +70,7 @@ namespace Faultify.Analyze.AssemblyMutator
 
         public AssemblyMutator(string assemblyPath) : this(new MemoryStream(File.ReadAllBytes(assemblyPath)))
         {
-            Module = ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters {InMemory = true});
+            Module = ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters { InMemory = true, ReadSymbols = true });
             Types = LoadTypes();
         }
 
