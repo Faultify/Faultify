@@ -98,7 +98,10 @@ namespace Faultify.Cli
             ConsoleMessage.PrintSettings(settings);
 
             if (!File.Exists(settings.TestProjectPath))
+            {
+                // TODO: This should be handled, Ideally, it should print to the console to let the user know.
                 throw new Exception($"Test project '{settings.TestProjectPath}' can not be found.");
+            }
 
             var cursorPosition = (0, 0);
 
@@ -107,8 +110,11 @@ namespace Faultify.Cli
             {
                 if (s.LogMessageType == LogMessageType.TestRunUpdate)
                 {
+                    // TODO: Currently, this is never NOT true
                     if (cursorPosition.Item1 == 0 && cursorPosition.Item2 == 0)
+                    {
                         cursorPosition = (Console.CursorLeft, Console.CursorTop);
+                    }
 
                     Console.SetCursorPosition(cursorPosition.Item1, cursorPosition.Item2);
                     Console.ForegroundColor = ConsoleColor.Cyan;

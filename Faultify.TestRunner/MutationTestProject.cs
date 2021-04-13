@@ -121,15 +121,21 @@ namespace Faultify.TestRunner
             string projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
 
             if (Regex.Match(projectFile, "xunit").Captures.Any())
+            {
                 return TestFramework.XUnit;
-
-            if (Regex.Match(projectFile, "nunit").Captures.Any())
+            }
+            else if (Regex.Match(projectFile, "nunit").Captures.Any())
+            {
                 return TestFramework.NUnit;
-
-            if (Regex.Match(projectFile, "mstest").Captures.Any())
+            }
+            else if (Regex.Match(projectFile, "mstest").Captures.Any())
+            {
                 return TestFramework.MsTest;
-
-            return TestFramework.None;
+            }
+            else
+            {
+                return TestFramework.None;
+            }
         }
 
 
@@ -139,8 +145,10 @@ namespace Faultify.TestRunner
         /// <param name="sessionProgressTracker"></param>
         /// <param name="projectPath"></param>
         /// <returns></returns>
-        private async Task<IProjectInfo> BuildProject(MutationSessionProgressTracker sessionProgressTracker,
-            string projectPath)
+        private async Task<IProjectInfo> BuildProject(
+            MutationSessionProgressTracker sessionProgressTracker,
+            string projectPath
+        )
         {
             var projectReader = new ProjectReader();
             return await projectReader.ReadProjectAsync(projectPath, sessionProgressTracker);
@@ -176,7 +184,7 @@ namespace Faultify.TestRunner
             {
                 DirectoryInfo testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
                 string xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
-                JObject xunitCoverageSettings = JObject.FromObject(new {parallelizeTestCollections = false});
+                JObject xunitCoverageSettings = JObject.FromObject(new { parallelizeTestCollections = false });
                 if (!File.Exists(xunitConfigFileName))
                 {
                     File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
@@ -209,7 +217,7 @@ namespace Faultify.TestRunner
             {
                 _testHostLogger.Error(e);
             }
-            
+
             return await testRunner.RunCodeCoverage(cancellationToken);
         }
 
@@ -223,16 +231,16 @@ namespace Faultify.TestRunner
             // Group mutations with tests.
             var testsPerMutation = new Dictionary<RegisteredCoverage, HashSet<string>>();
             foreach (var (testName, mutationIds) in coverage.Coverage)
-            foreach (var registeredCoverage in mutationIds)
-            {
-                if (!testsPerMutation.TryGetValue(registeredCoverage, out var testNames))
+                foreach (var registeredCoverage in mutationIds)
                 {
-                    testNames = new HashSet<string>();
-                    testsPerMutation.Add(registeredCoverage, testNames);
-                }
+                    if (!testsPerMutation.TryGetValue(registeredCoverage, out var testNames))
+                    {
+                        testNames = new HashSet<string>();
+                        testsPerMutation.Add(registeredCoverage, testNames);
+                    }
 
-                testNames.Add(testName);
-            }
+                    testNames.Add(testName);
+                }
 
             return testsPerMutation;
         }
