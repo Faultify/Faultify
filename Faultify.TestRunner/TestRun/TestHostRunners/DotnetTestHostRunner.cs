@@ -51,7 +51,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
             var testResults = new List<TestResult>();
             var remainingTests = new HashSet<string>(tests);
 
-            while (remainingTests.Any())
+           while (remainingTests.Any())
             {
                 try
                 {
@@ -65,6 +65,8 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                         new CancellationTokenSource(timeout).Token);
 
                     TestResults deserializedTestResults = TestResults.Deserialize(testResultsBinary);
+                    
+                    if (deserializedTestResults.Tests.Count == 0) throw new Exception("Dotnet cannot find the target file");
 
                     remainingTests.RemoveWhere(x => deserializedTestResults.Tests.Any(y => y.Name == x));
 
@@ -80,6 +82,10 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                         "This implies that the test run can not be completed. " +
                         "Consider opening up an issue with the logs found in the output folder."
                     );
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e);
                 }
                 finally
                 {

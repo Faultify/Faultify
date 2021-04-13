@@ -3,7 +3,7 @@
   <PropertyGroup>
 	  <PackageVersion>0.0.1</PackageVersion>
 	  <PackageId>Faultify.TestRunner</PackageId>
-	  <Description>Fualtify Mutation Test Runner</Description>
+	  <Description>Faultify Mutation Test Runner</Description>
 
 	  <Authors>Timon, Janfokke</Authors>
 	  <ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="Mono.Cecil" Version="0.11.3">
       <Aliases>MC</Aliases>
     </PackageReference>

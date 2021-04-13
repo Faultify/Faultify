@@ -63,10 +63,14 @@ namespace Faultify.TestRunner
 
             // Copy project N times
             var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
-            //var duplications = testProjectCopier.MakeInitialCopy(projectInfo); TODO: remove altogether
+
+            // This is for some reason necessary when running tests with Dotnet,
+            // otherwise the coverage analysis breaks future clones.
+            // TODO: Should be investigated further.
+            var initialCopy = testProjectCopier.MakeInitialCopy(projectInfo); 
 
             // Begin code coverage on first project.
-            TestProjectDuplication coverageProject = testProjectCopier.MakeInitialCopy(projectInfo);
+            TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(0);
             TestProjectInfo coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
@@ -322,7 +326,6 @@ namespace Faultify.TestRunner
                     }
 
                     testProject.FreeTestProject(); //TODO: replace with deletion
-
                 }
             }
 
