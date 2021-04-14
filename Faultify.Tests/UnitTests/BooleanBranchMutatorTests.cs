@@ -1,7 +1,9 @@
-﻿using System.IO;
-using Faultify.Analyze;
+﻿extern alias MC;
+
+using System.IO;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
-using Mono.Cecil.Cil;
+using MC::Mono.Cecil.Cil;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests
@@ -46,7 +48,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateMethod<BooleanBranchMutationAnalyzer>(binary, methodName, opCodeExpected, simplify);
+                DllTestHelper.MutateMethod<BranchingAnalyzer>(binary, methodName, opCodeExpected, simplify);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual =

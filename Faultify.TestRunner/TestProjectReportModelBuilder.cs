@@ -26,7 +26,7 @@ namespace Faultify.TestRunner
             {
                 foreach (var testResult in testResults.Tests)
                 {
-                    var mutation =
+                    MutationVariant mutation =
                         mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Any(y => y == testResult.Name));
 
                     if (mutation?.Mutation == null)
@@ -38,7 +38,7 @@ namespace Faultify.TestRunner
                         x.MutationId == mutation.MutationIdentifier.MutationId &&
                         mutation.MutationIdentifier.MemberName == x.MemberName))
                         _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
-                            mutation.Mutation.ToString(), "",
+                            mutation.Mutation.Report, "",
                             new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
                                 mutation.MutationAnalyzerInfo.AnalyzerDescription),
                             mutationStatus,

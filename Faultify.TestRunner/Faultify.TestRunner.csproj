@@ -3,7 +3,7 @@
   <PropertyGroup>
 	  <PackageVersion>0.0.1</PackageVersion>
 	  <PackageId>Faultify.TestRunner</PackageId>
-	  <Description>Fualtify Mutation Test Runner</Description>
+	  <Description>Faultify Mutation Test Runner</Description>
 
 	  <Authors>Timon, Janfokke</Authors>
 	  <ProjectUrl>https://github.com/Faultify/Faultify</ProjectUrl>
@@ -15,8 +15,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Cecil" Version="0.11.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.3">
+      <Aliases>MC</Aliases>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="MemoryTest.XUnit" Version="0.0.1" />
+	<PackageReference Include="MemoryTest.NUnit" Version="0.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,5 +32,6 @@
     <ProjectReference Include="..\Faultify.Report\Faultify.Report.csproj" />
     <ProjectReference Include="..\Faultify.TestRunner.Shared\Faultify.TestRunner.Shared.csproj" />
   </ItemGroup>
-
+	
+	
 </Project>

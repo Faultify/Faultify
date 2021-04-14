@@ -12,12 +12,14 @@ using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.NUnit
 {
+    [Obsolete("Moved into TestRunner.TestRun.TestHostRunners")]
     public class NUnitTestHostRunner : ITestHostRunner
     {
         private readonly string _testProjectAssemblyPath;
         private readonly TimeSpan _timeout;
         private readonly TestResults _testResults = new TestResults();
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
+        public TestFramework TestFramework => TestFramework.NUnit;
 
         public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger _)
         {

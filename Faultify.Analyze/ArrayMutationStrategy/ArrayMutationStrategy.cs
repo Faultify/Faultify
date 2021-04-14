@@ -1,10 +1,12 @@
 ﻿using Mono.Cecil;
+using System;
 
 namespace Faultify.Analyze.ArrayMutationStrategy
 {
     /// <summary>
     ///     Abstract class with reset, optimize and simplify logic which are the same for all strategies.
     /// </summary>
+    [Obsolete("Use DynamicArrayMutationStrategy", true)]
     public abstract class ArrayMutationStrategy : IArrayMutationStrategy
     {
         public abstract void Mutate();

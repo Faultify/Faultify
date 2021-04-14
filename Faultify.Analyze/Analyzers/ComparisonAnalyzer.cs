@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mono.Cecil.Cil;
 
-namespace Faultify.Analyze.OpcodeAnalyzer
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible comparison operator mutations.
@@ -26,7 +26,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
     ///     but it turns out that the compiler will usually optimize control flow by translating a Boolean operator into its IL complement branching instruction.
     ///     Hense it can be the case that on different computers IL code for comparison can be a bit different.
     /// </summary>
-    public class ComparisonMutationAnalyzer : OpCodeMutationAnalyzer
+    public class ComparisonAnalyzer : OpCodeAnalyzer
     {
         private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Branch =
             new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
@@ -77,9 +77,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                 {OpCodes.Cgt_Un, new[] {(MutationLevel.Simple, OpCodes.Clt_Un)}}
             };
 
-        public ComparisonMutationAnalyzer() : base(Branch)
-        {
-        }
+        public ComparisonAnalyzer() : base(Branch) { }
 
         public override string Description =>
             "Analyzer that searches for possible comparison mutations to invalidate a condition such as '<' to '>'.";

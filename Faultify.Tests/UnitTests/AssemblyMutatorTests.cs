@@ -2,8 +2,7 @@
 using System.Linq;
 using Faultify.Analyze;
 using Faultify.Analyze.AssemblyMutator;
-using Faultify.Analyze.ConstantAnalyzer;
-using Faultify.Analyze.OpcodeAnalyzer;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
 using NUnit.Framework;
 
@@ -106,9 +105,9 @@ namespace Faultify.Tests.UnitTests
             var mutations = method1.OpCodeMutations(MutationLevel.Detailed).Select(x => x).ToList();
 
             var arithmeticMutations =
-                mutations.FirstOrDefault(x => x.AnalyzerName == new ArithmeticMutationAnalyzer().Name);
+                mutations.FirstOrDefault(x => x.Name == new ArithmeticAnalyzer().Name);
             var comparisonMutations =
-                mutations.FirstOrDefault(x => x.AnalyzerName == new ComparisonMutationAnalyzer().Name);
+                mutations.FirstOrDefault(x => x.Name == new ComparisonAnalyzer().Name);
 
             Assert.AreEqual(mutations.Count, 2);
             Assert.IsNotNull(arithmeticMutations, null);
@@ -126,7 +125,7 @@ namespace Faultify.Tests.UnitTests
             var mutations = field.ConstantFieldMutations(MutationLevel.Detailed);
 
             var arithmeticMutations =
-                mutations.FirstOrDefault(x => x.AnalyzerName == new BooleanConstantMutationAnalyzer().Name);
+                mutations.FirstOrDefault(x => x.Name == new ConstantAnalyzer().Name);
 
             Assert.AreEqual(mutations.Count(), 1);
             Assert.IsNotNull(arithmeticMutations, null);

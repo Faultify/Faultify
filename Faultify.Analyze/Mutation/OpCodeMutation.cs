@@ -32,9 +32,6 @@ namespace Faultify.Analyze.Mutation
             Instruction.OpCode = Original;
         }
 
-        public override string ToString()
-        {
-            return $"Change operator from: '{Original}' to: '{Replacement}'.";
-        }
+        public string Report => $"Change operator from: '{Original}' to: '{Replacement}'.";
     }
 }

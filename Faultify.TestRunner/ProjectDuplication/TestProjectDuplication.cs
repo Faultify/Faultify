@@ -82,57 +82,63 @@ namespace Faultify.TestRunner.ProjectDuplication
         public IList<MutationVariant> GetMutationVariants(IList<MutationVariantIdentifier> mutationIdentifiers,
             MutationLevel mutationLevel)
         {
-            var foundMutations = new List<MutationVariant>();
+            List<MutationVariant> foundMutations = new List<MutationVariant>();
 
             foreach (var reference in TestProjectReferences)
             {
-                // Read the reference its contents
+                // Read the reference and its contents
                 using var stream = reference.OpenReadStream();
                 using var binReader = new BinaryReader(stream);
-                var data = binReader.ReadBytes((int) stream.Length);
+                byte[] data = binReader.ReadBytes((int) stream.Length);
 
                 var decompiler = new CodeDecompiler(reference.FullFilePath(), new MemoryStream(data));
 
                 // Create assembly mutator and look up the mutations according to the passed identifiers.
-                var assembly = new AssemblyMutator(new MemoryStream(data));
+                AssemblyMutator assembly = new AssemblyMutator(new MemoryStream(data));
 
-                foreach (var type in assembly.Types)
+                foreach (TypeScope type in assembly.Types)
                 {
+                    // this might want to be moved outside.
+                    // The operation is entirely a read operation that doesn't have to be done multiple times.
                     var toMutateMethods = new HashSet<string>(
                         mutationIdentifiers.Select(x => x.MemberName)
                     );
 
-                    foreach (var method in type.Methods)
+                    foreach (MethodScope method in type.Methods)
                     {
-                        if (!toMutateMethods.Contains(method.AssemblyQualifiedName))
-                            continue;
+                        //maybe move this out but probably impossibru
+                        if (!toMutateMethods.Contains(method.AssemblyQualifiedName)) continue;
 
                         var methodMutationId = 0;
 
-                        foreach (var group in method.AllMutations(mutationLevel))
-                        foreach (var mutation in group)
+                        foreach (var mutationGroup in method.AllMutations(mutationLevel))
                         {
-                            var mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
+                            foreach (var mutation in mutationGroup)
+                            {
+                                MutationVariantIdentifier mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
                                 x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
-                            if (mutationIdentifier.MemberName != null)
-                                foundMutations.Add(new MutationVariant
+                                if (mutationIdentifier.MemberName != null)
                                 {
-                                    Assembly = assembly,
-                                    CausesTimeOut = false,
-                                    MemberHandle = method.Handle,
-                                    OriginalSource = decompiler.Decompile(method.Handle),
-                                    MutatedSource = "",
-                                    Mutation = mutation,
-                                    MutationAnalyzerInfo = new MutationAnalyzerInfo
+                                    foundMutations.Add(new MutationVariant
                                     {
-                                        AnalyzerDescription = group.AnalyzerDescription,
-                                        AnalyzerName = group.AnalyzerName
-                                    },
-                                    MutationIdentifier = mutationIdentifier
-                                });
+                                        Assembly = assembly,
+                                        CausesTimeOut = false,
+                                        MemberHandle = method.Handle,
+                                        OriginalSource = decompiler.Decompile(method.Handle), // this might not be a good idea
+                                        MutatedSource = "",
+                                        Mutation = mutation,
+                                        MutationAnalyzerInfo = new MutationAnalyzerInfo
+                                        {
+                                            AnalyzerDescription = mutationGroup.Description,
+                                            AnalyzerName = mutationGroup.Name
+                                        },
+                                        MutationIdentifier = mutationIdentifier
+                                    });
+                                }
 
-                            methodMutationId++;
+                                methodMutationId++;
+                            }
                         }
                     }
                 }
@@ -148,33 +154,36 @@ namespace Faultify.TestRunner.ProjectDuplication
         public void FlushMutations(IList<MutationVariant> mutationVariants)
         {
             var assemblies = new HashSet<AssemblyMutator>(mutationVariants.Select(x => x.Assembly));
-            foreach (var assembly in assemblies)
+            foreach (AssemblyMutator assembly in assemblies)
             {
                 var fileDuplication = TestProjectReferences.FirstOrDefault(x =>
                     assembly.Module.Name == x.Name);
                 try
                 {
                     using var writeStream = fileDuplication.OpenReadWriteStream();
-                    using var ms = new MemoryStream();
-                    assembly.Module.Write(ms);
-                    writeStream.Write(ms.ToArray());
+                    using var stream = new MemoryStream();
+                    assembly.Module.Write(stream);
+                    writeStream.Write(stream.ToArray());
 
-                    ms.Position = 0;
-                    var decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), ms);
+                    stream.Position = 0;
+                    var decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), stream);
 
                     foreach (var mutationVariant in mutationVariants)
+                    {
                         if (assembly == mutationVariant.Assembly && string.IsNullOrEmpty(mutationVariant.MutatedSource))
+                        {
                             mutationVariant.MutatedSource = decompiler.Decompile(mutationVariant.MemberHandle);
-
-                    } 
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    } 
-                    finally
-                    {
-                        fileDuplication.Dispose();
+                        }
                     }
+                } 
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                } 
+                finally
+                {
+                    fileDuplication.Dispose();
+                }
             }
 
             TestProjectFile.Dispose();

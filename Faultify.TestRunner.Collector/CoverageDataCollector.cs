@@ -62,8 +62,8 @@ namespace Faultify.TestRunner.Collector
             try
             {
                 if (_coverageFlushed) return;
-                
-                var mutationCoverage = Utils.ReadMutationCoverageFile();
+
+                MutationCoverage mutationCoverage = Utils.ReadMutationCoverageFile();
                 
                 // Filter out functions that are not tests
                 mutationCoverage.Coverage = mutationCoverage.Coverage

@@ -1,7 +1,8 @@
-﻿using System.IO;
-using Faultify.Analyze.OpcodeAnalyzer;
+﻿extern alias MC;
+using System.IO;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
-using Mono.Cecil.Cil;
+using MC.Mono.Cecil.Cil;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests
@@ -45,7 +46,7 @@ namespace Faultify.Tests.UnitTests
 
             // Act
             var mutatedBinary =
-                DllTestHelper.MutateMethod<BitwiseMutationAnalyzer>(binary, methodName, opCodeExpected);
+                DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, methodName, opCodeExpected);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual = (uint) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),

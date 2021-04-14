@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Faultify.TestRunner.Dotnet
 {
+    [Obsolete("Moved into TestRunner.TestRun.TestHostRunners")]
     /// <summary>
     ///     Dotnet command argument builder.
     /// </summary>

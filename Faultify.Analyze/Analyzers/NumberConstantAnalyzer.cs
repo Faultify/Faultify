@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
 
-namespace Faultify.Analyze.ConstantAnalyzer
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible integer constant mutations inside a type definition.
@@ -10,25 +12,17 @@ namespace Faultify.Analyze.ConstantAnalyzer
     ///     Supports: int, double, long, short, sbyte, uint, ulong, ushort, byte and float.
     ///     It is possible to choose what types to mutate by initiating the class with a hashset of types
     /// </summary>
-    public class NumberConstantMutationAnalyzer : ConstantMutationAnalyzer
+    [Obsolete("Use ConstantAnalyzer", true)]
+    public class NumberConstantAnalyzer : ConstantAnalyzer
     {
         private readonly RandomValueGenerator _rng = new RandomValueGenerator();
 
-        public NumberConstantMutationAnalyzer()
-        {
-            Mapped = new TypeCollection();
-            Mapped.AddIntegerTypes();
-        }
-
-        public override string Description =>
+        public new string Description =>
             "Analyzer that searches for possible number constant mutations such as '5' to a random int like '971231'.";
 
-        public override string Name => "Number ConstantMutation Analyzer";
+        public new string Name => "Number ConstantMutation Analyzer";
 
-        public TypeCollection Mapped { get; }
-
-        public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
-            MutationLevel mutationLevel)
+        public new IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel)
         {
             var constantMutation = new ConstantMutation
             {
@@ -38,12 +32,21 @@ namespace Faultify.Analyze.ConstantAnalyzer
                 ConstantField = field
             };
 
-            if (Mapped.Types.TryGetValue(field.Constant.GetType(), out var fieldType))
-            {
-                constantMutation.Replacement = _rng.GenerateValueForField(fieldType, field.Constant);
+            Type type = field.Constant.GetType();
 
-                yield return constantMutation;
+            if (TypeChecker.IsConstantType(type))
+            {
+                constantMutation.Replacement = _rng.GenerateValueForField(type, field.Constant);
             }
+
+            var mutations = new List<ConstantMutation> { constantMutation };
+
+            return new MutationGroup<ConstantMutation>
+            {
+                Name = Name,
+                Description = Description,
+                Mutations = mutations
+            };
         }
     }
 }

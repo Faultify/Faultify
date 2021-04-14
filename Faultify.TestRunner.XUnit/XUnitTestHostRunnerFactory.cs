@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Faultify.TestRunner.XUnit
 {
+    [Obsolete("Deprecated parent interface")]
     public class XUnitTestHostRunnerFactory : ITestHostRunFactory
     {
         public TestFramework TestFramework => TestFramework.XUnit;

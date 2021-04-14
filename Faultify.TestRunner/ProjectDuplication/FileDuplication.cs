@@ -46,7 +46,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Returns whether write mode for the file stream is enabled.
         /// </summary>
         /// <returns></returns>
-        public bool WriteModesEnabled()
+        public bool IsWriteModeEnabled()
         {
             return _fileStream.CanWrite;
         }
@@ -55,7 +55,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Returns whether read mode for the file stream is enabled.
         /// </summary>
         /// <returns></returns>
-        public bool ReadModesEnabled()
+        public bool IsReadModeEnabled()
         {
             return _fileStream.CanRead;
         }
@@ -66,7 +66,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns></returns>
         public Stream OpenReadWriteStream()
         {
-            if (_fileStream == null || ReadModesEnabled()) EnableReadWriteOnly();
+            if (_fileStream == null || IsReadModeEnabled()) EnableReadWriteOnly();
             return _fileStream;
         }
 
@@ -77,7 +77,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns></returns>
         public Stream OpenReadStream()
         {
-            if (_fileStream == null || WriteModesEnabled()) EnableReadOnly();
+            if (_fileStream == null || IsWriteModeEnabled()) EnableReadOnly();
 
             return _fileStream;
         }
@@ -101,44 +101,5 @@ namespace Faultify.TestRunner.ProjectDuplication
 
             _fileStream = new FileStream(FullFilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
-
-        ///// <summary>
-        /////     Copying the file
-        ///// </summary>
-        //public FileDuplication CopyFile(int i)
-        //{
-        //    string fileName = "clone" + i.ToString() + "_" + Name;
-        //    string copyDestination = Directory + "\\..";
-        //    string copyDirectory = Path.Combine(copyDestination, fileName);
-        //    File.Create(copyDirectory);
-
-        //    string sourceFile = Path.Combine(Directory + "\\..", fileName);
-
-
-        //    string sourcePath = Path.Combine(Directory + "\\..", Name);
-        //    try
-        //    {
-        //    File.Copy(sourceFile, copyDirectory, true);
-        //    } catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.StackTrace);
-        //    }
-        //    if (System.IO.Directory.Exists(sourcePath))
-        //    {
-        //        string[] files = System.IO.Directory.GetFiles(sourcePath);
-
-        //        foreach (string s in files)
-        //        {
-        //            fileName = Path.GetFileName(s);
-        //            copyDirectory = Path.Combine(Directory, fileName);
-        //            File.Copy(s, copyDirectory, true);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Source path does not exist!");
-        //    }
-        //    return new FileDuplication(Directory, fileName);
-        //}
     }
 }

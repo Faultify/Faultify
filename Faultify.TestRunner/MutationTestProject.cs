@@ -1,4 +1,5 @@
-﻿using System;
+﻿extern alias MC;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,9 +16,11 @@ using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
+using Faultify.TestRunner.TestRun.TestHostRunners;
 using Microsoft.Extensions.Logging;
-using Mono.Cecil;
+using MC.Mono.Cecil;
 using Newtonsoft.Json.Linq;
+using NLog;
 
 namespace Faultify.TestRunner
 {
@@ -25,18 +28,17 @@ namespace Faultify.TestRunner
     {
         private readonly MutationLevel _mutationLevel;
         private readonly int _parallel;
-        private readonly ILogger _testHostLogger;
-        private readonly ITestHostRunFactory _testHostRunFactory;
+        private readonly TestHost _testHost;
         private readonly string _testProjectPath;
+        private static readonly Logger _testHostLogger = LogManager.GetCurrentClassLogger();
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
-            ILoggerFactory loggerFactoryFactory, ITestHostRunFactory testHostRunFactory)
+            ILoggerFactory loggerFactoryFactory, TestHost testHost)
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
             _parallel = parallel;
-            _testHostRunFactory = testHostRunFactory;
-            _testHostLogger = loggerFactoryFactory.CreateLogger("Faultify.TestHost");
+            _testHost = testHost;
         }
 
         /// <summary>
@@ -61,11 +63,15 @@ namespace Faultify.TestRunner
 
             // Copy project N times
             var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
-            var duplications = testProjectCopier.MakeInitialCopy(projectInfo);
+
+            // This is for some reason necessary when running tests with Dotnet,
+            // otherwise the coverage analysis breaks future clones.
+            // TODO: Should be investigated further.
+            var initialCopy = testProjectCopier.MakeInitialCopy(projectInfo); 
 
             // Begin code coverage on first project.
-            var coverageProject = testProjectCopier.MakeCopy(0);
-            var coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
+            TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(0);
+            TestProjectInfo coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
             progressTracker.LogBeginCoverage();
@@ -73,7 +79,7 @@ namespace Faultify.TestRunner
 
             var coverageTimer = new Stopwatch();
             coverageTimer.Start();
-            var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
+            MutationCoverage coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
 
             GC.Collect();
@@ -84,7 +90,7 @@ namespace Faultify.TestRunner
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
             return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
-                coverageTimer.Elapsed, testProjectCopier);
+                coverageTimer.Elapsed, testProjectCopier, _testHost);
         }
 
         /// <summary>
@@ -103,9 +109,9 @@ namespace Faultify.TestRunner
             };
 
             // Foreach project reference load it in memory as an 'assembly mutator'.
-            foreach (var projectReferencePath in duplication.TestProjectReferences)
+            foreach (FileDuplication projectReferencePath in duplication.TestProjectReferences)
             {
-                var loadProjectReferenceModel = new AssemblyMutator(projectReferencePath.FullFilePath());
+                AssemblyMutator loadProjectReferenceModel = new AssemblyMutator(projectReferencePath.FullFilePath());
 
                 if (loadProjectReferenceModel.Types.Count > 0)
                     projectInfo.DependencyAssemblies.Add(loadProjectReferenceModel);
@@ -116,7 +122,7 @@ namespace Faultify.TestRunner
 
         private TestFramework GetTestFramework(IProjectInfo projectInfo)
         {
-            var projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
+            string projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
 
             if (Regex.Match(projectFile, "xunit").Captures.Any())
                 return TestFramework.XUnit;
@@ -125,7 +131,7 @@ namespace Faultify.TestRunner
                 return TestFramework.NUnit;
 
             if (Regex.Match(projectFile, "mstest").Captures.Any())
-                return TestFramework.XUnit;
+                return TestFramework.MsTest;
 
             return TestFramework.None;
         }
@@ -164,31 +170,27 @@ namespace Faultify.TestRunner
 
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
-                var dependencyInjectionPath = assembly.Module.FileName;
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
-                assembly.Module.Write(dependencyInjectionPath);
-                assembly.Module.Dispose();
+                assembly.Flush();
+                assembly.Dispose();
             }
 
-            switch (projectInfo.TestFramework)
+            if (projectInfo.TestFramework == TestFramework.XUnit)
             {
-                case TestFramework.XUnit:
-                    var testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
-                    var xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
-                    var xunitCoverageSettings = JObject.FromObject(new {parallelizeTestCollections = false});
-                    if (!File.Exists(xunitConfigFileName))
-                    {
-                        File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
-                    }
-                    else
-                    {
-                        var originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
-                        originalJsonConfig.Merge(xunitCoverageSettings);
-                        File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
-                    }
-
-                    break;
+                DirectoryInfo testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
+                string xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
+                JObject xunitCoverageSettings = JObject.FromObject(new {parallelizeTestCollections = false});
+                if (!File.Exists(xunitConfigFileName))
+                {
+                    File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
+                }
+                else
+                {
+                    var originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
+                    originalJsonConfig.Merge(xunitCoverageSettings);
+                    File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
+                }
             }
         }
 
@@ -202,9 +204,16 @@ namespace Faultify.TestRunner
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
             using var _file = Utils.CreateCoverageMemoryMappedFile();
-
-            var testRunner =
-                _testHostRunFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHostLogger);
+            ITestHostRunner testRunner = null;
+            try
+            {
+                testRunner = TestHostRunnerFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHost);
+            }
+            catch (Exception e)
+            {
+                _testHostLogger.Error(e);
+            }
+            
             return await testRunner.RunCodeCoverage(cancellationToken);
         }
 
@@ -244,7 +253,7 @@ namespace Faultify.TestRunner
         private TestProjectReportModel StartMutationTestSession(TestProjectInfo testProjectInfo,
             Dictionary<RegisteredCoverage, HashSet<string>> testsPerMutation,
             MutationSessionProgressTracker sessionProgressTracker, TimeSpan coverageTestRunTime,
-            TestProjectDuplicator testProjectDuplicator)
+            TestProjectDuplicator testProjectDuplicator, TestHost testHost)
         {
             // Generate the mutation test runs for the mutation session.
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
@@ -252,7 +261,7 @@ namespace Faultify.TestRunner
                 _mutationLevel);
 
             // Double the time the code coverage took such that test runs have some time run their tests (needs to be in seconds).
-            var maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
+            TimeSpan maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
 
             var reportBuilder = new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);
 
@@ -280,8 +289,8 @@ namespace Faultify.TestRunner
                     testRun.InitializeMutations(testProject, timedOutMutations);
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-                    var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker,
-                        _testHostRunFactory, testProject, _testHostLogger);
+                    var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker, testHost,
+                        testProject, _testHostLogger);
                     if (results != null)
                     {
                         foreach (var testResult in results)
@@ -317,7 +326,6 @@ namespace Faultify.TestRunner
                     }
 
                     testProject.FreeTestProject(); //TODO: replace with deletion
-
                 }
             }
 

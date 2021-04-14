@@ -1,15 +1,17 @@
-﻿using System;
+﻿extern alias MC;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using Faultify.Analyze;
+using Faultify.Analyze.Analyzers;
 using Faultify.Analyze.Mutation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
+using MC.Mono.Cecil;
+using MC.Mono.Cecil.Cil;
+using MC.Mono.Cecil.Rocks;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests.Utils
@@ -77,7 +79,7 @@ namespace Faultify.Tests.UnitTests.Utils
         /// <param name="expected"></param>
         /// <returns></returns>
         public static byte[] MutateMethod<TMutator>(byte[] binary, string method, OpCode expected,
-            bool simplefy = false) where TMutator : IMutationAnalyzer<OpCodeMutation, Instruction>
+            bool simplefy = false) where TMutator : IAnalyzer<OpCodeMutation, Instruction>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
             var mutateMethod = module.Types.SelectMany(x => x.Methods).FirstOrDefault(x => x.Name == method);
@@ -88,7 +90,7 @@ namespace Faultify.Tests.UnitTests.Utils
 
             foreach (var instruction in mutateMethod.Body.Instructions)
             {
-                var possibleOperatorMutations = mutator.AnalyzeMutations(instruction, MutationLevel.Detailed);
+                var possibleOperatorMutations = mutator.GenerateMutations(instruction, MutationLevel.Detailed);
 
                 foreach (var mutation in possibleOperatorMutations)
                 {
@@ -117,7 +119,7 @@ namespace Faultify.Tests.UnitTests.Utils
         /// <param name="expected"></param>
         /// <returns></returns>
         public static byte[] MutateMethodVariables<TMutator>(byte[] binary, string method, bool simplify = false)
-            where TMutator : IMutationAnalyzer<VariableMutation, MethodDefinition>
+            where TMutator : IAnalyzer<VariableMutation, MethodDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
             var mutateMethod = module.Types.SelectMany(x => x.Methods).FirstOrDefault(x => x.Name == method);
@@ -126,7 +128,7 @@ namespace Faultify.Tests.UnitTests.Utils
             if (simplify)
                 mutateMethod.Body.SimplifyMacros();
 
-            var possibleOperatorMutations = mutator.AnalyzeMutations(mutateMethod, MutationLevel.Detailed);
+            var possibleOperatorMutations = mutator.GenerateMutations(mutateMethod, MutationLevel.Detailed);
 
             foreach (var mutation in possibleOperatorMutations)
             {
@@ -143,7 +145,7 @@ namespace Faultify.Tests.UnitTests.Utils
         }
 
         public static byte[] MutateField<TMutator>(byte[] binary, string fieldName, object expected)
-            where TMutator : IMutationAnalyzer<ConstantMutation, FieldDefinition>
+            where TMutator : IAnalyzer<ConstantMutation, FieldDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
 
@@ -153,7 +155,7 @@ namespace Faultify.Tests.UnitTests.Utils
 
             var mutator = Activator.CreateInstance<TMutator>();
 
-            var possibleOperatorMutations = mutator.AnalyzeMutations(field, MutationLevel.Detailed);
+            var possibleOperatorMutations = mutator.GenerateMutations(field, MutationLevel.Detailed);
 
             foreach (var mutation in possibleOperatorMutations)
             {
@@ -172,7 +174,7 @@ namespace Faultify.Tests.UnitTests.Utils
         }
 
         public static byte[] MutateConstant<TMutator>(byte[] binary, string fieldName)
-            where TMutator : IMutationAnalyzer<ConstantMutation, FieldDefinition>
+            where TMutator : IAnalyzer<ConstantMutation, FieldDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
 
@@ -181,7 +183,7 @@ namespace Faultify.Tests.UnitTests.Utils
                 .FirstOrDefault(x => x.Name == fieldName);
 
             var mutator = Activator.CreateInstance<TMutator>();
-            var mutation = mutator.AnalyzeMutations(field, MutationLevel.Detailed).First();
+            var mutation = mutator.GenerateMutations(field, MutationLevel.Detailed).First();
             mutation.Mutate();
             var mutatedBinaryStream = new MemoryStream();
             module.Write(mutatedBinaryStream);
@@ -189,7 +191,7 @@ namespace Faultify.Tests.UnitTests.Utils
         }
 
         public static byte[] MutateArray<TMutator>(byte[] binary, string methodName)
-            where TMutator : IMutationAnalyzer<ArrayMutation, MethodDefinition>
+            where TMutator : IAnalyzer<ArrayMutation, MethodDefinition>
         {
             var module = ModuleDefinition.ReadModule(new MemoryStream(binary, false));
 
@@ -198,7 +200,7 @@ namespace Faultify.Tests.UnitTests.Utils
                 .FirstOrDefault(x => x.Name == methodName);
 
             var mutator = Activator.CreateInstance<TMutator>();
-            var mutation = mutator.AnalyzeMutations(method, MutationLevel.Detailed).First();
+            var mutation = mutator.GenerateMutations(method, MutationLevel.Detailed).First();
 
             mutation.Mutate();
             var mutatedBinaryStream = new MemoryStream();

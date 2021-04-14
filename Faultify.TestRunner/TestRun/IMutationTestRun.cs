@@ -25,8 +25,8 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="projectDuplication"></param>
         /// <returns></returns>
         Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
-            MutationSessionProgressTracker sessionProgressTracker, ITestHostRunFactory testHostRunnerFactory,
-            TestProjectDuplication projectDuplication, ILogger logger);
+            MutationSessionProgressTracker sessionProgressTracker, TestHost testHost,
+            TestProjectDuplication projectDuplication, NLog.ILogger logger);
 
 
         /// <summary>
