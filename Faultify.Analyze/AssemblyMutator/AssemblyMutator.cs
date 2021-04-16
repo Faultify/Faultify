@@ -62,12 +62,6 @@ namespace Faultify.Analyze.AssemblyMutator
                 new VariableAnalyzer()
             };
 
-        private AssemblyMutator(Stream stream)
-        {
-            Module = ModuleDefinition.ReadModule(stream);
-            Types = LoadTypes();
-        }
-
         public AssemblyMutator(string assemblyPath)
         {
             Module = ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters { InMemory = true, ReadSymbols = true, ThrowIfSymbolsAreNotMatching = false });
