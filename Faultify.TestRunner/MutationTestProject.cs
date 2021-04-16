@@ -67,7 +67,7 @@ namespace Faultify.TestRunner
             // This is for some reason necessary when running tests with Dotnet,
             // otherwise the coverage analysis breaks future clones.
             // TODO: Should be investigated further.
-            var initialCopy = testProjectCopier.MakeInitialCopy(projectInfo); 
+            var initialCopy = testProjectCopier.MakeInitialCopy(projectInfo);
 
             // Begin code coverage on first project.
             TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(0);
@@ -180,7 +180,7 @@ namespace Faultify.TestRunner
             {
                 DirectoryInfo testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
                 string xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
-                JObject xunitCoverageSettings = JObject.FromObject(new {parallelizeTestCollections = false});
+                JObject xunitCoverageSettings = JObject.FromObject(new { parallelizeTestCollections = false });
                 if (!File.Exists(xunitConfigFileName))
                 {
                     File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
@@ -213,7 +213,7 @@ namespace Faultify.TestRunner
             {
                 _testHostLogger.Error(e);
             }
-            
+
             return await testRunner.RunCodeCoverage(cancellationToken);
         }
 
@@ -227,15 +227,17 @@ namespace Faultify.TestRunner
             // Group mutations with tests.
             var testsPerMutation = new Dictionary<RegisteredCoverage, HashSet<string>>();
             foreach (var (testName, mutationIds) in coverage.Coverage)
-            foreach (var registeredCoverage in mutationIds)
             {
-                if (!testsPerMutation.TryGetValue(registeredCoverage, out var testNames))
+                foreach (var registeredCoverage in mutationIds)
                 {
-                    testNames = new HashSet<string>();
-                    testsPerMutation.Add(registeredCoverage, testNames);
-                }
+                    if (!testsPerMutation.TryGetValue(registeredCoverage, out var testNames))
+                    {
+                        testNames = new HashSet<string>();
+                        testsPerMutation.Add(registeredCoverage, testNames);
+                    }
 
-                testNames.Add(testName);
+                    testNames.Add(testName);
+                }
             }
 
             return testsPerMutation;
@@ -250,10 +252,14 @@ namespace Faultify.TestRunner
         /// <param name="coverageTestRunTime"></param>
         /// <param name="testProjectDuplicationPool"></param>
         /// <returns></returns>
-        private TestProjectReportModel StartMutationTestSession(TestProjectInfo testProjectInfo,
+        private TestProjectReportModel StartMutationTestSession(
+            TestProjectInfo testProjectInfo,
             Dictionary<RegisteredCoverage, HashSet<string>> testsPerMutation,
-            MutationSessionProgressTracker sessionProgressTracker, TimeSpan coverageTestRunTime,
-            TestProjectDuplicator testProjectDuplicator, TestHost testHost)
+            MutationSessionProgressTracker sessionProgressTracker,
+            TimeSpan coverageTestRunTime,
+            TestProjectDuplicator testProjectDuplicator,
+            TestHost testHost
+        )
         {
             // Generate the mutation test runs for the mutation session.
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
