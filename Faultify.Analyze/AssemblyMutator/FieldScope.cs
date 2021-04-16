@@ -5,6 +5,7 @@ using System.Reflection.Metadata.Ecma335;
 using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
 using FieldDefinition = Mono.Cecil.FieldDefinition;
+using Faultify.Analyze.Analyzers;
 
 namespace Faultify.Analyze.AssemblyMutator
 {
@@ -20,11 +21,13 @@ namespace Faultify.Analyze.AssemblyMutator
         /// </summary>
         private readonly FieldDefinition _fieldDefinition;
 
-        public FieldScope(FieldDefinition fieldDefinition,
-            HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers)
+        public FieldScope(FieldDefinition fieldDefinition)
         {
             _fieldDefinition = fieldDefinition;
-            _fieldAnalyzers = fieldAnalyzers;
+            _fieldAnalyzers = new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
+            {
+                new ConstantAnalyzer()
+            };
         }
 
         public string AssemblyQualifiedName => _fieldDefinition.FullName;
