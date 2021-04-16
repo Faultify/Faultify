@@ -71,6 +71,8 @@ namespace Faultify.TestRunner
 
             // Measure the test coverage 
             progressTracker.LogBeginCoverage();
+
+            // Rewrites assemblies
             PrepareAssembliesForCodeCoverage(coverageProjectInfo);
 
             var coverageTimer = new Stopwatch();
@@ -176,7 +178,7 @@ namespace Faultify.TestRunner
             {
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
-                assembly.Flush();
+                assembly.Flush(); // SHAME ON YOU, SHAME
                 assembly.Dispose();
             }
 
@@ -263,11 +265,11 @@ namespace Faultify.TestRunner
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
             var runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(testsPerMutation, testProjectInfo,
                 _mutationLevel);
-
             // Double the time the code coverage took such that test runs have some time run their tests (needs to be in seconds).
             TimeSpan maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
 
             var reportBuilder = new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);
+            
 
             var allRunsStopwatch = new Stopwatch();
             allRunsStopwatch.Start();
@@ -291,6 +293,7 @@ namespace Faultify.TestRunner
                 try
                 {
                     testRun.InitializeMutations(testProject, timedOutMutations);
+
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
                     var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker, testHost,
@@ -321,7 +324,6 @@ namespace Faultify.TestRunner
                 }
                 finally
                 {
-
                     lock (this)
                     {
                         completedRuns += 1;
@@ -333,7 +335,7 @@ namespace Faultify.TestRunner
 
                 }
             }
-
+            
             var tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
 
             Task.WaitAll(tasks.ToArray());

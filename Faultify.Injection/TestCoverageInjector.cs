@@ -12,8 +12,8 @@ namespace Faultify.Injection
     /// </summary>
     public class TestCoverageInjector
     {
-        private static readonly Lazy<TestCoverageInjector> Lazy =
-            new Lazy<TestCoverageInjector>(() => new TestCoverageInjector());
+        private static readonly Lazy<TestCoverageInjector> _instance = new(() => new TestCoverageInjector());
+        public static TestCoverageInjector Instance => _instance.Value;
 
         private readonly string _currentAssemblyPath = typeof(TestCoverageInjector).Assembly.Location;
         private readonly MethodDefinition _initializeMethodDefinition;
@@ -41,8 +41,6 @@ namespace Faultify.Injection
             if (_initializeMethodDefinition == null || _registerTargetCoverage == null)
                 throw new Exception("Testcoverage Injector could not initialize injection methods");
         }
-
-        public static TestCoverageInjector Instance => Lazy.Value;
 
         /// <summary>
         ///     Injects a call to <see cref="CoverageRegistry" /> Initialize method into the

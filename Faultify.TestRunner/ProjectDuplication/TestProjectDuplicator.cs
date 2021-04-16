@@ -37,7 +37,7 @@ namespace Faultify.TestRunner.ProjectDuplication
             foreach (var directory in dirInfo.GetDirectories("*"))
             {
                 var match = Regex.Match(directory.Name,
-                    "(^cs$|^pl$|^rt$|^de$|^en$|^es$|^fr$|^it$|^ja$|^ko$|^ru$|^zh-Hans$|^zh-Hant$|^test-duplication-\\d$)");
+                    "(^cs$|^pl$|^rt$|^de$|^en$|^es$|^fr$|^it$|^ja$|^ko$|^ru$|^zh-Hans$|^zh-Hant$|^pt-BR$|^tr$|^test-duplication-\\d$)");
 
                 if (match.Captures.Count != 0) Directory.Delete(directory.FullName, true);
             }

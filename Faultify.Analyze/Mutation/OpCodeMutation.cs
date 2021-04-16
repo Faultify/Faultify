@@ -29,7 +29,6 @@ namespace Faultify.Analyze.Mutation
             set
             {
                 _lineNumber = value;
-                Console.WriteLine($"line {_lineNumber}");
             }
         }
 
