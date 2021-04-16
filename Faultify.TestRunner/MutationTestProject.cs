@@ -66,7 +66,9 @@ namespace Faultify.TestRunner
             //var duplications = testProjectCopier.MakeInitialCopy(projectInfo); TODO: remove altogether
 
             // Begin code coverage on first project.
-            TestProjectDuplication coverageProject = testProjectCopier.MakeInitialCopy(projectInfo);
+            testProjectCopier.MakeInitialCopy(projectInfo);
+            TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(1);
+
             TestProjectInfo coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
@@ -291,7 +293,7 @@ namespace Faultify.TestRunner
 
             async Task RunTestRun(IMutationTestRun testRun)
             {
-                var testProject = testProjectDuplicator.MakeCopy(testRun.RunId + 1);
+                var testProject = testProjectDuplicator.MakeCopy(testRun.RunId + 2);
 
                 try
                 {
