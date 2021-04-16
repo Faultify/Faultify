@@ -58,8 +58,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                     ProcessRunner testProcessRunner = BuildTestProcessRunner(remainingTests);
 
                     await testProcessRunner.RunAsync();
-                    _logger.Debug(testProcessRunner.Output.ToString());
-                    _logger.Error(testProcessRunner.Error.ToString());
+
 
                     byte[] testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath,
                         new CancellationTokenSource(timeout).Token);
@@ -75,7 +74,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 }
                 catch (FileNotFoundException)
                 {
-                    _logger.Error(
+                    _logger.Fatal(
                         "The file 'test_results.bin' was not generated." +
                         "This implies that the test run can not be completed. " +
                         "Consider opening up an issue with the logs found in the output folder."
@@ -106,11 +105,6 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 ProcessRunner coverageProcessRunner = BuildCodeCoverageTestProcessRunner();
                 Process process = await coverageProcessRunner.RunAsync();
 
-                string output = coverageProcessRunner.Output.ToString();
-
-                _logger.Debug(output);
-                _logger.Error(coverageProcessRunner.Error.ToString());
-
                 if (process.ExitCode != 0)
                 {
                     throw new ExitCodeException(process.ExitCode);
@@ -120,7 +114,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
             }
             catch (FileNotFoundException)
             {
-                _logger.Error(
+                _logger.Fatal(
                     "The file 'coverage.bin' was not generated." +
                     "This implies that the test run can not be completed. " +
                     "Consider opening up an issue with the logs found in the output folder."

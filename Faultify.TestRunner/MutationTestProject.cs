@@ -30,7 +30,7 @@ namespace Faultify.TestRunner
         private readonly int _parallel;
         private readonly TestHost _testHost;
         private readonly string _testProjectPath;
-        private static readonly Logger _testHostLogger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
             ILoggerFactory loggerFactoryFactory, TestHost testHost)
@@ -73,6 +73,8 @@ namespace Faultify.TestRunner
             progressTracker.LogBeginCoverage();
 
             // Rewrites assemblies
+            // FIX: Breaks line numbers
+            // To fix, we need to restore the initial state of the assemblies prior to performing mutation testing.
             PrepareAssembliesForCodeCoverage(coverageProjectInfo);
 
             var coverageTimer = new Stopwatch();
@@ -176,6 +178,7 @@ namespace Faultify.TestRunner
 
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
+                _logger.Trace($"Starting test coverage injection in {assembly.Module.Name}");
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
                 assembly.Flush(); // SHAME ON YOU, SHAME
@@ -217,7 +220,7 @@ namespace Faultify.TestRunner
             }
             catch (Exception e)
             {
-                _testHostLogger.Error(e);
+                _logger.Error(e, "Unable to create Test Runner");
             }
 
             return await testRunner.RunCodeCoverage(cancellationToken);
@@ -297,7 +300,7 @@ namespace Faultify.TestRunner
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
                     var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker, testHost,
-                        testProject, _testHostLogger);
+                        testProject);
                     if (results != null)
                     {
                         foreach (var testResult in results)
@@ -321,6 +324,7 @@ namespace Faultify.TestRunner
                         $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}",
                         LogMessageType.Error);
                     failedRuns += 1;
+                    _logger.Error(e, "The test process encountered an unexpected error.");
                 }
                 finally
                 {

@@ -64,7 +64,7 @@ namespace Faultify.Analyze.Analyzers
             }
             catch (Exception e)
             {
-                _logger.Error(e, $"Could not find key in Dictionary: {original}.");
+                _logger.Warn(e, $"Could not find key \"{original}\" in Dictionary.");
                 mutations = Enumerable.Empty<OpCodeMutation>();
             }
 

@@ -83,7 +83,7 @@ namespace Faultify.Analyze.Analyzers
                 }
                 catch (InvalidCastException e)
                 {
-                    _logger.Error(e, $"Failed to get the type of {instruction.Operand}");
+                    _logger.Warn(e, $"Failed to get the type of {instruction.Operand}");
                 }
             }
 

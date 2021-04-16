@@ -8,9 +8,9 @@ namespace Faultify.TestRunner.XUnit
     {
         public TestFramework TestFramework => TestFramework.XUnit;
 
-        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
-            return new XUnitTestHostRunner(testProjectAssemblyPath, timeout, logger);
+            return new XUnitTestHostRunner(testProjectAssemblyPath, timeout);
         }
     }
 }

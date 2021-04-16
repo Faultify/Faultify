@@ -19,7 +19,7 @@ namespace Faultify.TestRunner.XUnit
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
         public TestFramework TestFramework => TestFramework.XUnit;
 
-        public XUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan _0, ILogger _1)
+        public XUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan _0)
         {
             _testProjectAssemblyPath = testProjectAssemblyPath;
         }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestProcess;
 using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace Faultify.TestRunner.Dotnet
 {
@@ -19,7 +20,7 @@ namespace Faultify.TestRunner.Dotnet
     public class DotnetTestHostRunner : ITestHostRunner
     {
         private static readonly bool DisableOutput = true;
-        private readonly ILogger _logger;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string _testAdapterPath;
         private readonly DirectoryInfo _testDirectoryInfo;
 
@@ -27,13 +28,12 @@ namespace Faultify.TestRunner.Dotnet
         private readonly TimeSpan _timeout;
         public TestFramework TestFramework => TestFramework.None;
 
-        public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
             _testFileInfo = new FileInfo(testProjectAssemblyPath);
             _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName);
 
             _timeout = timeout;
-            _logger = logger;
             _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
@@ -58,8 +58,6 @@ namespace Faultify.TestRunner.Dotnet
                     ProcessRunner testProcessRunner = BuildTestProcessRunner(remainingTests);
 
                     await testProcessRunner.RunAsync();
-                    _logger.LogDebug(testProcessRunner.Output.ToString());
-                    _logger.LogError(testProcessRunner.Error.ToString());
 
                     byte[] testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath,
                         new CancellationTokenSource(timeout).Token);
@@ -75,10 +73,9 @@ namespace Faultify.TestRunner.Dotnet
                 }
                 catch (FileNotFoundException)
                 {
-                    _logger.LogError(
+                    _logger.Error(
                         "The file 'test_results.bin' was not generated." +
-                        "This implies that the test run can not be completed. " +
-                        "Consider opening up an issue with the logs found in the output folder."
+                        "This implies that the test run can not be completed. "
                     );
                 }
                 finally
@@ -106,11 +103,6 @@ namespace Faultify.TestRunner.Dotnet
                 ProcessRunner coverageProcessRunner = BuildCodeCoverageTestProcessRunner();
                 Process process = await coverageProcessRunner.RunAsync();
 
-                string output = coverageProcessRunner.Output.ToString();
-
-                _logger.LogDebug(output);
-                _logger.LogError(coverageProcessRunner.Error.ToString());
-
                 if (process.ExitCode != 0)
                 {
                     throw new ExitCodeException(process.ExitCode);
@@ -120,10 +112,9 @@ namespace Faultify.TestRunner.Dotnet
             }
             catch (FileNotFoundException)
             {
-                _logger.LogError(
+                _logger.Error(
                     "The file 'coverage.bin' was not generated." +
-                    "This implies that the test run can not be completed. " +
-                    "Consider opening up an issue with the logs found in the output folder."
+                    "This implies that the test run can not be completed. "
                 );
                 return new MutationCoverage();
             }
@@ -155,7 +146,7 @@ namespace Faultify.TestRunner.Dotnet
                 RedirectStandardError = DisableOutput
             };
 
-            _logger.LogDebug($"Test process process arguments: {testArguments}");
+            _logger.Debug($"Test process process arguments: {testArguments}");
 
             return new ProcessRunner(testProcessStartInfo);
         }
@@ -184,7 +175,7 @@ namespace Faultify.TestRunner.Dotnet
                 WorkingDirectory = _testDirectoryInfo.FullName
             };
 
-            _logger.LogDebug($"Coverage test process arguments: {coverageArguments}");
+            _logger.Debug($"Coverage test process arguments: {coverageArguments}");
 
             return new ProcessRunner(coverageProcessStartInfo);
         }

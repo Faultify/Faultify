@@ -11,6 +11,6 @@ namespace Faultify.TestRunner
     public interface ITestHostRunFactory
     {
         public TestFramework TestFramework { get; }
-        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger);
+        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout);
     }
 }

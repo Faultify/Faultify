@@ -124,28 +124,30 @@ namespace Faultify.Injection
         public void InjectTargetCoverage(ModuleDefinition module)
         {
             foreach (TypeDefinition typeDefinition in module.Types.Where(x => !x.Name.StartsWith("<")))
-                // Find sum method
-            foreach (MethodDefinition method in typeDefinition.Methods)
             {
+                // Find sum method
+                foreach (MethodDefinition method in typeDefinition.Methods)
+                {
                     MethodReference registerMethodReference = method.Module.ImportReference(_registerTargetCoverage);
 
-                if (method.Body == null)
-                    continue;
+                    if (method.Body == null)
+                        continue;
 
-                ILProcessor processor = method.Body.GetILProcessor();
+                    ILProcessor processor = method.Body.GetILProcessor();
 
-                // Insert instruction that loads the meta data token as parameter for the register method.
-                Instruction assemblyName = processor.Create(OpCodes.Ldstr, method.Module.Assembly.Name.Name);
+                    // Insert instruction that loads the meta data token as parameter for the register method.
+                    Instruction assemblyName = processor.Create(OpCodes.Ldstr, method.Module.Assembly.Name.Name);
 
-                // Insert instruction that loads the meta data token as parameter for the register method.
-                Instruction entityHandle = processor.Create(OpCodes.Ldc_I4, method.MetadataToken.ToInt32());
+                    // Insert instruction that loads the meta data token as parameter for the register method.
+                    Instruction entityHandle = processor.Create(OpCodes.Ldc_I4, method.MetadataToken.ToInt32());
 
-                // Insert instruction that calls the register function.
-                Instruction callInstruction = processor.Create(OpCodes.Call, registerMethodReference);
+                    // Insert instruction that calls the register function.
+                    Instruction callInstruction = processor.Create(OpCodes.Call, registerMethodReference);
 
-                method.Body.Instructions.Insert(0, callInstruction);
-                method.Body.Instructions.Insert(0, entityHandle);
-                method.Body.Instructions.Insert(0, assemblyName);
+                    method.Body.Instructions.Insert(0, callInstruction);
+                    method.Body.Instructions.Insert(0, entityHandle);
+                    method.Body.Instructions.Insert(0, assemblyName);
+                }
             }
         }
 
