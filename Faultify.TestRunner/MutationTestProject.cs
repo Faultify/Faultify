@@ -30,7 +30,7 @@ namespace Faultify.TestRunner
         private readonly int _parallel;
         private readonly TestHost _testHost;
         private readonly string _testProjectPath;
-        private static readonly Logger _testHostLogger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
             ILoggerFactory loggerFactoryFactory, TestHost testHost)
@@ -70,7 +70,7 @@ namespace Faultify.TestRunner
             var initialCopy = testProjectCopier.MakeInitialCopy(projectInfo);
 
             // Begin code coverage on first project.
-            TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(0);
+            TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(1);
             TestProjectInfo coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
@@ -211,7 +211,7 @@ namespace Faultify.TestRunner
             }
             catch (Exception e)
             {
-                _testHostLogger.Error(e);
+                _logger.Error(e);
             }
 
             return await testRunner.RunCodeCoverage(cancellationToken);
@@ -288,7 +288,7 @@ namespace Faultify.TestRunner
 
             async Task RunTestRun(IMutationTestRun testRun)
             {
-                var testProject = testProjectDuplicator.MakeCopy(testRun.RunId + 1);
+                var testProject = testProjectDuplicator.MakeCopy(testRun.RunId + 2);
 
                 try
                 {
@@ -296,7 +296,7 @@ namespace Faultify.TestRunner
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
                     var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker, testHost,
-                        testProject, _testHostLogger);
+                        testProject, _logger);
                     if (results != null)
                     {
                         foreach (var testResult in results)

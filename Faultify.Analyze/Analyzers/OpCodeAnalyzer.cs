@@ -24,10 +24,28 @@ namespace Faultify.Analyze.Analyzers
             _mappedOpCodes = mappedOpCodes;
         }
 
-        public IMutationGroup<OpCodeMutation> GenerateMutations(Instruction scope, MutationLevel mutationLevel)
+        public IMutationGroup<OpCodeMutation> GenerateMutations(Instruction scope, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             var original = scope.OpCode;
             IEnumerable<OpCodeMutation> mutations;
+
+            int lineNumber = -1;
+            if (debug != null)
+            {
+                var prev = scope;
+                SequencePoint seqPoint = null;
+                // If prev is not null
+                // and line number is not found
+                // Try previous instruction.
+                while (prev != null && !debug.TryGetValue(prev, out seqPoint))
+                {
+                    prev = prev.Previous;
+                }
+                if (seqPoint != null)
+                {
+                    lineNumber = seqPoint.StartLine;
+                }
+            }
 
             try
             {
@@ -40,12 +58,13 @@ namespace Faultify.Analyze.Analyzers
                     {
                         Original = original,
                         Replacement = target.Item2,
-                        Instruction = scope
+                        Instruction = scope,
+                        LineNumber = lineNumber
                     };
             }
             catch (Exception e)
             {
-                _logger.Error(e, $"Could not find key in Dictionary: {original}.");
+                _logger.Warn(e, $"Could not find key \"{original}\" in Dictionary.");
                 mutations = Enumerable.Empty<OpCodeMutation>();
             }
 

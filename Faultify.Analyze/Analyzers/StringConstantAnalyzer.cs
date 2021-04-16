@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze.Analyzers
 {
@@ -20,7 +21,7 @@ namespace Faultify.Analyze.Analyzers
 
         public new string Name => "String ConstantMutation Analyzer";
 
-        public new IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel)
+        public new IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             var constantMutation = new ConstantMutation
             {

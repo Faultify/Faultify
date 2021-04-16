@@ -29,13 +29,14 @@ namespace Faultify.Analyze.Analyzers
 
         public string Name => "Variable Mutation Analyzer";
 
-        public IMutationGroup<VariableMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel)
+        public IMutationGroup<VariableMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             List<VariableMutation> mutations = new List<VariableMutation>();
 
             // NOTE: Commenting this out, may cause errors
             // if (method?.Body == null)
             //     mutations = Enumerable.Empty<VariableMutation>();
+            int lineNumber = -1;
 
             foreach (var instruction in method.Body.Instructions)
             {
@@ -48,6 +49,16 @@ namespace Faultify.Analyze.Analyzers
 
                 try
                 {
+                    if (debug != null)
+                    {
+                        debug.TryGetValue(instruction, out var tempSeqPoint);
+
+                        if (tempSeqPoint != null)
+                        {
+                            lineNumber = tempSeqPoint.StartLine;
+                        }
+                    }
+
                     // Get variable type. Might throw InvalidCastException
                     Type type = ((TypeReference)instruction.Operand).ToSystemType();
 
@@ -65,13 +76,14 @@ namespace Faultify.Analyze.Analyzers
                             {
                                 Original = variableInstruction.Operand,
                                 Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
-                                Variable = variableInstruction
+                                Variable = variableInstruction,
+                                LineNumber = lineNumber
                             });
                     }
                 }
                 catch (InvalidCastException e)
                 {
-                    _logger.Error(e, $"Failed to get the type of {instruction.Operand}");
+                    _logger.Warn(e, $"Failed to get the type of {instruction.Operand}");
                 }
             }
 
