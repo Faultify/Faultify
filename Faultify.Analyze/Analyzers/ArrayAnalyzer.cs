@@ -25,7 +25,7 @@ namespace Faultify.Analyze.Analyzers
 
         public string Name => "Array Analyzer";
 
-        public IMutationGroup<ArrayMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel)
+        public IMutationGroup<ArrayMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             // Filter and map arrays
             IEnumerable<ArrayMutation> arrayMutations =

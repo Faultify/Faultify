@@ -8,9 +8,6 @@ using Faultify.Report;
 using Faultify.Report.HTMLReporter;
 using Faultify.Report.PDFReporter;
 using Faultify.TestRunner;
-using Faultify.TestRunner.Dotnet;
-using Faultify.TestRunner.NUnit;
-using Faultify.TestRunner.XUnit;
 using Faultify.TestRunner.Logging;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.Extensions.Configuration;
@@ -77,7 +74,36 @@ namespace Faultify.Cli
             var serviceProvider = services.BuildServiceProvider();
             var program = serviceProvider.GetService<Program>();
 
+            configureLogger();
+
             await program.Run(settings);
+        }
+
+        /// <summary>
+        /// Sets up NLog configuration programmatically
+        /// </summary>
+        private static void configureLogger()
+        {
+            var config = new NLog.Config.LoggingConfiguration();
+
+            // Targets where to log to: File and Console
+            var logfile = new NLog.Targets.FileTarget("logfile")
+            {
+                FileName = "log.txt",
+                Layout = "[${level:uppercase=true}] ${longdate} | ${logger} :: ${message}"
+            };
+
+            var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole")
+            {
+                Layout = "[${level:uppercase=true}] ${longdate} | ${logger} :: ${message}"
+            };
+
+            // Rules for mapping loggers to targets
+            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logconsole);
+            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, logfile);
+
+            // Apply config
+            NLog.LogManager.Configuration = config;
         }
 
         private static Settings ParseCommandlineArguments(string[] args)
@@ -98,7 +124,10 @@ namespace Faultify.Cli
             ConsoleMessage.PrintSettings(settings);
 
             if (!File.Exists(settings.TestProjectPath))
+            {
+                // TODO: This should be handled, Ideally, it should print to the console to let the user know.
                 throw new Exception($"Test project '{settings.TestProjectPath}' can not be found.");
+            }
 
             var cursorPosition = (0, 0);
 
@@ -107,8 +136,11 @@ namespace Faultify.Cli
             {
                 if (s.LogMessageType == LogMessageType.TestRunUpdate)
                 {
+                    // TODO: Currently, this is never NOT true
                     if (cursorPosition.Item1 == 0 && cursorPosition.Item2 == 0)
+                    {
                         cursorPosition = (Console.CursorLeft, Console.CursorTop);
+                    }
 
                     Console.SetCursorPosition(cursorPosition.Item1, cursorPosition.Item2);
                     Console.ForegroundColor = ConsoleColor.Cyan;
