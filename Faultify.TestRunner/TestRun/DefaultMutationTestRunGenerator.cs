@@ -16,49 +16,73 @@ namespace Faultify.TestRunner.TestRun
             TestProjectInfo testProjectInfo, MutationLevel mutationLevel)
         {
             _logger.Info($"Generating mutation test runs");
-            var mutationTestRuns = new List<IMutationTestRun>();
 
             var allMutations = GetMutationsForCoverage(testsPerMethod, testProjectInfo, mutationLevel);
-            var mutationGroups = GetTestGroups(allMutations).ToArray();
+            var mutationGroups = GetTestGroups(allMutations);
 
-            for (var i = 0; i < mutationGroups.Length; i++)
+            int i = 0;
+            return mutationGroups.Select(mutationGroup =>
             {
-                var mutationGroup = mutationGroups[i];
-
-                mutationTestRuns.Add(new DefaultMutationTestRun
+                return new DefaultMutationTestRun
                 {
                     MutationIdentifiers = mutationGroup,
-                    RunId = i,
+                    RunId = i++,
                     MutationLevel = mutationLevel
-                });
-            }
-
-            return mutationTestRuns;
+                };
+            });
         }
 
+        /// <summary>
+        /// Helper class used for the test coverage analysis.
+        /// </summary>
         private class MutationBucket
         {
-            public HashSet<string> Tests;
-            public List<MutationVariantIdentifier> Mutations;
+            /// <summary>
+            /// Set of tests that the contained mutations cover
+            /// </summary>
+            private HashSet<string> Tests { get; }
+            /// <summary>
+            /// List of mutations in the bucket
+            /// </summary>
+            public List<MutationVariantIdentifier> Mutations { get; }
 
+            /// <summary>
+            /// Safely create a new bucket with an initial mutation in it
+            /// </summary>
+            /// <param name="initialMutation"></param>
             public MutationBucket(MutationVariantIdentifier initialMutation)
             {
                 Tests = new HashSet<string>(initialMutation.TestCoverage);
                 Mutations = new List<MutationVariantIdentifier> { initialMutation };
             }
 
+            /// <summary>
+            /// Adds a new mutation to the bucket.
+            /// </summary>
+            /// <param name="mutation"></param>
             public void AddMutation(MutationVariantIdentifier mutation)
             {
                 Tests.Union(mutation.TestCoverage);
                 Mutations.Add(mutation);
             }
 
+            /// <summary>
+            /// Returns wether or not the bucket tests intersect with the provided set of tests
+            /// </summary>
+            /// <param name="tests">Tests to check for intersection with</param>
+            /// <returns>True if the provided set of tests overlaps with the set of tests in the bucket</returns>
             public bool IntersectsWith(HashSet<string> tests)
             {
                 return !tests.AsParallel().Any(test => Tests.Contains(test));
             }
         }
 
+        /// <summary>
+        /// Greedy algorithm for the set cover problem of test coverage. It iterates through the list of mutations, adding them to
+        /// the first bucket where it doesn't overlap with any tests. If there are no valid buckets, a new one is created.
+        /// </summary>
+        /// <param name="mutationVariants">List of mutation variants to group</param>
+        /// <returns>A collection of collections containing the non-overlapping sets.</returns>
         private static IEnumerable<IList<MutationVariantIdentifier>> GreedyCoverageAlgorithm(IList<MutationVariantIdentifier> mutationVariants)
         {
             var buckets = new List<MutationBucket>();
@@ -87,6 +111,13 @@ namespace Faultify.TestRunner.TestRun
             return buckets.Select(bucket => bucket.Mutations);
         }
 
+
+        /// <summary>
+        /// Optimal algorithm for the set cover problem of test coverage. This is extgremely slow for large problem sizes, but it is optimal
+        /// so it should be used for small test runs where it is not likely to slow things down.
+        /// </summary>
+        /// <param name="mutationVariants">List of mutation variants to group</param>
+        /// <returns>A collection of collections containing the non-overlapping sets.</returns>
         private static IEnumerable<IList<MutationVariantIdentifier>> OptimalCoverageAlgorithm(IList<MutationVariantIdentifier> mutationVariants)
         {
             // Get all MutationsInfo
