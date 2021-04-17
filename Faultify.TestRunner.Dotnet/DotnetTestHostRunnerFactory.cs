@@ -11,7 +11,7 @@ namespace Faultify.TestRunner.Dotnet
 
         public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
         {
-            return new DotnetTestHostRunner(testProjectAssemblyPath, timeout, logger);
+            return new DotnetTestHostRunner(testProjectAssemblyPath, timeout);
         }
     }
 }

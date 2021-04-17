@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using NLog;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,15 +12,7 @@ namespace Faultify.TestRunner.TestProcess
     {
         private readonly ProcessStartInfo _processStartInfo;
 
-        /// <summary>
-        ///     The error message of this process.
-        /// </summary>
-        public StringBuilder Error;
-
-        /// <summary>
-        ///     The output message of this process.
-        /// </summary>
-        public StringBuilder Output;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ProcessRunner(ProcessStartInfo processStartInfo)
         {
@@ -32,6 +25,7 @@ namespace Faultify.TestRunner.TestProcess
         /// <returns></returns>
         public async Task<Process> RunAsync()
         {
+            _logger.Info("Starting new process");
             var process = new Process();
 
             var taskCompletionSource = new TaskCompletionSource<object>();
@@ -40,11 +34,8 @@ namespace Faultify.TestRunner.TestProcess
 
             process.StartInfo = _processStartInfo;
 
-            Output = new StringBuilder();
-            Error = new StringBuilder();
-
-            process.OutputDataReceived += (sender, e) => { Output.AppendLine(e.Data); };
-            process.ErrorDataReceived += (sender, e) => { Error.AppendLine(e.Data); };
+            process.OutputDataReceived += (sender, e) => { _logger.Debug(e.Data); };
+            process.ErrorDataReceived += (sender, e) => { _logger.Error(e.Data); };
 
             process.Start();
 

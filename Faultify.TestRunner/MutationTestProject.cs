@@ -82,9 +82,11 @@ namespace Faultify.TestRunner
             MutationCoverage coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
 
+            _logger.Info($"Collecting garbage");
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
+            _logger.Info($"Freeing test project");
             coverageProject.FreeTestProject();
 
             // Start test session.
@@ -158,6 +160,7 @@ namespace Faultify.TestRunner
         /// <param name="projectInfo"></param>
         private void PrepareAssembliesForCodeCoverage(TestProjectInfo projectInfo)
         {
+            _logger.Info($"Preparing assemblies for code coverage");
             TestCoverageInjector.Instance.InjectTestCoverage(projectInfo.TestModule);
             TestCoverageInjector.Instance.InjectModuleInit(projectInfo.TestModule);
             TestCoverageInjector.Instance.InjectAssemblyReferences(projectInfo.TestModule);
@@ -170,6 +173,7 @@ namespace Faultify.TestRunner
 
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
+                _logger.Debug($"Writing assembly {assembly.Module.FileName}");
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
                 assembly.Flush();
@@ -203,6 +207,7 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
+            _logger.Info($"Running coverage analysis");
             using var _file = Utils.CreateCoverageMemoryMappedFile();
             ITestHostRunner testRunner = null;
             try
@@ -224,6 +229,7 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private Dictionary<RegisteredCoverage, HashSet<string>> GroupMutationsWithTests(MutationCoverage coverage)
         {
+            _logger.Info($"Grouping mutations with registered tests");
             // Group mutations with tests.
             var testsPerMutation = new Dictionary<RegisteredCoverage, HashSet<string>>();
             foreach (var (testName, mutationIds) in coverage.Coverage)
@@ -261,6 +267,7 @@ namespace Faultify.TestRunner
             TestHost testHost
         )
         {
+            _logger.Info($"Starting mutation session");
             // Generate the mutation test runs for the mutation session.
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
             var runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(testsPerMutation, testProjectInfo,

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Faultify.TestRunner.TestRun.TestHostRunners;
+using NLog;
+
 namespace Faultify.TestRunner.TestRun
 {
     /// <summary>
@@ -9,6 +11,7 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     static class TestHostRunnerFactory
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Create and return an ITestHostRunner
         /// </summary>
@@ -19,7 +22,8 @@ namespace Faultify.TestRunner.TestRun
         /// <returns></returns>
         public static ITestHostRunner CreateTestRunner(string testAssemblyPath, TimeSpan timeOut, TestHost testHost)
         {
-            // private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+            _logger.Info($"Creating test runner");
             ITestHostRunner testRunner = testHost switch
             {
                 TestHost.NUnit => new NUnitTestHostRunner(testAssemblyPath, timeOut),

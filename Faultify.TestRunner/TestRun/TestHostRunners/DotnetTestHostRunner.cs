@@ -46,6 +46,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress,
             IEnumerable<string> tests)
         {
+            _logger.Info("Running tests");
             string testResultOutputPath = Path.Combine(_testDirectoryInfo.FullName, TestRunnerConstants.TestsFileName);
 
             var testResults = new List<TestResult>();
@@ -58,8 +59,6 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                     ProcessRunner testProcessRunner = BuildTestProcessRunner(remainingTests);
 
                     await testProcessRunner.RunAsync();
-                    _logger.Debug(testProcessRunner.Output.ToString());
-                    _logger.Error(testProcessRunner.Error.ToString());
 
                     byte[] testResultsBinary = await File.ReadAllBytesAsync(testResultOutputPath,
                         new CancellationTokenSource(timeout).Token);
@@ -75,9 +74,9 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                         testResults.Add(testResult);
                     }
                 }
-                catch (FileNotFoundException)
+                catch (FileNotFoundException e)
                 {
-                    _logger.Error(
+                    _logger.Error(e,
                         "The file 'test_results.bin' was not generated." +
                         "This implies that the test run can not be completed. " +
                         "Consider opening up an issue with the logs found in the output folder."
@@ -107,15 +106,11 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         /// <returns></returns>
         public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
         {
+            _logger.Info("Running code coverage");
             try
             {
                 ProcessRunner coverageProcessRunner = BuildCodeCoverageTestProcessRunner();
                 Process process = await coverageProcessRunner.RunAsync();
-
-                string output = coverageProcessRunner.Output.ToString();
-
-                _logger.Debug(output);
-                _logger.Error(coverageProcessRunner.Error.ToString());
 
                 if (process.ExitCode != 0)
                 {
@@ -124,15 +119,22 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
 
                 return Utils.ReadMutationCoverageFile();
             }
-            catch (FileNotFoundException)
+            catch (FileNotFoundException e)
             {
-                _logger.Error(
+                _logger.Error(e, 
                     "The file 'coverage.bin' was not generated." +
                     "This implies that the test run can not be completed. " +
-                    "Consider opening up an issue with the logs found in the output folder."
-                );
-                return new MutationCoverage();
+                    "Consider opening up an issue with the logs found in the output folder.");
             }
+            catch (ExitCodeException e)
+            {
+                _logger.Fatal(e, $"Subprocess terminated with error code {e.ExitCode}");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Error running code coverage.");
+            }
+            return new MutationCoverage();
         }
 
         /// <summary>
@@ -142,6 +144,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         /// <returns></returns>
         private ProcessRunner BuildTestProcessRunner(IEnumerable<string> tests)
         {
+            _logger.Info("Building test runner");
             var testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
@@ -172,6 +175,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         /// <returns></returns>
         private ProcessRunner BuildCodeCoverageTestProcessRunner()
         {
+            _logger.Info("Building coverage test runner");
             var coverageArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()

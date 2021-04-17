@@ -96,18 +96,15 @@ namespace Faultify.TestRunner.ProjectDuplication
                 // Create assembly mutator and look up the mutations according to the passed identifiers.
                 AssemblyMutator assembly = new AssemblyMutator(reference.FullFilePath());
 
+                var toMutateMethods = new HashSet<string>(
+                    mutationIdentifiers.Select(x => x.MemberName)
+                );
+
                 foreach (TypeScope type in assembly.Types)
                 {
-                    // this might want to be moved outside.
-                    // The operation is entirely a read operation that doesn't have to be done multiple times.
-                    var toMutateMethods = new HashSet<string>(
-                        mutationIdentifiers.Select(x => x.MemberName)
-                    );
 
-                    foreach (MethodScope method in type.Methods)
+                    foreach (MethodScope method in type.Methods.Where(method => toMutateMethods.Contains(method.AssemblyQualifiedName)))
                     {
-                        //maybe move this out but probably impossibru
-                        if (!toMutateMethods.Contains(method.AssemblyQualifiedName)) continue;
 
                         var methodMutationId = 0;
 
