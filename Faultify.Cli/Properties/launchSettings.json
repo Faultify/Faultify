@@ -6,11 +6,11 @@
     },
     "Benchmark": {
       "commandName": "Project",
-      "commandLineArgs": "-t  \"D:\\Projects\\rug\\softwareEngineering\\Faultify\\Benchmark\\Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj\" -f html"
+      "commandLineArgs": "-i  \"D:\\Projects\\rug\\softwareEngineering\\Faultify\\Benchmark\\Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj\" -f html -t dotnettest"
     },
     "ILSpy test": {
       "commandName": "Project",
-      "commandLineArgs": "-t  \"D:\\Temporal\\ILSpy\\ICSharpCode.Decompiler.Tests\\ICSharpCode.Decompiler.Tests.csproj\" -f html"
+      "commandLineArgs": "-i  \"D:\\Temporal\\ILSpy\\ICSharpCode.Decompiler.Tests\\ICSharpCode.Decompiler.Tests.csproj\" -f html"
     }
   }
 }

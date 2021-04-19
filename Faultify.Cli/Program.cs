@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -177,8 +178,11 @@ namespace Faultify.Cli
             progress.ProgressChanged += (sender, progress) => PrintProgress(progress);
 
             var progressTracker = new MutationSessionProgressTracker(progress, _loggerFactory);
-
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             var testResult = await RunMutationTest(settings, progressTracker);
+            stopWatch.Stop();
+            Console.WriteLine("runtime of RunMutationTest(program.cs line 185): " + stopWatch.Elapsed);
 
             progressTracker.LogBeginReportBuilding(settings.ReportType, settings.ReportPath);
             await GenerateReport(testResult, settings);

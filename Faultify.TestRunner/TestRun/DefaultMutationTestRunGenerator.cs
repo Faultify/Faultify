@@ -156,7 +156,7 @@ namespace Faultify.TestRunner.TestRun
         /// <returns></returns>
         private static IEnumerable<IList<MutationVariantIdentifier>> GetTestGroups(IList<MutationVariantIdentifier> mutationVariants)
         {
-            _logger.Info($"Building mutation groups for test runs");
+            _logger.Info($"Building mutation groups for test groups");
 
             if (mutationVariants.Count > 500) // Magic number, optimal run size not yet clear
             {

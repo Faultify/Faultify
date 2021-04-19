@@ -28,9 +28,9 @@ namespace Faultify.TestRunner.TestRun
             {
                 TestHost.NUnit => new NUnitTestHostRunner(testAssemblyPath, timeOut),
                 TestHost.XUnit => new XUnitTestHostRunner(testAssemblyPath),
-                TestHost.MsTest => throw new Exception("not yet implemented"), //TODO: Implement MSTest
+                TestHost.MsTest => new DotnetTestHostRunner(testAssemblyPath, timeOut),
                 TestHost.DotnetTest => new DotnetTestHostRunner(testAssemblyPath, timeOut),
-                _ => throw new Exception("test host not found") //TODO: Probably bad practice
+                _ => throw new Exception("Test host not found") //TODO: Probably bad practice
             };
 
             return testRunner;

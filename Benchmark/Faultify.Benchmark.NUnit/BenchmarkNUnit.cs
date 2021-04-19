@@ -248,6 +248,16 @@ namespace Faultify.Benchmark.NUnit
             var expected = true;
             Assert.AreEqual(expected, actual);
         }
+
+
+        [Test]
+        public void TestNull()
+        {
+            var targets = new BenchmarkTarget1();
+            var actual = targets.isNull(null);
+            var expected = true;
+            Assert.AreEqual(expected, actual);
+        }
     }
 
     public class BenchmarkNUnit2
@@ -372,6 +382,16 @@ namespace Faultify.Benchmark.NUnit
             var expected = true;
             Assert.AreEqual(expected, actual);
         }
+
+
+        [Test]
+        public void TestNull()
+        {
+            var targets = new BenchmarkTarget2();
+            var actual = targets.isNull(null);
+            var expected = true;
+            Assert.AreEqual(expected, actual);
+        }
     }
 
     public class BenchmarkNUnit3
@@ -493,6 +513,16 @@ namespace Faultify.Benchmark.NUnit
         {
             var targets = new BenchmarkTarget3();
             var actual = targets.LogicalOr(0, 1);
+            var expected = true;
+            Assert.AreEqual(expected, actual);
+        }
+
+
+        [Test]
+        public void TestNull()
+        {
+            var targets = new BenchmarkTarget3();
+            var actual = targets.isNull(null);
             var expected = true;
             Assert.AreEqual(expected, actual);
         }
