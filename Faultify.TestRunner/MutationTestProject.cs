@@ -30,15 +30,26 @@ namespace Faultify.TestRunner
         private readonly int _parallel;
         private readonly TestHost _testHost;
         private readonly string _testProjectPath;
+        private readonly int  _timeOut;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
-            ILoggerFactory loggerFactoryFactory, TestHost testHost)
+            ILoggerFactory loggerFactoryFactory, TestHost testHost, int timeOut)
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
             _parallel = parallel;
             _testHost = testHost;
+            _timeOut = timeOut;
+        }
+
+        private TimeSpan CreateTimeOut(Stopwatch stopwatch)
+        {
+            if (_timeOut == 0)
+            {
+                return stopwatch.Elapsed < TimeSpan.FromSeconds(1) ? TimeSpan.FromSeconds(1) : stopwatch.Elapsed;
+            }
+            return TimeSpan.FromSeconds(_timeOut);
         }
 
         /// <summary>
@@ -82,6 +93,8 @@ namespace Faultify.TestRunner
             MutationCoverage coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
 
+            TimeSpan timeout = CreateTimeOut(coverageTimer);
+
             _logger.Info($"Collecting garbage");
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -92,7 +105,7 @@ namespace Faultify.TestRunner
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
             return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
-                coverageTimer.Elapsed, testProjectCopier, _testHost);
+                timeout, testProjectCopier, _testHost);
         }
 
         /// <summary>

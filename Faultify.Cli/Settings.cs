@@ -28,10 +28,13 @@ namespace Faultify.Cli
             HelpText = "The mutation level indicating the test depth. ")]
         public MutationLevel MutationLevel { get; set; }
 
-
         [Option('t', "testHost", Required = false, Default = nameof(TestHost.DotnetTest),
             HelpText = "The name of the test host framework.")]
         public string TestHostName { get; set; }
+
+        [Option('d', "timeout", Required = false, Default = 0, HelpText = "Time out in seconds for the mutations")]
+        public int TimeOut { get; set; }
+        
         public TestHost TestHost
         {
             get => Enum.Parse<TestHost>(TestHostName, true);
