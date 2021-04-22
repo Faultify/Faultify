@@ -14,8 +14,10 @@ namespace Faultify.TestRunner.ProjectDuplication
     /// </summary>
     public class TestProjectDuplication : IDisposable
     {
-        public TestProjectDuplication(FileDuplication testProjectFile,
-            IEnumerable<FileDuplication> testProjectReferences, int duplicationNumber)
+        public TestProjectDuplication(
+            FileDuplication testProjectFile,
+            IEnumerable<FileDuplication> testProjectReferences,
+            int duplicationNumber)
         {
             TestProjectFile = testProjectFile;
             TestProjectReferences = testProjectReferences;

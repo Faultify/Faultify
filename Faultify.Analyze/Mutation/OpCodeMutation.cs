@@ -25,15 +25,6 @@ namespace Faultify.Analyze.Mutation
         /// </summary>
         public Instruction Instruction { get; set; }
 
-        private int _lineNumber;
-        public int LineNumber {
-            get => _lineNumber;
-            set
-            {
-                _lineNumber = value;
-            }
-        }
-
         public void Mutate()
         {
             Instruction.OpCode = Replacement;

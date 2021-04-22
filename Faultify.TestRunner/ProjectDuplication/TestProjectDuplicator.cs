@@ -102,20 +102,20 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns> The newly created duplication </returns>
         public TestProjectDuplication MakeCopy(int i)
         {
-            var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i + 1}"); //TODO: adjust the folder number
+            string duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i + 1}");
             CopyFilesRecursively(_newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
-            IEnumerable<FileDuplication> duplicatedAsseblies = projectInfo.ProjectReferences
+            IEnumerable<FileDuplication> duplicatedAssemblies = projectInfo.ProjectReferences
                 
                 .Select(x =>
                     new FileDuplication(duplicatedDirectoryPath, Path.GetFileNameWithoutExtension(x) + ".dll"));
 
             return
                 new TestProjectDuplication(
-                    new FileDuplication(duplicatedDirectoryPath,
-                                        Path.GetFileName(projectInfo.AssemblyPath)),
+                    new FileDuplication(
+                        duplicatedDirectoryPath,
+                        Path.GetFileName(projectInfo.AssemblyPath)),
                     duplicatedAssemblies,
-                    i
-            );
+                    i);
 
         }
     }

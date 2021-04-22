@@ -1,6 +1,4 @@
-﻿using NLog;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
 

@@ -319,8 +319,7 @@ namespace Faultify.TestRunner
                         maxTestDuration,
                         sessionProgressTracker,
                         testHost,
-                        testProject,
-                        _logger);
+                        testProject);
                     if (results != null)
                     {
                         foreach (var testResult in results)

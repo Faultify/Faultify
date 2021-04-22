@@ -23,7 +23,6 @@ namespace Faultify.Analyze.Mutation
         ///     Reference to the variable instruction that can be mutated.
         /// </summary>
         public Instruction Variable { get; set; }
-        public int LineNumber { get; set; }
 
         public void Mutate()
         {

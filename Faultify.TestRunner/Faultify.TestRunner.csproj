@@ -12,6 +12,8 @@
 	  <Title>Dotnet, byte level, mutation test utility</Title>
 
 	  <TargetFramework>netcoreapp3.1</TargetFramework>
+
+	  <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
