@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using CommandLine;
 using Faultify.Analyze;
 using Faultify.TestRunner;
@@ -7,7 +9,7 @@ namespace Faultify.Cli
 {
     internal class Settings
     {
-        [Option('t', "testProjectName", Required = true,
+        [Option('i', "inputProject", Required = true,
             HelpText = "The path pointing to the test project project file.")]
         public string TestProjectPath { get; set; }
 
@@ -26,6 +28,13 @@ namespace Faultify.Cli
             HelpText = "The mutation level indicating the test depth. ")]
         public MutationLevel MutationLevel { get; set; }
 
-        public TestHost TestHost => TestHost.NUnit; // TODO: when NUnit, XUnit issues are fixed we can support in memory testers. 
+        [Option('t', "testHost", Required = false, Default = nameof(TestHost.DotnetTest),
+            HelpText = "The name of the test host framework.")]
+        public string TestHostName { get; set; }
+        public TestHost TestHost
+        {
+            get => Enum.Parse<TestHost>(TestHostName, true);
+            set => TestHostName = value.ToString();
+        }
     }
 }

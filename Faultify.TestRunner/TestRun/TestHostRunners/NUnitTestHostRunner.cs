@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Faultify.MemoryTest.TestInformation;
 using Faultify.TestRunner.Shared;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using NLog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TestResult = Faultify.TestRunner.Shared.TestResult;
 
@@ -14,6 +15,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
 {
     public class NUnitTestHostRunner : ITestHostRunner
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string _testProjectAssemblyPath;
         private readonly TimeSpan _timeout;
         private readonly TestResults _testResults = new TestResults();
@@ -22,12 +24,14 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
 
         public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
+            _logger.Info($"Creating test runner");
             _testProjectAssemblyPath = testProjectAssemblyPath;
             _timeout = timeout;
         }
 
         public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress, IEnumerable<string> tests)
         {
+            _logger.Info($"Running tests");
             var hashedTests = new HashSet<string>(tests);
 
             var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
@@ -44,6 +48,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
 
         public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
         {
+            _logger.Info($"Running code coverage");
             var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
             nunitHostRunner.Settings.Add("DefaultTimeout", 1000);
             nunitHostRunner.Settings.Add("StopOnError", false);
@@ -79,6 +84,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
 
         private MutationCoverage ReadCoverageFile()
         {
+            _logger.Info($"Reading coverage file");
             var mutationCoverage = Utils.ReadMutationCoverageFile();
 
             mutationCoverage.Coverage = mutationCoverage.Coverage

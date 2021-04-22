@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using NLog;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using NLog;
@@ -25,6 +26,7 @@ namespace Faultify.TestRunner.TestProcess
         /// <returns></returns>
         public async Task<Process> RunAsync()
         {
+            _logger.Info("Starting new process");
             var process = new Process();
 
             var taskCompletionSource = new TaskCompletionSource<object>();

@@ -1,23 +1,35 @@
-﻿using System.IO;
+﻿using NLog;
+using System;
+using System.IO;
 using System.IO.MemoryMappedFiles;
 
 namespace Faultify.TestRunner.Shared
 {
     public static class Utils
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Reads the mutation coverage from the <see cref="TestRunnerConstants.CoverageFileName"/> file. 
         /// </summary>
         /// <returns></returns>
         public static MutationCoverage ReadMutationCoverageFile()
         {
-            using MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("CoverageFile");
-            using MemoryMappedViewStream stream = mmf.CreateViewStream();
-            using MemoryStream memoryStream = new MemoryStream();
-            stream.CopyTo(memoryStream);
-            memoryStream.Position = 0;
+            _logger.Info("Reading mutation coverage file");
+            try
+            {
+                using MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("CoverageFile");
+                using MemoryMappedViewStream stream = mmf.CreateViewStream();
+                using MemoryStream memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+                memoryStream.Position = 0;
 
-            return MutationCoverage.Deserialize(memoryStream.ToArray());
+                return MutationCoverage.Deserialize(memoryStream.ToArray());
+            }
+            catch (Exception e)
+            {
+                _logger.Fatal(e, "Fatal exception reading file");
+            }
+            return null;
         }
 
         /// <summary>

@@ -31,9 +31,7 @@ namespace Faultify.Analyze.AssemblyMutator
             TypeDefinition = typeDefinition;
 
             Fields = TypeDefinition.Fields.Select(x =>
-                new FieldScope(
-                    x,
-                    fieldAnalyzers)
+                new FieldScope(x)
             ).ToList();
 
             Methods = TypeDefinition.Methods.Select(x =>

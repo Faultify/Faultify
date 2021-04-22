@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Faultify.Cli
     {
         private static string _outputDirectory;
         private readonly ILoggerFactory _loggerFactory;
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public Program(
             IOptions<Settings> _,
@@ -36,73 +38,99 @@ namespace Faultify.Cli
 
             var currentDate = DateTime.Now.ToString("yy-MM-dd");
             _outputDirectory = Path.Combine(settings.ReportPath, currentDate);
+
             Directory.CreateDirectory(_outputDirectory);
 
             var configurationRoot = BuildConfigurationRoot();
+
             var services = new ServiceCollection();
             services.Configure<Settings>(options => configurationRoot.GetSection("settings").Bind(options));
-
-            services.AddLogging(c =>
-            {
-                c.SetMinimumLevel(LogLevel.Trace);
-
-                c.AddFilter(LogConfiguration.TestHost, LogLevel.Trace);
-                c.AddFilter(LogConfiguration.TestRunner, LogLevel.Trace);
-
-                c.AddFile(o =>
-                {
-                    o.RootPath = _outputDirectory;
-                    o.FileAccessMode = LogFileAccessMode.KeepOpenAndAutoFlush;
-
-                    o.Files = new[]
-                    {
-                        new LogFileOptions
-                        {
-                            Path = "testhost-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
-                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestHost, LogLevel.Trace}}
-                        },
-                        new LogFileOptions
-                        {
-                            Path = "testprocess-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
-                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestRunner, LogLevel.Trace}}
-                        }
-                    };
-                });
-            });
-
+            services.AddLogging(builder => BuildLogging(builder));
             services.AddSingleton<Program>();
+
             var serviceProvider = services.BuildServiceProvider();
             var program = serviceProvider.GetService<Program>();
 
-            configureLogger();
+            ConfigureNLog();
 
             await program.Run(settings);
         }
 
         /// <summary>
+        /// Builds a custom logging implementation to be attached to the running program
+        /// </summary>
+        /// <param name="builder">ILoggingBuilder that will handle the creation of the logger.</param>
+        private static void BuildLogging(ILoggingBuilder builder)
+        {
+            builder.SetMinimumLevel(LogLevel.Trace);
+
+            builder.AddFilter(LogConfiguration.TestHost, LogLevel.Trace);
+            builder.AddFilter(LogConfiguration.TestRunner, LogLevel.Trace);
+
+            builder.AddFile(o =>
+            {
+                o.RootPath = _outputDirectory;
+                o.FileAccessMode = LogFileAccessMode.KeepOpenAndAutoFlush;
+
+                o.Files = new[]
+                {
+                    new LogFileOptions
+                    {
+                        Path = "testhost-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
+                        MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestHost, LogLevel.Trace}}
+                    },
+                    new LogFileOptions
+                    {
+                        Path = "testprocess-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
+                        MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestRunner, LogLevel.Trace}}
+                    }
+                };
+            });
+        }
+
+        /// <summary>
         /// Sets up NLog configuration programmatically
         /// </summary>
-        private static void configureLogger()
+        private static void ConfigureNLog()
         {
+            string logPath = $"{DateTime.Now.ToString("yy.MM.dd-HH.mm.ss")}.log";
+            string logFormat = "[${level:uppercase=true}] ${longdate} | ${logger} :: ${message}";
+
+            // Clear existing log
+            if (File.Exists(logPath))
+            {
+                File.Delete(logPath);
+            }
+
+            // Initialize configuration
             var config = new NLog.Config.LoggingConfiguration();
 
-            // Targets where to log to: File and Console
-            var logfile = new NLog.Targets.FileTarget("logfile") 
+            // File target configuration
+            var logfile = new NLog.Targets.FileTarget("logfile")
             {
-                FileName = "log.txt",
-                Layout   = "[${level:uppercase=true}] ${longdate} | ${logger} :: ${message}"
+                FileName = logPath,
+                Layout = logFormat
             };
 
+            config.AddRule(
+                minLevel: NLog.LogLevel.Trace,
+                maxLevel: NLog.LogLevel.Fatal,
+                target: logfile
+            );
+
+            // console target configuration
             var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole")
             {
-                Layout = "[${level:uppercase=true}] ${longdate} | ${logger} :: ${message}"
+                Layout = logFormat
             };
 
-            // Rules for mapping loggers to targets
-            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logconsole);
-            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, logfile);
+            config.AddRule(
+                minLevel: NLog.LogLevel.Info,
+                maxLevel: NLog.LogLevel.Fatal,
+                target: logconsole
+            );
 
-            // Apply config
+            // Apply configuration
             NLog.LogManager.Configuration = config;
         }
 
@@ -118,6 +146,23 @@ namespace Faultify.Cli
             return settings;
         }
 
+        private void PrintProgress(MutationRunProgress progress)
+        {
+            if (progress.LogMessageType == LogMessageType.TestRunUpdate
+            ||  progress.LogMessageType != LogMessageType.Other)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"\n> [{progress.Progress}%] {progress.Message}");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"> [{progress.Progress}%] {progress.Message}");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
         private async Task Run(Settings settings)
         {
             ConsoleMessage.PrintLogo();
@@ -125,45 +170,19 @@ namespace Faultify.Cli
 
             if (!File.Exists(settings.TestProjectPath))
             {
-                // TODO: This should be handled, Ideally, it should print to the console to let the user know.
-                throw new Exception($"Test project '{settings.TestProjectPath}' can not be found.");
+                _logger.Fatal($"The file {settings.TestProjectPath} could not be found. Terminating Faultify.");
+                Environment.Exit(2); // 0x2 ERROR_FILE_NOT_FOUND
             }
 
-            var cursorPosition = (0, 0);
-
             var progress = new Progress<MutationRunProgress>();
-            progress.ProgressChanged += (sender, s) =>
-            {
-                if (s.LogMessageType == LogMessageType.TestRunUpdate)
-                {
-                    // TODO: Currently, this is never NOT true
-                    if (cursorPosition.Item1 == 0 && cursorPosition.Item2 == 0)
-                    {
-                        cursorPosition = (Console.CursorLeft, Console.CursorTop);
-                    }
-
-                    Console.SetCursorPosition(cursorPosition.Item1, cursorPosition.Item2);
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine($"\n> [{s.Progress}%] {s.Message}");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else if (s.LogMessageType != LogMessageType.Other)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine($"\n> [{s.Progress}%] {s.Message}");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine($"> [{s.Progress}%] {s.Message}");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-            };
+            progress.ProgressChanged += (sender, progress) => PrintProgress(progress);
 
             var progressTracker = new MutationSessionProgressTracker(progress, _loggerFactory);
-
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             var testResult = await RunMutationTest(settings, progressTracker);
+            stopWatch.Stop();
+            Console.WriteLine("runtime of RunMutationTest(program.cs line 185): " + stopWatch.Elapsed);
 
             progressTracker.LogBeginReportBuilding(settings.ReportType, settings.ReportPath);
             await GenerateReport(testResult, settings);
@@ -175,9 +194,13 @@ namespace Faultify.Cli
             MutationSessionProgressTracker progressTracker)
         {
 
-            var mutationTestProject =
-                new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
-                    _loggerFactory, settings.TestHost);
+            var mutationTestProject = new MutationTestProject(
+                settings.TestProjectPath,
+                settings.MutationLevel,
+                settings.Parallel,
+                _loggerFactory,
+                settings.TestHost
+            );
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }
@@ -185,7 +208,9 @@ namespace Faultify.Cli
         private async Task GenerateReport(TestProjectReportModel testResult, Settings settings)
         {
             if (string.IsNullOrEmpty(settings.ReportPath))
+            {
                 settings.ReportPath = Directory.GetCurrentDirectory();
+            }
 
             var mprm = new MutationProjectReportModel();
             mprm.TestProjects.Add(testResult);
@@ -204,7 +229,8 @@ namespace Faultify.Cli
             {
                 "PDF" => new PdfReporter(),
                 "HTML" => new HtmlReporter(),
-                _ => new JsonReporter()
+                "JSON" => new JsonReporter(),
+                _ => throw new ArgumentException($"The argument \"{type}\" is not a valid file output type")
             };
         }
 

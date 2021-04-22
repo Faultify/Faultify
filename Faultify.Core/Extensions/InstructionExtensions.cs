@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -84,47 +85,29 @@ namespace Faultify.Core.Extensions
             }
         }
 
-        //dictionary linking Ldc opcodes to integers
-        static System.Collections.Generic.IDictionary<OpCode, int> OpCodeDict = new System.Collections.Generic.Dictionary<OpCode, int>
+        //list of opcodes
+        private static readonly List<OpCode> OpCodeList = new List<OpCode>
         {
-            {OpCodes.Ldc_I4_1, 0},
-            {OpCodes.Ldc_I4_2, 1},
-            {OpCodes.Ldc_I4_3, 2},
-            {OpCodes.Ldc_I4_4, 3},
-            {OpCodes.Ldc_I4_5, 4},
-            {OpCodes.Ldc_I4_6, 5},
-            {OpCodes.Ldc_I4_7, 6},
-            {OpCodes.Ldc_I4_8, 7},
-            {OpCodes.Ldc_I4_0, 8},
-            {OpCodes.Ldc_I4, 9},
-            {OpCodes.Ldc_I8, 10},
-            {OpCodes.Ldc_R4, 11},
-            {OpCodes.Ldc_R8, 12},
-            {OpCodes.Ldc_I4_M1, 13},
-            {OpCodes.Ldc_I4_S, 14}
+            OpCodes.Ldc_I4_1,
+            OpCodes.Ldc_I4_2,
+            OpCodes.Ldc_I4_3,
+            OpCodes.Ldc_I4_4,
+            OpCodes.Ldc_I4_5,
+            OpCodes.Ldc_I4_6,
+            OpCodes.Ldc_I4_7,
+            OpCodes.Ldc_I4_8,
+            OpCodes.Ldc_I4_0,
+            OpCodes.Ldc_I4,
+            OpCodes.Ldc_I8,
+            OpCodes.Ldc_R4,
+            OpCodes.Ldc_R8,
+            OpCodes.Ldc_I4_M1,
+            OpCodes.Ldc_I4_S
         };
 
         public static bool IsLdc(this Instruction instruction)
         {
-            return (OpCodeDict[instruction.OpCode]) switch
-            {
-                0 => true,      //OpCodes.Ldc_I4_1
-                1 => true,      //OpCodes.Ldc_I4_2
-                2 => true,      //OpCodes.Ldc_I4_3
-                3 => true,      //OpCodes.Ldc_I4_4
-                4 => true,      //OpCodes.Ldc_I4_5
-                5 => true,      //OpCodes.Ldc_I4_6
-                6 => true,      //OpCodes.Ldc_I4_7
-                7 => true,      //OpCodes.Ldc_I4_8
-                8 => true,      //OpCodes.Ldc_I4_0
-                9 => true,      //OpCodes.Ldc_I4
-                10 => true,     //OpCodes.Ldc_I8
-                11 => true,     //OpCodes.Ldc_R4
-                12 => true,     //OpCodes.Ldc_R8
-                13 => true,     //OpCodes.Ldc_I4_M1
-                14 => true,     //OpCodes.Ldc_I4_S
-                _ => false
-            };
+            return OpCodeList.Contains(instruction.OpCode);
         }
     }
 }

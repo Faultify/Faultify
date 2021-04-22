@@ -37,7 +37,7 @@ namespace Faultify.TestRunner.ProjectDuplication
             foreach (var directory in dirInfo.GetDirectories("*"))
             {
                 var match = Regex.Match(directory.Name,
-                    "(^cs$|^pl$|^rt$|^de$|^en$|^es$|^fr$|^it$|^ja$|^ko$|^ru$|^zh-Hans$|^zh-Hant$|^pt-BR$|^tr$|^test-duplication-.+$)");
+                    "(^cs$|^pl$|^rt$|^de$|^en$|^es$|^fr$|^it$|^ja$|^ko$|^ru$|^zh-Hans$|^zh-Hant$|^tr$|^pt-BR$|^test-duplication-\\d+$)");
 
                 if (match.Captures.Count != 0) Directory.Delete(directory.FullName, true);
             }
@@ -105,6 +105,7 @@ namespace Faultify.TestRunner.ProjectDuplication
             var duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i + 1}"); //TODO: adjust the folder number
             CopyFilesRecursively(_newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
             IEnumerable<FileDuplication> duplicatedAsseblies = projectInfo.ProjectReferences
+                
                 .Select(x =>
                     new FileDuplication(duplicatedDirectoryPath, Path.GetFileNameWithoutExtension(x) + ".dll"));
 
@@ -112,7 +113,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 new TestProjectDuplication(
                     new FileDuplication(duplicatedDirectoryPath,
                                         Path.GetFileName(projectInfo.AssemblyPath)),
-                    duplicatedAsseblies,
+                    duplicatedAssemblies,
                     i
             );
 

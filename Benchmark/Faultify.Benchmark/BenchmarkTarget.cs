@@ -170,6 +170,13 @@ namespace Faultify.Benchmark
 
             return false;
         }
+
+        public bool isNull(object obj)
+        {
+            if (obj == null) return true;
+
+            return false;
+        }
     }
 
     public class BenchmarkTarget2
@@ -255,6 +262,13 @@ namespace Faultify.Benchmark
 
             return false;
         }
+
+        public bool isNull(object obj)
+        {
+            if (obj == null) return true;
+
+            return false;
+        }
     }
 
     public class BenchmarkTarget3
@@ -337,6 +351,13 @@ namespace Faultify.Benchmark
         public bool If(bool condition)
         {
             if (condition) return true;
+
+            return false;
+        }
+
+        public bool isNull(object obj)
+        {
+            if (obj == null) return true;
 
             return false;
         }

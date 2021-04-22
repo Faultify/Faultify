@@ -20,7 +20,7 @@ namespace Faultify.TestRunner.Dotnet
     public class DotnetTestHostRunner : ITestHostRunner
     {
         private static readonly bool DisableOutput = true;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string _testAdapterPath;
         private readonly DirectoryInfo _testDirectoryInfo;
 

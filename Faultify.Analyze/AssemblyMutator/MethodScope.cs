@@ -105,15 +105,15 @@ namespace Faultify.Analyze.AssemblyMutator
                 .OfType<FieldReference>();
 
             foreach (var field in fieldReferences)
-            foreach (var analyzer in _constantReferenceMutationAnalyers)
-            {
+                foreach (var analyzer in _constantReferenceMutationAnalyers)
+                {
                     IMutationGroup<ConstantMutation> mutations = analyzer.GenerateMutations(field.Resolve(), mutationLevel);
 
-                if (mutations.Any())
-                {
-                    yield return mutations;
+                    if (mutations.Any())
+                    {
+                        yield return mutations;
+                    }
                 }
-            }
         }
 
         /// <summary>
