@@ -21,7 +21,7 @@ namespace Faultify.Analyze.Analyzers
 
         public new string Name => "String ConstantMutation Analyzer";
 
-        public new IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
+        public IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             var constantMutation = new ConstantMutation
             {

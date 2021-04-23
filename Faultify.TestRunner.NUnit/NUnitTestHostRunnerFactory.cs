@@ -8,9 +8,9 @@ namespace Faultify.TestRunner.NUnit
     {
         public TestFramework TestFramework => TestFramework.NUnit;
 
-        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
-            return new NUnitTestHostRunner(testProjectAssemblyPath, timeout, logger);
+            return new NUnitTestHostRunner(testProjectAssemblyPath, timeout);
         }
     }
 }

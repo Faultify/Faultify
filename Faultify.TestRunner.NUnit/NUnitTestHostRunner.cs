@@ -21,7 +21,7 @@ namespace Faultify.TestRunner.NUnit
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
         public TestFramework TestFramework => TestFramework.NUnit;
 
-        public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger _)
+        public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
             _testProjectAssemblyPath = testProjectAssemblyPath;
             _timeout = timeout;

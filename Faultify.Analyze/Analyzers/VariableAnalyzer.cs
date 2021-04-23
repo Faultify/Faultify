@@ -78,12 +78,13 @@ namespace Faultify.Analyze.Analyzers
                                 Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
                                 Variable = variableInstruction,
                                 LineNumber = lineNumber
-                            });
+                            }) ;
+
                     }
                 }
                 catch (InvalidCastException e)
                 {
-                    //_logger.Warn(e, $"Failed to get the type of {instruction.Operand}");
+                    _logger.Debug(e, $"Failed to get the type of {instruction.Operand}");
                 }
             }
 

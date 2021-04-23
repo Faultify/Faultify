@@ -9,7 +9,7 @@ namespace Faultify.TestRunner.Dotnet
     {
         public TestFramework TestFramework => TestFramework.None;
 
-        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
+        public ITestHostRunner CreateTestRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
             return new DotnetTestHostRunner(testProjectAssemblyPath, timeout);
         }

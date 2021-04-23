@@ -75,6 +75,10 @@ namespace Faultify.TestRunner
 
             // Measure the test coverage 
             progressTracker.LogBeginCoverage();
+
+            // Rewrites assemblies
+            // FIX: Breaks line numbers
+            // To fix, we need to restore the initial state of the assemblies prior to performing mutation testing.
             PrepareAssembliesForCodeCoverage(coverageProjectInfo);
 
             var coverageTimer = new Stopwatch();
@@ -127,15 +131,21 @@ namespace Faultify.TestRunner
             string projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
 
             if (Regex.Match(projectFile, "xunit").Captures.Any())
+            {
                 return TestFramework.XUnit;
-
-            if (Regex.Match(projectFile, "nunit").Captures.Any())
+            }
+            else if (Regex.Match(projectFile, "nunit").Captures.Any())
+            {
                 return TestFramework.NUnit;
-
-            if (Regex.Match(projectFile, "mstest").Captures.Any())
+            }
+            else if (Regex.Match(projectFile, "mstest").Captures.Any())
+            {
                 return TestFramework.MsTest;
-
-            return TestFramework.None;
+            }
+            else
+            {
+                return TestFramework.None;
+            }
         }
 
 
@@ -145,8 +155,10 @@ namespace Faultify.TestRunner
         /// <param name="sessionProgressTracker"></param>
         /// <param name="projectPath"></param>
         /// <returns></returns>
-        private async Task<IProjectInfo> BuildProject(MutationSessionProgressTracker sessionProgressTracker,
-            string projectPath)
+        private async Task<IProjectInfo> BuildProject(
+            MutationSessionProgressTracker sessionProgressTracker,
+            string projectPath
+        )
         {
             var projectReader = new ProjectReader();
             return await projectReader.ReadProjectAsync(projectPath, sessionProgressTracker);
@@ -173,10 +185,10 @@ namespace Faultify.TestRunner
 
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
-                _logger.Debug($"Writing assembly {assembly.Module.FileName}");
+                _logger.Trace($"Writing assembly {assembly.Module.FileName}");
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
-                assembly.Flush();
+                assembly.Flush(); // SHAME ON YOU, SHAME
                 assembly.Dispose();
             }
 
@@ -216,7 +228,7 @@ namespace Faultify.TestRunner
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger.Error(e, "Unable to create Test Runner");
             }
 
             return await testRunner.RunCodeCoverage(cancellationToken);
@@ -272,11 +284,11 @@ namespace Faultify.TestRunner
             var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
             var runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(testsPerMutation, testProjectInfo,
                 _mutationLevel);
-
             // Double the time the code coverage took such that test runs have some time run their tests (needs to be in seconds).
             TimeSpan maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
 
             var reportBuilder = new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);
+            
 
             var allRunsStopwatch = new Stopwatch();
             allRunsStopwatch.Start();
@@ -300,10 +312,14 @@ namespace Faultify.TestRunner
                 try
                 {
                     testRun.InitializeMutations(testProject, timedOutMutations);
+
                     var singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-                    var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker, testHost,
-                        testProject, _logger);
+                    var results = await testRun.RunMutationTestAsync(
+                        maxTestDuration,
+                        sessionProgressTracker,
+                        testHost,
+                        testProject);
                     if (results != null)
                     {
                         foreach (var testResult in results)
@@ -327,10 +343,10 @@ namespace Faultify.TestRunner
                         $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}",
                         LogMessageType.Error);
                     failedRuns += 1;
+                    _logger.Error(e, "The test process encountered an unexpected error.");
                 }
                 finally
                 {
-
                     lock (this)
                     {
                         completedRuns += 1;
@@ -341,7 +357,7 @@ namespace Faultify.TestRunner
                     testProject.FreeTestProject(); //TODO: replace with deletion
                 }
             }
-
+            
             var tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
 
             Task.WaitAll(tasks.ToArray());
