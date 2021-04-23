@@ -36,7 +36,7 @@ namespace Faultify.Injection
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Previously ignored Exception caught in CoverageRegistry: {0}");
+                _logger.Debug(ex, "Previously ignored Exception caught in CoverageRegistry: {0}");
                 // ignored
             }
         }
@@ -63,7 +63,7 @@ namespace Faultify.Injection
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "Previously ignored Exception-2 caught in CoverageRegistry: {0}");
+                    _logger.Debug(ex, "Previously ignored Exception-2 caught in CoverageRegistry: {0}");
                     // ignored
                 }
             }

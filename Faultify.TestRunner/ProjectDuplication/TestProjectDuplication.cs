@@ -6,6 +6,7 @@ using Faultify.Analyze;
 using Faultify.Analyze.AssemblyMutator;
 using Faultify.Core.ProjectAnalyzing;
 using Faultify.TestRunner.TestRun;
+using NLog;
 
 namespace Faultify.TestRunner.ProjectDuplication
 {
@@ -23,6 +24,8 @@ namespace Faultify.TestRunner.ProjectDuplication
             TestProjectReferences = testProjectReferences;
             DuplicationNumber = duplicationNumber;
         }
+        
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Test project references.
@@ -176,7 +179,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 } 
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message); // TODO: Use logger
+                    _logger.Error(e, e.Message);
                 } 
                 finally
                 {

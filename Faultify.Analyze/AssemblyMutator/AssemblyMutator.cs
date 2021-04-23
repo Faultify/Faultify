@@ -59,9 +59,10 @@ namespace Faultify.Analyze.AssemblyMutator
         public HashSet<IAnalyzer<VariableMutation, MethodDefinition>> VariableMutationAnalyzers =
             new HashSet<IAnalyzer<VariableMutation, MethodDefinition>>
             {
-                new VariableAnalyzer()
+                new VariableAnalyzer(),
             };
 
+        [Obsolete("Use AssemblyMutator(string assemblyPath)")]
         private AssemblyMutator(Stream stream)
         {
             Module = ModuleDefinition.ReadModule(
@@ -83,7 +84,6 @@ namespace Faultify.Analyze.AssemblyMutator
                 {
                     InMemory = true,
                     ReadSymbols = true,
-                    ThrowIfSymbolsAreNotMatching = false
                 }
             );
             Types = LoadTypes();
