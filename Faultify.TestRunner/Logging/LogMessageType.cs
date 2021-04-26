@@ -7,6 +7,6 @@
         TestSessionStart,
         TestSessionEnd,
         Error,
-        Other
+        Other,
     }
 }

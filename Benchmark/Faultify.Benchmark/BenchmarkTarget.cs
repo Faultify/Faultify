@@ -10,7 +10,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)
@@ -95,7 +95,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)
@@ -187,7 +187,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)
@@ -279,7 +279,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Faultify.Analyze.ArrayMutationStrategy;
-using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Faultify.Core.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using System;
 
 namespace Faultify.Analyze.Analyzers
 {
@@ -20,17 +20,20 @@ namespace Faultify.Analyze.Analyzers
     /// </summary>
     public class ArrayAnalyzer : IAnalyzer<ArrayMutation, MethodDefinition>
     {
-
         public string Description => "Analyzer that searches for possible array mutations.";
 
         public string Name => "Array Analyzer";
 
-        public IMutationGroup<ArrayMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
+        public IMutationGroup<ArrayMutation> GenerateMutations(
+            MethodDefinition method,
+            MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null
+        )
         {
             // Filter and map arrays
             IEnumerable<ArrayMutation> arrayMutations =
                 from instruction
-                in method.Body.Instructions
+                    in method.Body.Instructions
                 where instruction.IsDynamicArray() && isArrayType(instruction)
                 select new ArrayMutation(new DynamicArrayRandomizerStrategy(method), method);
 
@@ -39,14 +42,14 @@ namespace Faultify.Analyze.Analyzers
             {
                 Name = Name,
                 Description = Description,
-                Mutations = arrayMutations
+                Mutations = arrayMutations,
             };
         }
 
         private bool isArrayType(Instruction newarr)
         {
             // Cast generic operand into its system type
-            var type = ((TypeReference)newarr.Operand).ToSystemType();
+            Type type = ((TypeReference) newarr.Operand).ToSystemType();
             return TypeChecker.IsArrayType(type);
         }
     }

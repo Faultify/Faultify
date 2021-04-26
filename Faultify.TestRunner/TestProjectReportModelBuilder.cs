@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Faultify.Report;
 using Faultify.TestRunner.Shared;
@@ -19,24 +20,37 @@ namespace Faultify.TestRunner
             _testProjectReportModel = new TestProjectReportModel(testProjectName, TimeSpan.MaxValue);
         }
 
-        public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations,
-            TimeSpan testRunDuration)
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+        public void AddTestResult(
+            TestResults? testResults,
+            IEnumerable<MutationVariant>? mutations,
+            TimeSpan testRunDuration
+        )
         {
+            if (testResults == null) return;
+            if (mutations == null) return;
+            
             lock (Mutext)
             {
                 foreach (var testResult in testResults.Tests)
                 {
-                    MutationVariant mutation =
-                        mutations.FirstOrDefault(x => x.MutationIdentifier.TestCoverage.Any(y => y == testResult.Name));
+                    MutationVariant? mutation = mutations
+                        .FirstOrDefault(x => x
+                            .MutationIdentifier
+                            .TestCoverage
+                            .Any(y => y == testResult.Name));
 
                     if (mutation?.Mutation == null)
+                    {
                         continue;
+                    }
 
-                    var mutationStatus = GetMutationStatus(testResult);
+                    MutationStatus mutationStatus = GetMutationStatus(testResult);
 
                     if (!_testProjectReportModel.Mutations.Any(x =>
-                        x.MutationId == mutation.MutationIdentifier.MutationId &&
-                        mutation.MutationIdentifier.MemberName == x.MemberName))
+                        x.MutationId == mutation.MutationIdentifier.MutationId
+                        && mutation.MutationIdentifier.MemberName == x.MemberName))
+                    {
                         _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
                             mutation.Mutation.Report, "",
                             new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
@@ -48,6 +62,7 @@ namespace Faultify.TestRunner
                             mutation.MutationIdentifier.MutationId,
                             mutation.MutationIdentifier.MemberName
                         ));
+                    }
                 }
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 
 namespace Faultify.Analyze.AssemblyMutator
 {

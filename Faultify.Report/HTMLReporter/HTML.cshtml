@@ -60,7 +60,7 @@
     <div class="accordion" id="accordionExample">
         @for (var i = 0; i < Model.TestProjects.Count; i++)
         {
-            var testProject = Model.TestProjects[i];
+            TestProjectReportModel testProject = Model.TestProjects[i];
             <div class="card">
                 <div class="card-header" id="headingproj@(i)" style="padding: 0%;">
                     <h5 class="mb-0">
@@ -89,7 +89,7 @@
                         <div class="accordion" id="AccordionTestProject@(i)">
                             @for (var y = 0; y < testProject.Mutations.Count; y++)
                             {
-                                var mutation = testProject.Mutations[y];
+                                MutationVariantReportModel mutation = testProject.Mutations[y];
 
                                 <div class="card">
                                     <div class="card-header" id="headingmutatie@(i)@(y)" style="padding: 0%;">

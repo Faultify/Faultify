@@ -35,17 +35,16 @@ namespace Faultify.Analyze.Mutation
         }
 
 
-        public string Report {
+        public string Report
+        {
             get
             {
                 if (LineNumber == -1)
                 {
                     return $"Change variable from: '{Original}' to: '{Replacement}'.";
                 }
-                else
-                {
-                    return $"Change variable from: '{Original}' to: '{Replacement}'. In line {LineNumber}";
-                }
+
+                return $"Change variable from: '{Original}' to: '{Replacement}'. In line {LineNumber}";
             }
         }
     }

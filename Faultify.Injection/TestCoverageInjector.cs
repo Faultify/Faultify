@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Faultify.TestRunner.Shared;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MethodAttributes = Mono.Cecil.MethodAttributes;
 
 namespace Faultify.Injection
 {
@@ -13,7 +15,6 @@ namespace Faultify.Injection
     public class TestCoverageInjector
     {
         private static readonly Lazy<TestCoverageInjector> _instance = new(() => new TestCoverageInjector());
-        public static TestCoverageInjector Instance => _instance.Value;
 
         private readonly string _currentAssemblyPath = typeof(TestCoverageInjector).Assembly.Location;
         private readonly MethodDefinition _initializeMethodDefinition;
@@ -30,17 +31,24 @@ namespace Faultify.Injection
             using ModuleDefinition injectionAssembly = ModuleDefinition.ReadModule(_currentAssemblyPath);
 
             _registerTargetCoverage = injectionAssembly.Types
-                .SelectMany(x => x.Methods.Where(y => y.Name == registerTargetCoverage)).First();
+                .SelectMany(x => x.Methods.Where(y => y.Name == registerTargetCoverage))
+                .First();
 
             _registerTestCoverage = injectionAssembly.Types
-                .SelectMany(x => x.Methods.Where(y => y.Name == registerTestCoverage)).First();
+                .SelectMany(x => x.Methods.Where(y => y.Name == registerTestCoverage))
+                .First();
 
             _initializeMethodDefinition = injectionAssembly.Types
-                .SelectMany(x => x.Methods.Where(y => y.Name == initializeMethodName)).First();
+                .SelectMany(x => x.Methods.Where(y => y.Name == initializeMethodName))
+                .First();
 
             if (_initializeMethodDefinition == null || _registerTargetCoverage == null)
+            {
                 throw new Exception("Testcoverage Injector could not initialize injection methods");
+            }
         }
+
+        public static TestCoverageInjector Instance => _instance.Value;
 
         /// <summary>
         ///     Injects a call to <see cref="CoverageRegistry" /> Initialize method into the
@@ -56,16 +64,17 @@ namespace Faultify.Injection
                 true);
 
             const MethodAttributes moduleInitAttributes = MethodAttributes.Static
-                                                          | MethodAttributes.Assembly
-                                                          | MethodAttributes.SpecialName
-                                                          | MethodAttributes.RTSpecialName;
+                | MethodAttributes.Assembly
+                | MethodAttributes.SpecialName
+                | MethodAttributes.RTSpecialName;
 
             AssemblyDefinition assembly = toInjectModule.Assembly;
             TypeDefinition moduleType = assembly.MainModule.GetType("<Module>");
             MethodReference method = toInjectModule.ImportReference(_initializeMethodDefinition);
 
             // Get or create ModuleInit method
-            MethodDefinition cctor = moduleType.Methods.FirstOrDefault(moduleTypeMethod => moduleTypeMethod.Name == ".cctor");
+            MethodDefinition cctor =
+                moduleType.Methods.FirstOrDefault(moduleTypeMethod => moduleTypeMethod.Name == ".cctor");
             if (cctor == null)
             {
                 cctor = new MethodDefinition(".cctor", moduleInitAttributes, method.ReturnType);
@@ -106,7 +115,7 @@ namespace Faultify.Injection
         public void InjectAssemblyReferences(ModuleDefinition module)
         {
             // Find the references for `Faultify.TestRunner.Shared` and copy it over to the module directory and add it as reference.
-            System.Reflection.Assembly assembly = typeof(MutationCoverage).Assembly;
+            Assembly assembly = typeof(MutationCoverage).Assembly;
 
             string dest = Path.Combine(Path.GetDirectoryName(module.FileName), Path.GetFileName(assembly.Location));
             File.Copy(assembly.Location, dest, true);
@@ -131,7 +140,9 @@ namespace Faultify.Injection
                     MethodReference registerMethodReference = method.Module.ImportReference(_registerTargetCoverage);
 
                     if (method.Body == null)
+                    {
                         continue;
+                    }
 
                     ILProcessor processor = method.Body.GetILProcessor();
 
@@ -162,19 +173,23 @@ namespace Faultify.Injection
 
             foreach (TypeDefinition typeDefinition in module.Types.Where(x => !x.Name.StartsWith("<")))
             foreach (MethodDefinition method in typeDefinition.Methods
-                .Where(m => m.HasCustomAttributes && m.CustomAttributes
-                    .Any(x => x.AttributeType.Name == "TestAttribute" ||
-                              x.AttributeType.Name == "TestMethodAttribute" ||
-                              x.AttributeType.Name == "FactAttribute")))
+                .Where(m => m.HasCustomAttributes
+                    && m.CustomAttributes
+                        .Any(x => x.AttributeType.Name == "TestAttribute"
+                            || x.AttributeType.Name == "TestMethodAttribute"
+                            || x.AttributeType.Name == "FactAttribute")))
             {
                 MethodReference registerMethodReference = method.Module.ImportReference(_registerTestCoverage);
 
                 if (method.Body == null)
+                {
                     continue;
+                }
 
                 ILProcessor processor = method.Body.GetILProcessor();
                 // Insert instruction that loads the meta data token as parameter for the register method.
-                Instruction entityHandle = processor.Create(OpCodes.Ldstr, method.DeclaringType.FullName + "." + method.Name);
+                Instruction entityHandle =
+                    processor.Create(OpCodes.Ldstr, method.DeclaringType.FullName + "." + method.Name);
 
                 // Insert instruction that calls the register function.
                 Instruction callInstruction = processor.Create(OpCodes.Call, registerMethodReference);

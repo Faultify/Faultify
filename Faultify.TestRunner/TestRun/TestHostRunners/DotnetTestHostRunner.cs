@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestProcess;
-using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace Faultify.TestRunner.TestRun.TestHostRunners
@@ -18,41 +17,43 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
     /// </summary>
     public class DotnetTestHostRunner : ITestHostRunner
     {
-        private static readonly bool DisableOutput = true;
+        private const bool DisableOutput = true;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string _testAdapterPath;
         private readonly DirectoryInfo _testDirectoryInfo;
 
         private readonly FileInfo _testFileInfo;
         private readonly TimeSpan _timeout;
-        public TestFramework TestFramework => TestFramework.None;
 
         public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
             _testFileInfo = new FileInfo(testProjectAssemblyPath);
-            _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName);
+            _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName ?? string.Empty);
 
             _timeout = timeout;
-             
-            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         }
+
+        public TestFramework TestFramework => TestFramework.None;
 
         /// <summary>
         ///     Runs the given tests and returns the results.
         /// </summary>
-        /// <param name="progress"></param>
-        /// <param name="tests"></param>
         /// <returns></returns>
-        public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress,
-            IEnumerable<string> tests)
+        public async Task<TestResults> RunTests(
+            TimeSpan timeout,
+            IProgress<string> progress,
+            IEnumerable<string> tests
+        )
         {
             _logger.Info("Running tests");
             string testResultOutputPath = Path.Combine(_testDirectoryInfo.FullName, TestRunnerConstants.TestsFileName);
 
-            var testResults = new List<TestResult>();
-            var remainingTests = new HashSet<string>(tests);
+            List<TestResult>? testResults = new List<TestResult>();
+            HashSet<string>? remainingTests = new HashSet<string>(tests);
 
-           while (remainingTests.Any())
+            while (remainingTests.Any())
             {
                 try
                 {
@@ -64,8 +65,9 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                         new CancellationTokenSource(timeout).Token);
 
                     TestResults deserializedTestResults = TestResults.Deserialize(testResultsBinary);
-                    
-                    if (deserializedTestResults.Tests.Count == 0) throw new Exception("Dotnet cannot find the target file");
+
+                    if (deserializedTestResults.Tests.Count == 0)
+                        throw new Exception("Dotnet cannot find the target file");
 
                     remainingTests.RemoveWhere(x => deserializedTestResults.Tests.Any(y => y.Name == x));
 
@@ -77,8 +79,8 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 catch (FileNotFoundException e)
                 {
                     _logger.Fatal(e,
-                        "The file 'test_results.bin' was not generated." +
-                        "This implies that the test run can not be completed. "
+                        "The file 'test_results.bin' was not generated."
+                        + "This implies that the test run can not be completed. "
                     );
                 }
                 catch (Exception e)
@@ -94,7 +96,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 }
             }
 
-            return new TestResults {Tests = testResults};
+            return new TestResults { Tests = testResults };
         }
 
         /// <summary>
@@ -120,9 +122,9 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
             }
             catch (FileNotFoundException e)
             {
-                _logger.Fatal(e, 
-                    "The file 'coverage.bin' was not generated." +
-                    "This implies that the test run can not be completed. ");
+                _logger.Fatal(e,
+                    "The file 'coverage.bin' was not generated."
+                    + "This implies that the test run can not be completed. ");
             }
             catch (ExitCodeException e)
             {
@@ -132,6 +134,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
             {
                 _logger.Error(e, "Error running code coverage.");
             }
+
             return new MutationCoverage();
         }
 
@@ -143,7 +146,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         private ProcessRunner BuildTestProcessRunner(IEnumerable<string> tests)
         {
             _logger.Info("Building test runner");
-            var testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
+            string testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
                 .WithTimeout(_timeout)
@@ -153,13 +156,13 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 .DisableDump()
                 .Build();
 
-            var testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
+            ProcessStartInfo testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 WorkingDirectory = _testDirectoryInfo.FullName,
                 RedirectStandardOutput = DisableOutput,
-                RedirectStandardError = DisableOutput
+                RedirectStandardError = DisableOutput,
             };
 
             _logger.Debug($"Test process process arguments: {testArguments}");
@@ -174,7 +177,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         private ProcessRunner BuildCodeCoverageTestProcessRunner()
         {
             _logger.Info("Building coverage test runner");
-            var coverageArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
+            string? coverageArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
                 .WithTimeout(_timeout)
@@ -183,13 +186,13 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 .DisableDump()
                 .Build();
 
-            var coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
+            ProcessStartInfo? coverageProcessStartInfo = new ProcessStartInfo("dotnet", coverageArguments)
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = DisableOutput,
                 RedirectStandardError = DisableOutput,
-                WorkingDirectory = _testDirectoryInfo.FullName
+                WorkingDirectory = _testDirectoryInfo.FullName,
             };
 
             _logger.Debug($"Coverage test process arguments: {coverageArguments}");

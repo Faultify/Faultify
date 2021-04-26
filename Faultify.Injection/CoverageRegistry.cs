@@ -12,11 +12,11 @@ namespace Faultify.Injection
     /// </summary>
     public static class CoverageRegistry
     {
-        private static readonly MutationCoverage MutationCoverage = new MutationCoverage();
+        private static readonly MutationCoverage MutationCoverage = new();
         private static string _currentTestCoverage = "NONE";
-        private static readonly object RegisterMutex = new object();
+        private static readonly object RegisterMutex = new();
         private static MemoryMappedFile _mmf;
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Is injected into <Module> by <see cref="TestCoverageInjector" /> and will be called on assembly load.
@@ -51,7 +51,8 @@ namespace Faultify.Injection
             {
                 try
                 {
-                    if (!MutationCoverage.Coverage.TryGetValue(_currentTestCoverage, out var targetHandles))
+                    if (!MutationCoverage.Coverage.TryGetValue(_currentTestCoverage,
+                        out List<RegisteredCoverage> targetHandles))
                     {
                         targetHandles = new List<RegisteredCoverage>();
                         MutationCoverage.Coverage[_currentTestCoverage] = targetHandles;

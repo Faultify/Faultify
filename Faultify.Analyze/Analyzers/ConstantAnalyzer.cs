@@ -20,7 +20,11 @@ namespace Faultify.Analyze.Analyzers
 
         public string Name => "Boolean ConstantMutation Analyzer";
 
-        public IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
+        public IMutationGroup<ConstantMutation> GenerateMutations(
+            FieldDefinition field,
+            MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null
+        )
         {
             // Make a new mutation list
             List<ConstantMutation> mutations = new List<ConstantMutation>();
@@ -30,12 +34,12 @@ namespace Faultify.Analyze.Analyzers
 
             if (TypeChecker.IsConstantType(type))
             {
-                var constantMutation = new ConstantMutation
+                ConstantMutation constantMutation = new ConstantMutation
                 {
                     Original = field.Constant,
                     ConstantName = field.Name,
                     Replacement = _rng.GenerateValueForField(type, field.Constant),
-                    ConstantField = field
+                    ConstantField = field,
                 };
                 mutations.Add(constantMutation);
             }
@@ -45,7 +49,7 @@ namespace Faultify.Analyze.Analyzers
             {
                 Name = Name,
                 Description = Description,
-                Mutations = mutations
+                Mutations = mutations,
             };
         }
     }

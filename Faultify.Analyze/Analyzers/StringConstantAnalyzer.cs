@@ -21,14 +21,18 @@ namespace Faultify.Analyze.Analyzers
 
         public new string Name => "String ConstantMutation Analyzer";
 
-        public IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
+        public new IMutationGroup<ConstantMutation> GenerateMutations(
+            FieldDefinition field,
+            MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null
+        )
         {
-            var constantMutation = new ConstantMutation
+            ConstantMutation constantMutation = new ConstantMutation
             {
                 Original = field.Constant,
                 ConstantName = field.Name,
                 Replacement = null,
-                ConstantField = field
+                ConstantField = field,
             };
 
             Type type = field.Constant.GetType();
@@ -38,13 +42,13 @@ namespace Faultify.Analyze.Analyzers
                 constantMutation.Replacement = _rng.GenerateValueForField(type, field.Constant);
             }
 
-            var mutations = new List<ConstantMutation> { constantMutation };
+            List<ConstantMutation> mutations = new List<ConstantMutation> { constantMutation };
 
             return new MutationGroup<ConstantMutation>
             {
                 Name = Name,
                 Description = Description,
-                Mutations = mutations
+                Mutations = mutations,
             };
         }
     }

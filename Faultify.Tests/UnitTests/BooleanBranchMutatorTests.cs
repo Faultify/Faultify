@@ -1,5 +1,4 @@
 ﻿extern alias MC;
-
 using System.IO;
 using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
@@ -19,15 +18,15 @@ namespace Faultify.Tests.UnitTests
         public void BooleanBranch_PreMutation(string methodName, object expectedReturn)
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
             var expected = true;
 
             // Act
 
-            using (var binaryInteractor = new DllTestHelper(binary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(binary))
             {
                 var actual = (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {expectedReturn});
+                    new[] { expectedReturn });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
@@ -38,22 +37,26 @@ namespace Faultify.Tests.UnitTests
         [TestCase("BrFalse", nameof(OpCodes.Brtrue_S), true, false)]
         [TestCase("BrTrue", nameof(OpCodes.Brfalse), true, true)]
         [TestCase("BrFalse", nameof(OpCodes.Brtrue), true, true)]
-        public void BooleanBranch_PostMutation(string methodName, string expectedOpCodeName, object argument1,
-            bool simplify)
+        public void BooleanBranch_PostMutation(
+            string methodName,
+            string expectedOpCodeName,
+            object argument1,
+            bool simplify
+        )
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
             var expected = false;
-            var opCodeExpected = expectedOpCodeName.ParseOpCode();
+            OpCode opCodeExpected = expectedOpCodeName.ParseOpCode();
 
             // Act
-            var mutatedBinary =
+            byte[] mutatedBinary =
                 DllTestHelper.MutateMethod<BranchingAnalyzer>(binary, methodName, opCodeExpected, simplify);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual =
                     (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                        new[] {argument1});
+                        new[] { argument1 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);

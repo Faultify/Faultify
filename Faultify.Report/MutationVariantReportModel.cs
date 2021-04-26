@@ -4,9 +4,17 @@ namespace Faultify.Report
 {
     public class MutationVariantReportModel
     {
-        public MutationVariantReportModel(string name, string description, MutationAnalyzerReportModel mutationAnalyzer,
-            MutationStatus testStatus, TimeSpan testDuration, string originalSource, string mutatedSource,
-            int mutationId, string memberName)
+        public MutationVariantReportModel(
+            string name,
+            string description,
+            MutationAnalyzerReportModel mutationAnalyzer,
+            MutationStatus testStatus,
+            TimeSpan testDuration,
+            string originalSource,
+            string mutatedSource,
+            int mutationId,
+            string memberName
+        )
         {
             Name = name;
             Description = description;

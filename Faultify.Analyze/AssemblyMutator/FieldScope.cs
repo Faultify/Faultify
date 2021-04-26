@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.MutationGroups;
-using Faultify.Analyze.Mutation;
-using FieldDefinition = Mono.Cecil.FieldDefinition;
 using Faultify.Analyze.Analyzers;
+using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
+using FieldDefinition = Mono.Cecil.FieldDefinition;
 
 namespace Faultify.Analyze.AssemblyMutator
 {
@@ -26,7 +26,7 @@ namespace Faultify.Analyze.AssemblyMutator
             _fieldDefinition = fieldDefinition;
             _fieldAnalyzers = new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
             {
-                new ConstantAnalyzer()
+                new ConstantAnalyzer(),
             };
         }
 
@@ -45,12 +45,15 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <returns></returns>
         public IEnumerable<IMutationGroup<ConstantMutation>> ConstantFieldMutations(MutationLevel mutationLevel)
         {
-            foreach (var analyzer in _fieldAnalyzers)
+            foreach (IAnalyzer<ConstantMutation, FieldDefinition> analyzer in _fieldAnalyzers)
             {
-                IMutationGroup<ConstantMutation> mutations = analyzer.GenerateMutations(_fieldDefinition, mutationLevel);
+                IMutationGroup<ConstantMutation>
+                    mutations = analyzer.GenerateMutations(_fieldDefinition, mutationLevel);
 
                 if (mutations.Any())
+                {
                     yield return mutations;
+                }
             }
         }
     }

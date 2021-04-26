@@ -9,9 +9,8 @@ namespace Faultify.TestRunner.TestProcess
     /// </summary>
     public class ProcessRunner
     {
-        private readonly ProcessStartInfo _processStartInfo;
-
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ProcessStartInfo _processStartInfo;
 
         public ProcessRunner(ProcessStartInfo processStartInfo)
         {
@@ -25,11 +24,11 @@ namespace Faultify.TestRunner.TestProcess
         public async Task<Process> RunAsync()
         {
             _logger.Info("Starting new process");
-            var process = new Process();
+            Process? process = new Process();
 
-            var taskCompletionSource = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> taskCompletionSource = new TaskCompletionSource<object>();
             process.EnableRaisingEvents = true;
-            process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); };
+            process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); }; // TODO: This has to be bad practice
 
             process.StartInfo = _processStartInfo;
 

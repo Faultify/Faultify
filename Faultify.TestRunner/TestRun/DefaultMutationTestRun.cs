@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Faultify.Analyze;
 using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
-using Microsoft.Extensions.Logging;
+using Faultify.TestRunner.Shared;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -14,29 +14,40 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     internal class DefaultMutationTestRun : IMutationTestRun
     {
-        private IList<MutationVariant> _mutationVariants;
+        private IList<MutationVariant>? _mutationVariants;
 
-        public IList<MutationVariantIdentifier> MutationIdentifiers;
+        public IList<MutationVariantIdentifier>? MutationIdentifiers;
         public MutationLevel MutationLevel { get; set; }
 
         public int RunId { get; set; }
-        public int MutationCount => MutationIdentifiers.Count;
+        public int MutationCount => MutationIdentifiers?.Count ?? 0;
 
-        public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
-            MutationSessionProgressTracker sessionProgressTracker, TestHost testHost,
-            TestProjectDuplication testProject)
+        public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(
+            TimeSpan timeout,
+            MutationSessionProgressTracker sessionProgressTracker,
+            TestHost testHost,
+            TestProjectDuplication testProject
+        )
         {
             ExecuteMutations(testProject);
 
-            var runningTests = _mutationVariants.Where(y => !y.CausesTimeOut)
-                .SelectMany(x => x.MutationIdentifier.TestCoverage);
+            IEnumerable<string> runningTests = _mutationVariants?
+                    .Where(y => !y.CausesTimeOut)
+                    .SelectMany(x => x.MutationIdentifier.TestCoverage)
+                ?? Enumerable.Empty<string>();
 
-            var testRunner = TestHostRunnerFactory.CreateTestRunner(testProject.TestProjectFile.FullFilePath(), TimeSpan.FromSeconds(12),
-                testHost);
+            ITestHostRunner testRunner = TestHostRunnerFactory.CreateTestRunner(
+                testAssemblyPath: testProject.TestProjectFile.FullFilePath(),
+                timeOut: TimeSpan.FromSeconds(12),
+                testHost: testHost);
 
-            var testResults =
-                await testRunner.RunTests(timeout, sessionProgressTracker, runningTests);
+            TestResults testResults = await testRunner
+                .RunTests(
+                    timeout,
+                    sessionProgressTracker,
+                    runningTests);
 
+            // TODO: Why is this commented out? remove or uncomment
             //ResetMutations(testProject);
 
             return new List<TestRunResult>
@@ -44,13 +55,15 @@ namespace Faultify.TestRunner.TestRun
                 new TestRunResult
                 {
                     TestResults = testResults,
-                    Mutations = _mutationVariants
-                }
+                    Mutations = _mutationVariants,
+                },
             };
         }
 
-        public void InitializeMutations(TestProjectDuplication testProject,
-            IEnumerable<MutationVariantIdentifier> timedOutMutationVariants)
+        public void InitializeMutations(
+            TestProjectDuplication testProject,
+            IEnumerable<MutationVariantIdentifier> timedOutMutationVariants
+        )
         {
             _mutationVariants = testProject.GetMutationVariants(MutationIdentifiers, MutationLevel);
             FlagTimedOutMutations(timedOutMutationVariants);
@@ -62,12 +75,15 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="timedOutMutationVariants"></param>
         private void FlagTimedOutMutations(IEnumerable<MutationVariantIdentifier> timedOutMutationVariants)
         {
-            foreach (var timedOut in timedOutMutationVariants)
+            foreach (MutationVariantIdentifier timedOut in timedOutMutationVariants)
             {
-                var toRemoveMutations = _mutationVariants.Where(x =>
-                    x.MutationIdentifier.MutationGroupId == timedOut.MutationGroupId &&
-                    x.MutationIdentifier.MemberName == timedOut.MemberName);
-
+                IEnumerable<MutationVariant>? toRemoveMutations = _mutationVariants?
+                    .Where(x =>
+                        x.MutationIdentifier.MutationGroupId == timedOut.MutationGroupId
+                        && x.MutationIdentifier.MemberName == timedOut.MemberName);
+                
+                if (toRemoveMutations == null) continue;
+                
                 foreach (var toRemoveMutation in toRemoveMutations) toRemoveMutation.CausesTimeOut = true;
             }
         }
@@ -78,10 +94,14 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="testProject"></param>
         private void ExecuteMutations(TestProjectDuplication testProject)
         {
+            if (_mutationVariants == null) return;
+            
             foreach (var mutationVariant in _mutationVariants)
             {
                 if (mutationVariant.CausesTimeOut)
+                {
                     continue;
+                }
 
                 // Execute mutation and flush it to the files.
                 mutationVariant.Mutation?.Mutate();
@@ -98,16 +118,20 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="testProject"></param>
         private void ResetMutations(TestProjectDuplication testProject)
         {
+            if (_mutationVariants == null) return;
+            
             foreach (var mutationVariant in _mutationVariants)
             {
                 if (mutationVariant.CausesTimeOut)
+                {
                     continue;
+                }
 
                 // Reset mutation and flush it to the files.
                 mutationVariant.Mutation?.Reset();
             }
 
-           testProject.FlushMutations(_mutationVariants);
+            testProject.FlushMutations(_mutationVariants);
         }
     }
 }

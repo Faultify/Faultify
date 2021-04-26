@@ -11,36 +11,36 @@ namespace Faultify.Benchmark.Runner
 
         private static void Main(string[] args)
         {
-            var elapsedFaultify = BenchmarkFaultify();
+            List<(int, long)> elapsedFaultify = BenchmarkFaultify();
 
-            foreach (var elapse in elapsedFaultify)
+            foreach ((int, long) elapse in elapsedFaultify)
             {
-                var mps = faultify_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds;
+                double mps = faultify_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds;
                 Console.WriteLine($"Runners: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
             }
 
-            var elapsedStryker = BenchmarkStryker();
+            List<(int, long)> elapsedStryker = BenchmarkStryker();
 
-            foreach (var elapse in elapsedStryker)
+            foreach ((int, long) elapse in elapsedStryker)
             {
-                var mps = stryker_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds;
+                double mps = stryker_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds;
                 Console.WriteLine($"Runners: {elapse.Item1} Time: {elapse.Item2} Mps: {mps:0.00}");
             }
         }
 
         private static List<(int, long)> BenchmarkStryker()
         {
-            var elapsed = new List<(int, long)>();
+            List<(int, long)> elapsed = new List<(int, long)>();
 
             for (var i = 1; i < 7; i++)
             {
                 var a = "\"['Faultify.Benchmark.NUnit\\\\Faultify.Benchmark.NUnit.csproj']\"";
-                var strykerConfig =
+                string strykerConfig =
                     $"stryker -tp {a} --project-file=Faultify.Benchmark\\Faultify.Benchmark.csproj -c " + i;
 
-                var st = Stopwatch.StartNew();
+                Stopwatch st = Stopwatch.StartNew();
 
-                var process = new Process();
+                Process process = new Process();
                 process.StartInfo = new ProcessStartInfo("dotnet", strykerConfig);
                 process.StartInfo.WorkingDirectory = @"..\..\..\..\";
 
@@ -57,16 +57,16 @@ namespace Faultify.Benchmark.Runner
 
         private static List<(int, long)> BenchmarkFaultify()
         {
-            var elapsed = new List<(int, long)>();
+            List<(int, long)> elapsed = new List<(int, long)>();
 
             for (var i = 1; i < 7; i++)
             {
-                var faultifyConfig =
+                string faultifyConfig =
                     @" -t ..\..\..\..\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj -f html -p " + i;
 
-                var st = Stopwatch.StartNew();
+                Stopwatch st = Stopwatch.StartNew();
 
-                var process = Process.Start(@"..\..\..\..\..\Faultify.Cli\bin\Debug\netcoreapp3.1\Faultify.Cli.exe",
+                Process process = Process.Start(@"..\..\..\..\..\Faultify.Cli\bin\Debug\netcoreapp3.1\Faultify.Cli.exe",
                     faultifyConfig);
                 process.WaitForExit();
 

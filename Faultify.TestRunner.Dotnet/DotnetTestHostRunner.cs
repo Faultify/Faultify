@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestProcess;
-using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace Faultify.TestRunner.Dotnet
@@ -26,7 +25,6 @@ namespace Faultify.TestRunner.Dotnet
 
         private readonly FileInfo _testFileInfo;
         private readonly TimeSpan _timeout;
-        public TestFramework TestFramework => TestFramework.None;
 
         public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
@@ -37,19 +35,24 @@ namespace Faultify.TestRunner.Dotnet
             _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
+        public TestFramework TestFramework => TestFramework.None;
+
         /// <summary>
         ///     Runs the given tests and returns the results.
         /// </summary>
         /// <param name="progress"></param>
         /// <param name="tests"></param>
         /// <returns></returns>
-        public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress,
-            IEnumerable<string> tests)
+        public async Task<TestResults> RunTests(
+            TimeSpan timeout,
+            IProgress<string> progress,
+            IEnumerable<string> tests
+        )
         {
             string testResultOutputPath = Path.Combine(_testDirectoryInfo.FullName, TestRunnerConstants.TestsFileName);
 
-            var testResults = new List<TestResult>();
-            var remainingTests = new HashSet<string>(tests);
+            List<TestResult> testResults = new List<TestResult>();
+            HashSet<string> remainingTests = new HashSet<string>(tests);
 
             while (remainingTests.Any())
             {
@@ -74,8 +77,8 @@ namespace Faultify.TestRunner.Dotnet
                 catch (FileNotFoundException)
                 {
                     _logger.Error(
-                        "The file 'test_results.bin' was not generated." +
-                        "This implies that the test run can not be completed. "
+                        "The file 'test_results.bin' was not generated."
+                        + "This implies that the test run can not be completed. "
                     );
                 }
                 finally
@@ -87,7 +90,7 @@ namespace Faultify.TestRunner.Dotnet
                 }
             }
 
-            return new TestResults {Tests = testResults};
+            return new TestResults { Tests = testResults };
         }
 
         /// <summary>
@@ -113,8 +116,8 @@ namespace Faultify.TestRunner.Dotnet
             catch (FileNotFoundException)
             {
                 _logger.Error(
-                    "The file 'coverage.bin' was not generated." +
-                    "This implies that the test run can not be completed. "
+                    "The file 'coverage.bin' was not generated."
+                    + "This implies that the test run can not be completed. "
                 );
                 return new MutationCoverage();
             }
@@ -143,7 +146,7 @@ namespace Faultify.TestRunner.Dotnet
                 CreateNoWindow = true,
                 WorkingDirectory = _testDirectoryInfo.FullName,
                 RedirectStandardOutput = DisableOutput,
-                RedirectStandardError = DisableOutput
+                RedirectStandardError = DisableOutput,
             };
 
             _logger.Debug($"Test process process arguments: {testArguments}");
@@ -172,7 +175,7 @@ namespace Faultify.TestRunner.Dotnet
                 CreateNoWindow = true,
                 RedirectStandardOutput = DisableOutput,
                 RedirectStandardError = DisableOutput,
-                WorkingDirectory = _testDirectoryInfo.FullName
+                WorkingDirectory = _testDirectoryInfo.FullName,
             };
 
             _logger.Debug($"Coverage test process arguments: {coverageArguments}");

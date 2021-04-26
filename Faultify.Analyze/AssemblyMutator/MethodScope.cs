@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.MutationGroups;
+using Faultify.Analyze.Analyzers;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using FieldDefinition = Mono.Cecil.FieldDefinition;
 using MethodDefinition = Mono.Cecil.MethodDefinition;
-using Faultify.Analyze.Analyzers;
 
 namespace Faultify.Analyze.AssemblyMutator
 {
@@ -18,23 +18,30 @@ namespace Faultify.Analyze.AssemblyMutator
     /// </summary>
     public class MethodScope : IMutationProvider, IMemberScope
     {
-        private readonly HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers = new HashSet<IAnalyzer<ArrayMutation, MethodDefinition>>
+        private readonly HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> _arrayMutationAnalyzers =
+            new HashSet<IAnalyzer<ArrayMutation, MethodDefinition>>
             {
-                new ArrayAnalyzer()
+                new ArrayAnalyzer(),
             };
-        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers = new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
+
+        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _constantReferenceMutationAnalyers =
+            new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
             {
-                new ConstantAnalyzer()
+                new ConstantAnalyzer(),
             };
-        private readonly HashSet<IAnalyzer<OpCodeMutation, Instruction>> _opCodeMethodAnalyzers = new HashSet<IAnalyzer<OpCodeMutation, Instruction>>
+
+        private readonly HashSet<IAnalyzer<OpCodeMutation, Instruction>> _opCodeMethodAnalyzers =
+            new HashSet<IAnalyzer<OpCodeMutation, Instruction>>
             {
                 new ArithmeticAnalyzer(),
                 new ComparisonAnalyzer(),
-                new BitwiseAnalyzer()
+                new BitwiseAnalyzer(),
             };
-        private readonly HashSet<IAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers = new HashSet<IAnalyzer<VariableMutation, MethodDefinition>>
+
+        private readonly HashSet<IAnalyzer<VariableMutation, MethodDefinition>> _variableMutationAnalyzers =
+            new HashSet<IAnalyzer<VariableMutation, MethodDefinition>>
             {
-                new VariableAnalyzer()
+                new VariableAnalyzer(),
             };
 
 
@@ -65,7 +72,9 @@ namespace Faultify.Analyze.AssemblyMutator
         public IEnumerable<IMutationGroup<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
             if (MethodDefinition.Body == null)
+            {
                 return Enumerable.Empty<IMutationGroup<IMutation>>();
+            }
 
             MethodDefinition.Body.SimplifyMacros();
 
@@ -85,15 +94,22 @@ namespace Faultify.Analyze.AssemblyMutator
         /// </summary>
         public IEnumerable<IMutationGroup<OpCodeMutation>> OpCodeMutations(MutationLevel mutationLevel)
         {
-            foreach (var analyzer in _opCodeMethodAnalyzers)
+            foreach (IAnalyzer<OpCodeMutation, Instruction> analyzer in _opCodeMethodAnalyzers)
+            {
                 if (MethodDefinition.Body?.Instructions != null)
-                    foreach (var instruction in MethodDefinition.Body?.Instructions)
+                {
+                    foreach (Instruction instruction in MethodDefinition.Body?.Instructions)
                     {
-                        IMutationGroup<OpCodeMutation> mutations = analyzer.GenerateMutations(instruction, mutationLevel, MethodDefinition.DebugInformation.GetSequencePointMapping());
+                        IMutationGroup<OpCodeMutation> mutations = analyzer.GenerateMutations(instruction,
+                            mutationLevel, MethodDefinition.DebugInformation.GetSequencePointMapping());
 
                         if (mutations.Any())
+                        {
                             yield return mutations;
+                        }
                     }
+                }
+            }
         }
 
         /// <summary>
@@ -101,19 +117,19 @@ namespace Faultify.Analyze.AssemblyMutator
         /// </summary>
         public IEnumerable<IMutationGroup<ConstantMutation>> ConstantReferenceMutations(MutationLevel mutationLevel)
         {
-            var fieldReferences = MethodDefinition.Body.Instructions
+            IEnumerable<FieldReference> fieldReferences = MethodDefinition.Body.Instructions
                 .OfType<FieldReference>();
 
-            foreach (var field in fieldReferences)
-                foreach (var analyzer in _constantReferenceMutationAnalyers)
-                {
-                    IMutationGroup<ConstantMutation> mutations = analyzer.GenerateMutations(field.Resolve(), mutationLevel);
+            foreach (FieldReference field in fieldReferences)
+            foreach (IAnalyzer<ConstantMutation, FieldDefinition> analyzer in _constantReferenceMutationAnalyers)
+            {
+                IMutationGroup<ConstantMutation> mutations = analyzer.GenerateMutations(field.Resolve(), mutationLevel);
 
-                    if (mutations.Any())
-                    {
-                        yield return mutations;
-                    }
+                if (mutations.Any())
+                {
+                    yield return mutations;
                 }
+            }
         }
 
         /// <summary>
@@ -123,7 +139,7 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             return
                 from analyzer
-                in _variableMutationAnalyzers
+                    in _variableMutationAnalyzers
                 select analyzer.GenerateMutations(MethodDefinition, mutationLevel);
         }
 
@@ -134,7 +150,7 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             return
                 from analyzer
-                in _arrayMutationAnalyzers
+                    in _arrayMutationAnalyzers
                 select analyzer.GenerateMutations(MethodDefinition, mutationLevel);
         }
     }

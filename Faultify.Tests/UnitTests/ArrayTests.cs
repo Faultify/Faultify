@@ -26,19 +26,19 @@ namespace Faultify.Tests.UnitTests
         public void Array_PostMutation(string methodName)
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
 
             object original;
             object actual;
 
             // Act
-            using (var originalInteractor = new DllTestHelper(binary))
+            using (DllTestHelper originalInteractor = new DllTestHelper(binary))
             {
                 original = originalInteractor.DynamicMethodCall(_nameSpace, methodName, null);
             }
 
-            var mutatedBinary = DllTestHelper.MutateArray<ArrayAnalyzer>(binary, methodName);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            byte[] mutatedBinary = DllTestHelper.MutateArray<ArrayAnalyzer>(binary, methodName);
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 actual = binaryInteractor.DynamicMethodCall(_nameSpace, methodName, null);
             }

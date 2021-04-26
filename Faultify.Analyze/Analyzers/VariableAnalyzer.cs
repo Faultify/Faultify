@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Faultify.Analyze.Mutation;
 using Faultify.Analyze.MutationGroups;
 using Faultify.Core.Extensions;
@@ -16,8 +15,8 @@ namespace Faultify.Analyze.Analyzers
     /// </summary>
     public class VariableAnalyzer : IAnalyzer<VariableMutation, MethodDefinition>
     {
-        private readonly RandomValueGenerator _valueGenerator;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly RandomValueGenerator _valueGenerator;
 
         public VariableAnalyzer()
         {
@@ -29,7 +28,11 @@ namespace Faultify.Analyze.Analyzers
 
         public string Name => "Variable Mutation Analyzer";
 
-        public IMutationGroup<VariableMutation> GenerateMutations(MethodDefinition method, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
+        public IMutationGroup<VariableMutation> GenerateMutations(
+            MethodDefinition method,
+            MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null
+        )
         {
             List<VariableMutation> mutations = new List<VariableMutation>();
 
@@ -38,7 +41,7 @@ namespace Faultify.Analyze.Analyzers
             //     mutations = Enumerable.Empty<VariableMutation>();
             int lineNumber = -1;
 
-            foreach (var instruction in method.Body.Instructions)
+            foreach (Instruction instruction in method.Body.Instructions)
             {
                 // Booleans (0,1) or number literals are loaded on the evaluation stack with 'ldc_...' and popped of with 'stloc'.
                 // Therefore if there is an 'ldc' instruction followed by 'stdloc' we can assert there is a literal of some type. 
@@ -51,7 +54,7 @@ namespace Faultify.Analyze.Analyzers
                 {
                     if (debug != null)
                     {
-                        debug.TryGetValue(instruction, out var tempSeqPoint);
+                        debug.TryGetValue(instruction, out SequencePoint tempSeqPoint);
 
                         if (tempSeqPoint != null)
                         {
@@ -60,7 +63,7 @@ namespace Faultify.Analyze.Analyzers
                     }
 
                     // Get variable type. Might throw InvalidCastException
-                    Type type = ((TypeReference)instruction.Operand).ToSystemType();
+                    Type type = ((TypeReference) instruction.Operand).ToSystemType();
 
                     // Get previous instruction.
                     Instruction variableInstruction = instruction.Previous;
@@ -77,9 +80,8 @@ namespace Faultify.Analyze.Analyzers
                                 Original = variableInstruction.Operand,
                                 Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
                                 Variable = variableInstruction,
-                                LineNumber = lineNumber
-                            }) ;
-
+                                LineNumber = lineNumber,
+                            });
                     }
                 }
                 catch (InvalidCastException e)
@@ -92,7 +94,7 @@ namespace Faultify.Analyze.Analyzers
             {
                 Name = Name,
                 Description = Description,
-                Mutations = mutations
+                Mutations = mutations,
             };
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -25,12 +26,13 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Takes and removes a test project from the pool
         /// </summary>
         /// <returns></returns>
-        public TestProjectDuplication TakeTestProject()
+        public TestProjectDuplication? TakeTestProject()
         {
-            var first = _testProjectDuplications.FirstOrDefault();
-            if (first == null) return null;
-
-            _testProjectDuplications.RemoveAt(0);
+            TestProjectDuplication? first = _testProjectDuplications.FirstOrDefault();
+            if (first != null)
+            {
+                _testProjectDuplications.RemoveAt(0);
+            }
             return first;
         }
 
@@ -44,7 +46,7 @@ namespace Faultify.TestRunner.ProjectDuplication
             // Make sure only one thread can attempt to access a free project at a time.
             lock (Lock)
             {
-                var freeProject = GetFreeProject();
+                TestProjectDuplication? freeProject = GetFreeProject();
 
                 if (freeProject != null) return freeProject;
 
@@ -53,7 +55,10 @@ namespace Faultify.TestRunner.ProjectDuplication
                 freeProject = GetFreeProject();
 
                 if (freeProject != null)
+                {
                     return freeProject;
+                }
+
                 return AcquireTestProject();
             }
         }
@@ -62,16 +67,15 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Returns a free project or null if none exit.
         /// </summary>
         /// <returns></returns>
-        public TestProjectDuplication GetFreeProject()
+        public TestProjectDuplication? GetFreeProject()
         {
-            foreach (var testProjectDuplication in _testProjectDuplications)
-                if (!testProjectDuplication.IsInUse)
-                {
-                    testProjectDuplication.IsInUse = true;
-                    return testProjectDuplication;
-                }
+            TestProjectDuplication? project = _testProjectDuplications.First(x => !x.IsInUse);
+            if (project != null)
+            {
+                project.IsInUse = true;
+            }
 
-            return null;
+            return project;
         }
 
         /// <summary>
@@ -79,7 +83,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// </summary>
         /// <param name="e"></param>
         /// <param name="_"></param>
-        private void OnTestProjectFreed(object e, TestProjectDuplication _)
+        private void OnTestProjectFreed(object? e, TestProjectDuplication _)
         {
             _signalEvent.Set();
         }

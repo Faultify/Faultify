@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
-using Microsoft.Extensions.Logging;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -24,9 +23,12 @@ namespace Faultify.TestRunner.TestRun
         /// <param name="testHostRunnerFactory"></param>
         /// <param name="projectDuplication"></param>
         /// <returns></returns>
-        Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
-            MutationSessionProgressTracker sessionProgressTracker, TestHost testHost,
-            TestProjectDuplication projectDuplication);
+        Task<IEnumerable<TestRunResult>> RunMutationTestAsync(
+            TimeSpan timeout,
+            MutationSessionProgressTracker sessionProgressTracker,
+            TestHost testHost,
+            TestProjectDuplication projectDuplication
+        );
 
 
         /// <summary>
@@ -34,7 +36,9 @@ namespace Faultify.TestRunner.TestRun
         /// </summary>
         /// <param name="testProject"></param>
         /// <param name="timedOutMutationVariants"></param>
-        void InitializeMutations(TestProjectDuplication testProject,
-            IEnumerable<MutationVariantIdentifier> timedOutMutationVariants);
+        void InitializeMutations(
+            TestProjectDuplication testProject,
+            IEnumerable<MutationVariantIdentifier> timedOutMutationVariants
+        );
     }
 }

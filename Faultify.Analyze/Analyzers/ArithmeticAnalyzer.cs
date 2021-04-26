@@ -19,7 +19,7 @@ namespace Faultify.Analyze.Analyzers
                         (MutationLevel.Simple, OpCodes.Sub),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -30,7 +30,7 @@ namespace Faultify.Analyze.Analyzers
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -41,7 +41,7 @@ namespace Faultify.Analyze.Analyzers
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Sub),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -52,7 +52,7 @@ namespace Faultify.Analyze.Analyzers
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Sub),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -63,14 +63,12 @@ namespace Faultify.Analyze.Analyzers
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Sub)
+                        (MutationLevel.Detailed, OpCodes.Sub),
                     }
-                }
+                },
             };
 
-        public ArithmeticAnalyzer() : base(Arithmetic)
-        {
-        }
+        public ArithmeticAnalyzer() : base(Arithmetic) { }
 
         public override string Description =>
             "Analyzer that searches for possible arithmetic mutations such as '+' to '-', '*', '/', and '%'.";

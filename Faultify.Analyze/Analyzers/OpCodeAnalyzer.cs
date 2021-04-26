@@ -14,25 +14,30 @@ namespace Faultify.Analyze.Analyzers
     /// </summary>
     public abstract class OpCodeAnalyzer : IAnalyzer<OpCodeMutation, Instruction>
     {
-        private readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> _mappedOpCodes;
-        public abstract string Description { get; }
-        public abstract string Name { get; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> _mappedOpCodes;
 
         protected OpCodeAnalyzer(Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> mappedOpCodes)
         {
             _mappedOpCodes = mappedOpCodes;
         }
 
-        public IMutationGroup<OpCodeMutation> GenerateMutations(Instruction scope, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
+        public abstract string Description { get; }
+        public abstract string Name { get; }
+
+        public IMutationGroup<OpCodeMutation> GenerateMutations(
+            Instruction scope,
+            MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null
+        )
         {
-            var original = scope.OpCode;
+            OpCode original = scope.OpCode;
             IEnumerable<OpCodeMutation> mutations;
 
             int lineNumber = -1;
             if (debug != null)
             {
-                var prev = scope;
+                Instruction prev = scope;
                 SequencePoint seqPoint = null;
                 // If prev is not null
                 // and line number is not found
@@ -41,6 +46,7 @@ namespace Faultify.Analyze.Analyzers
                 {
                     prev = prev.Previous;
                 }
+
                 if (seqPoint != null)
                 {
                     lineNumber = seqPoint.StartLine;
@@ -49,17 +55,17 @@ namespace Faultify.Analyze.Analyzers
 
             try
             {
-                var targets = _mappedOpCodes[original];
+                IEnumerable<(MutationLevel, OpCode)> targets = _mappedOpCodes[original];
                 mutations =
                     from target
-                    in targets
+                        in targets
                     where mutationLevel.HasFlag(target.Item1)
                     select new OpCodeMutation
                     {
                         Original = original,
                         Replacement = target.Item2,
                         Instruction = scope,
-                        LineNumber = lineNumber
+                        LineNumber = lineNumber,
                     };
             }
             catch (Exception e)
@@ -72,7 +78,7 @@ namespace Faultify.Analyze.Analyzers
             {
                 Name = Name,
                 Description = Description,
-                Mutations = mutations
+                Mutations = mutations,
             };
         }
     }
