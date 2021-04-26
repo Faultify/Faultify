@@ -20,12 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Buildalyzer" Version="3.2.0" />
     <PackageReference Include="ICSharpCode.Decompiler" Version="6.2.1.6137" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.8.3" />
     <PackageReference Include="Mono.Cecil" Version="0.11.3" />
-    <PackageReference Include="RazorLight" Version="2.0.0-rc.2" />
-    <PackageReference Include="MonoMod.Utils" Version="21.1.11.1" />
   </ItemGroup>
 
 </Project>
