@@ -75,8 +75,7 @@ namespace Faultify.TestRunner.Dotnet
                 {
                     _logger.Error(
                         "The file 'test_results.bin' was not generated." +
-                        "This implies that the test run can not be completed. " +
-                        "Consider opening up an issue with the logs found in the output folder."
+                        "This implies that the test run can not be completed. "
                     );
                 }
                 finally
@@ -115,8 +114,7 @@ namespace Faultify.TestRunner.Dotnet
             {
                 _logger.Error(
                     "The file 'coverage.bin' was not generated." +
-                    "This implies that the test run can not be completed. " +
-                    "Consider opening up an issue with the logs found in the output folder."
+                    "This implies that the test run can not be completed. "
                 );
                 return new MutationCoverage();
             }

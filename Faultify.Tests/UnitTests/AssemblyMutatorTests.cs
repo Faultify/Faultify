@@ -34,8 +34,7 @@ namespace Faultify.Tests.UnitTests
         [Test]
         public void AssemblyMutator_Has_Right_Types()
         {
-            using Stream stream = new MemoryStream(File.ReadAllBytes("test.dll"));
-            using var mutator = new AssemblyMutator(stream);
+            using var mutator = new AssemblyMutator("test.dll");
 
             Assert.AreEqual(mutator.Types.Count, 2);
             Assert.AreEqual(mutator.Types[0].AssemblyQualifiedName, _nameSpaceTestAssemblyTarget1);
@@ -45,8 +44,7 @@ namespace Faultify.Tests.UnitTests
         [Test]
         public void AssemblyMutator_Type_TestAssemblyTarget1_Has_Right_Methods()
         {
-            using Stream stream = new MemoryStream(File.ReadAllBytes("test.dll"));
-            using var mutator = new AssemblyMutator(stream);
+            using var mutator = new AssemblyMutator("test.dll");
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget1);
 
@@ -58,8 +56,7 @@ namespace Faultify.Tests.UnitTests
         [Test]
         public void AssemblyMutator_Type_TestAssemblyTarget2_Has_Right_Methods()
         {
-            using Stream stream = new MemoryStream(File.ReadAllBytes("test.dll"));
-            using var mutator = new AssemblyMutator(stream);
+            using var mutator = new AssemblyMutator("test.dll");
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget2);
 
@@ -71,8 +68,7 @@ namespace Faultify.Tests.UnitTests
         [Test]
         public void AssemblyMutator_Type_TestAssemblyTarget1_Has_Right_Fields()
         {
-            using Stream stream = new MemoryStream(File.ReadAllBytes("test.dll"));
-            using var mutator = new AssemblyMutator(stream);
+            using var mutator = new AssemblyMutator("test.dll");
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget1);
 
@@ -84,8 +80,7 @@ namespace Faultify.Tests.UnitTests
         [Test]
         public void AssemblyMutator_Type_TestAssemblyTarget2_Has_Right_Fields()
         {
-            using Stream stream = new MemoryStream(File.ReadAllBytes("test.dll"));
-            using var mutator = new AssemblyMutator(stream);
+            using var mutator = new AssemblyMutator("test.dll");
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget2);
 
@@ -97,8 +92,7 @@ namespace Faultify.Tests.UnitTests
         [Test]
         public void AssemblyMutator_Type_TestAssemblyTarget1_TestMethod1_Has_Right_Mutations()
         {
-            using Stream stream = new MemoryStream(File.ReadAllBytes("test.dll"));
-            using var mutator = new AssemblyMutator(stream);
+            using var mutator = new AssemblyMutator("test.dll");
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget1);
             var method1 = target1.Methods.FirstOrDefault(x => x.Name == "TestMethod1");
@@ -117,8 +111,7 @@ namespace Faultify.Tests.UnitTests
         [Test]
         public void AssemblyMutator_Type_TestAssemblyTarget1_Constant_Has_Right_Mutation()
         {
-            using Stream stream = new MemoryStream(File.ReadAllBytes("test.dll"));
-            using var mutator = new AssemblyMutator(stream);
+            using var mutator = new AssemblyMutator("test.dll");
             var target1 = mutator.Types.First(x =>
                 x.AssemblyQualifiedName == _nameSpaceTestAssemblyTarget1);
             var field = target1.Fields.FirstOrDefault(x => x.Name == "Constant");

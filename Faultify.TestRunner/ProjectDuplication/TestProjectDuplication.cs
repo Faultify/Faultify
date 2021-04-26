@@ -6,6 +6,7 @@ using Faultify.Analyze;
 using Faultify.Analyze.AssemblyMutator;
 using Faultify.Core.ProjectAnalyzing;
 using Faultify.TestRunner.TestRun;
+using NLog;
 
 namespace Faultify.TestRunner.ProjectDuplication
 {
@@ -14,13 +15,17 @@ namespace Faultify.TestRunner.ProjectDuplication
     /// </summary>
     public class TestProjectDuplication : IDisposable
     {
-        public TestProjectDuplication(FileDuplication testProjectFile,
-            IEnumerable<FileDuplication> testProjectReferences, int duplicationNumber)
+        public TestProjectDuplication(
+            FileDuplication testProjectFile,
+            IEnumerable<FileDuplication> testProjectReferences,
+            int duplicationNumber)
         {
             TestProjectFile = testProjectFile;
             TestProjectReferences = testProjectReferences;
             DuplicationNumber = duplicationNumber;
         }
+        
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Test project references.
@@ -95,7 +100,6 @@ namespace Faultify.TestRunner.ProjectDuplication
 
                 // Create assembly mutator and look up the mutations according to the passed identifiers.
                 AssemblyMutator assembly = new AssemblyMutator(reference.FullFilePath());
-
                 var toMutateMethods = new HashSet<string>(
                     mutationIdentifiers.Select(x => x.MemberName)
                 );
@@ -175,7 +179,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 } 
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    _logger.Error(e, e.Message);
                 } 
                 finally
                 {

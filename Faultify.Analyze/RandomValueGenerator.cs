@@ -57,7 +57,7 @@ namespace Faultify.Analyze
             }
             catch (Exception e)
             {
-                _logger.Error(e, "There was probably an error casting a value, defaulting to null");
+                _logger.Warn(e, "There was probably an error casting a value, defaulting to null");
             }
 
             return newRef;

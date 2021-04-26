@@ -34,6 +34,7 @@ namespace Faultify.Analyze.Mutation
             Variable.Operand = Original;
         }
 
+
         public string Report {
             get
             {

@@ -1,7 +1,6 @@
-﻿using NLog;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Faultify.TestRunner.TestProcess
 {
@@ -41,6 +40,7 @@ namespace Faultify.TestRunner.TestProcess
 
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
+
 
             await taskCompletionSource.Task;
 

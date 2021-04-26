@@ -20,8 +20,9 @@ namespace Faultify.Analyze.Analyzers
             "Analyzer that searches for possible boolean constant mutations such as 'true' to 'false'.";
 
         public new string Name => "Boolean ConstantMutation Analyzer";
+        
+        public IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
 
-        public new IMutationGroup<ConstantMutation> GenerateMutations(FieldDefinition field, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             var constantMutation = new ConstantMutation
             {

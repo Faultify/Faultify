@@ -76,10 +76,9 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 }
                 catch (FileNotFoundException e)
                 {
-                    _logger.Error(e,
+                    _logger.Fatal(e,
                         "The file 'test_results.bin' was not generated." +
-                        "This implies that the test run can not be completed. " +
-                        "Consider opening up an issue with the logs found in the output folder."
+                        "This implies that the test run can not be completed. "
                     );
                 }
                 catch (Exception e)
@@ -121,10 +120,9 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
             }
             catch (FileNotFoundException e)
             {
-                _logger.Error(e, 
+                _logger.Fatal(e, 
                     "The file 'coverage.bin' was not generated." +
-                    "This implies that the test run can not be completed. " +
-                    "Consider opening up an issue with the logs found in the output folder.");
+                    "This implies that the test run can not be completed. ");
             }
             catch (ExitCodeException e)
             {

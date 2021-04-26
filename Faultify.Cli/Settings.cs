@@ -28,7 +28,6 @@ namespace Faultify.Cli
             HelpText = "The mutation level indicating the test depth. ")]
         public MutationLevel MutationLevel { get; set; }
 
-
         [Option('t', "testHost", Required = false, Default = nameof(TestHost.DotnetTest),
             HelpText = "The name of the test host framework.")]
         public string TestHostName { get; set; }
