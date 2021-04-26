@@ -30,15 +30,29 @@ namespace Faultify.TestRunner
         private readonly int _parallel;
         private readonly TestHost _testHost;
         private readonly string _testProjectPath;
+        private readonly TimeSpan  _timeOut;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
-            ILoggerFactory loggerFactoryFactory, TestHost testHost)
+            ILoggerFactory loggerFactoryFactory, TestHost testHost, TimeSpan timeOut)
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
             _parallel = parallel;
             _testHost = testHost;
+            _timeOut = timeOut;
+        }
+
+        //Sets the time out for the mutations to be either the specified number of seconds or the time it takes to run the test project.
+        //When timeout is less then 0.51 seconds it will be set to .51 seconds to make sure the MaxTestDuration is at least one second.
+        private TimeSpan CreateTimeOut(Stopwatch stopwatch)
+        {
+            TimeSpan timeOut = _timeOut;
+            if (_timeOut.Equals(TimeSpan.FromSeconds(0)))
+            {
+                timeOut = stopwatch.Elapsed;
+            }
+            return timeOut < TimeSpan.FromSeconds(.51) ? TimeSpan.FromSeconds(.51) : timeOut;
         }
 
         /// <summary>
@@ -86,6 +100,8 @@ namespace Faultify.TestRunner
             MutationCoverage coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
 
+            TimeSpan timeout = CreateTimeOut(coverageTimer);
+
             _logger.Info($"Collecting garbage");
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -96,7 +112,7 @@ namespace Faultify.TestRunner
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
             return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
-                coverageTimer.Elapsed, testProjectCopier, _testHost);
+                timeout, testProjectCopier, _testHost);
         }
 
         /// <summary>
