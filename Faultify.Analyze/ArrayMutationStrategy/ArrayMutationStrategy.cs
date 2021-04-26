@@ -1,5 +1,6 @@
-﻿using Mono.Cecil;
-using System;
+﻿using System;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze.ArrayMutationStrategy
 {
@@ -19,7 +20,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
         public void Reset(MethodDefinition mutatedMethodDef, MethodDefinition methodClone)
         {
             mutatedMethodDef.Body.Instructions.Clear();
-            foreach (var instruction in methodClone.Body.Instructions)
+            foreach (Instruction instruction in methodClone.Body.Instructions)
                 mutatedMethodDef.Body.Instructions.Add(instruction);
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Faultify.Analyze
@@ -9,24 +8,23 @@ namespace Faultify.Analyze
     /// </summary>
     public class TypeChecker
     {
-
         public static readonly ICollection<Type> NumericTypes = new HashSet<Type>
         {
             typeof(float), typeof(double),
             typeof(sbyte), typeof(byte),
             typeof(short), typeof(ushort),
-            typeof(int),   typeof(uint),
-            typeof(long),  typeof(ulong)
+            typeof(int), typeof(uint),
+            typeof(long), typeof(ulong),
         };
 
         // TODO: Why is this never used?
         public static readonly ICollection<Type> stringTypes = new HashSet<Type>
         {
-            typeof(string), typeof(char)
+            typeof(string), typeof(char),
         };
 
         /// <summary>
-        /// Specifies wether or not the given type is valid for an array target
+        ///     Specifies wether or not the given type is valid for an array target
         /// </summary>
         /// <param name="t">Type to be checked</param>
         /// <returns>True if a valid array type, false otherwise</returns>
@@ -41,7 +39,7 @@ namespace Faultify.Analyze
 
 
         /// <summary>
-        /// Specifies wether or not the given type is valid for a variable target
+        ///     Specifies wether or not the given type is valid for a variable target
         /// </summary>
         /// <param name="t">Type to be checked</param>
         /// <returns>True if a valid variable type, false otherwise</returns>
@@ -57,7 +55,7 @@ namespace Faultify.Analyze
 
 
         /// <summary>
-        /// Specifies wether or not the given type is valid for a constant target
+        ///     Specifies wether or not the given type is valid for a constant target
         /// </summary>
         /// <param name="t">Type to be checked</param>
         /// <returns>True if a valid constant type, false otherwise</returns>

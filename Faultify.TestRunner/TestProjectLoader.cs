@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Faultify.Analyze.AssemblyMutator;
-using MC.Mono.Cecil;
+using MC::Mono.Cecil;
 
 namespace Faultify.TestRunner
 {

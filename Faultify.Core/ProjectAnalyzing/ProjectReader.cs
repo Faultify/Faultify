@@ -13,19 +13,20 @@ namespace Faultify.Core.ProjectAnalyzing
         {
             return Task.Run<IProjectInfo>(() =>
             {
-                var analyzerManager = new AnalyzerManager();
+                AnalyzerManager analyzerManager = new AnalyzerManager();
 
                 // TODO: This should add debug symbols to the build, which we can then access
                 // via Cecil according to https://github.com/jbevain/cecil/wiki/Debug-symbols
                 analyzerManager.SetGlobalProperty("Configuration", "Debug");
 
-                var projectAnalyzer = analyzerManager.GetProject(path);
+                IProjectAnalyzer projectAnalyzer = analyzerManager.GetProject(path);
                 progress.Report($"Building {Path.GetFileName(path)}");
-                var analyzerResult = projectAnalyzer.Build(new EnvironmentOptions
-                {
-                    DesignTime = false,
-                    Restore = true
-                }).First();
+                IAnalyzerResult analyzerResult = projectAnalyzer.Build(new EnvironmentOptions
+                    {
+                        DesignTime = false,
+                        Restore = true,
+                    })
+                    .First();
 
                 return new ProjectInfo(analyzerResult);
             });

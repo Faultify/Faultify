@@ -15,17 +15,18 @@ namespace Faultify.TestRunner.ProjectDuplication
     /// </summary>
     public class TestProjectDuplication : IDisposable
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public TestProjectDuplication(
             FileDuplication testProjectFile,
             IEnumerable<FileDuplication> testProjectReferences,
-            int duplicationNumber)
+            int duplicationNumber
+        )
         {
             TestProjectFile = testProjectFile;
             TestProjectReferences = testProjectReferences;
             DuplicationNumber = duplicationNumber;
         }
-        
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Test project references.
@@ -84,32 +85,33 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <param name="mutationIdentifiers"></param>
         /// <param name="mutationLevel"></param>
         /// <returns></returns>
-        public IList<MutationVariant> GetMutationVariants(IList<MutationVariantIdentifier> mutationIdentifiers,
-            MutationLevel mutationLevel)
+        public IList<MutationVariant> GetMutationVariants(
+            IList<MutationVariantIdentifier> mutationIdentifiers,
+            MutationLevel mutationLevel
+        )
         {
             List<MutationVariant> foundMutations = new List<MutationVariant>();
 
             foreach (var reference in TestProjectReferences)
             {
                 // Read the reference and its contents
-                using var stream = reference.OpenReadStream();
-                using var binReader = new BinaryReader(stream);
+                using Stream? stream = reference.OpenReadStream();
+                using BinaryReader? binReader = new BinaryReader(stream);
                 byte[] data = binReader.ReadBytes((int) stream.Length);
 
-                var decompiler = new CodeDecompiler(reference.FullFilePath(), new MemoryStream(data));
+                CodeDecompiler? decompiler = new CodeDecompiler(reference.FullFilePath(), new MemoryStream(data));
 
                 // Create assembly mutator and look up the mutations according to the passed identifiers.
                 AssemblyMutator assembly = new AssemblyMutator(reference.FullFilePath());
-                var toMutateMethods = new HashSet<string>(
+                HashSet<string>? toMutateMethods = new HashSet<string>(
                     mutationIdentifiers.Select(x => x.MemberName)
                 );
 
                 foreach (TypeScope type in assembly.Types)
                 {
-
-                    foreach (MethodScope method in type.Methods.Where(method => toMutateMethods.Contains(method.AssemblyQualifiedName)))
+                    foreach (MethodScope method in type.Methods.Where(method =>
+                        toMutateMethods.Contains(method.AssemblyQualifiedName)))
                     {
-
                         var methodMutationId = 0;
 
                         foreach (var mutationGroup in method.AllMutations(mutationLevel))
@@ -117,7 +119,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                             foreach (var mutation in mutationGroup)
                             {
                                 MutationVariantIdentifier mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
-                                x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
+                                    x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
                                 if (mutationIdentifier.MemberName != null)
                                 {
@@ -126,15 +128,16 @@ namespace Faultify.TestRunner.ProjectDuplication
                                         Assembly = assembly,
                                         CausesTimeOut = false,
                                         MemberHandle = method.Handle,
-                                        OriginalSource = decompiler.Decompile(method.Handle), // this might not be a good idea
+                                        OriginalSource =
+                                            decompiler.Decompile(method.Handle), // this might not be a good idea
                                         MutatedSource = "",
                                         Mutation = mutation,
                                         MutationAnalyzerInfo = new MutationAnalyzerInfo
                                         {
                                             AnalyzerDescription = mutationGroup.Description,
-                                            AnalyzerName = mutationGroup.Name
+                                            AnalyzerName = mutationGroup.Name,
                                         },
-                                        MutationIdentifier = mutationIdentifier
+                                        MutationIdentifier = mutationIdentifier,
                                     });
                                 }
 
@@ -154,20 +157,21 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <param name="mutationVariants"></param>
         public void FlushMutations(IList<MutationVariant> mutationVariants)
         {
-            var assemblies = new HashSet<AssemblyMutator>(mutationVariants.Select(x => x.Assembly));
+            HashSet<AssemblyMutator>? assemblies =
+                new HashSet<AssemblyMutator>(mutationVariants.Select(x => x.Assembly));
             foreach (AssemblyMutator assembly in assemblies)
             {
-                var fileDuplication = TestProjectReferences.FirstOrDefault(x =>
+                FileDuplication? fileDuplication = TestProjectReferences.FirstOrDefault(x =>
                     assembly.Module.Name == x.Name);
                 try
                 {
-                    using var writeStream = fileDuplication.OpenReadWriteStream();
-                    using var stream = new MemoryStream();
+                    using Stream? writeStream = fileDuplication.OpenReadWriteStream();
+                    using MemoryStream? stream = new MemoryStream();
                     assembly.Module.Write(stream);
                     writeStream.Write(stream.ToArray());
 
                     stream.Position = 0;
-                    var decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), stream);
+                    CodeDecompiler? decompiler = new CodeDecompiler(fileDuplication.FullFilePath(), stream);
 
                     foreach (var mutationVariant in mutationVariants)
                     {
@@ -176,11 +180,11 @@ namespace Faultify.TestRunner.ProjectDuplication
                             mutationVariant.MutatedSource = decompiler.Decompile(mutationVariant.MemberHandle);
                         }
                     }
-                } 
+                }
                 catch (Exception e)
                 {
                     _logger.Error(e, e.Message);
-                } 
+                }
                 finally
                 {
                     fileDuplication.Dispose();

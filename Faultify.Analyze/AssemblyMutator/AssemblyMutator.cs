@@ -30,7 +30,7 @@ namespace Faultify.Analyze.AssemblyMutator
         public HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> ArrayMutationAnalyzers =
             new HashSet<IAnalyzer<ArrayMutation, MethodDefinition>>
             {
-                new ArrayAnalyzer()
+                new ArrayAnalyzer(),
             };
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Faultify.Analyze.AssemblyMutator
         public HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
             new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
             {
-                new ConstantAnalyzer()
+                new ConstantAnalyzer(),
             };
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Faultify.Analyze.AssemblyMutator
             {
                 new ArithmeticAnalyzer(),
                 new ComparisonAnalyzer(),
-                new BitwiseAnalyzer()
+                new BitwiseAnalyzer(),
             };
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <summary>
         ///     Underlying Mono.Cecil ModuleDefinition.
         /// </summary>
-        public ModuleDefinition Module { get; private set; }
+        public ModuleDefinition Module { get; }
 
         /// <summary>
         ///     The types in the assembly.
@@ -105,14 +105,14 @@ namespace Faultify.Analyze.AssemblyMutator
         }
 
         /// <summary>
-        /// Loads all of the types within the raw module definition into the class
+        ///     Loads all of the types within the raw module definition into the class
         /// </summary>
         /// <returns>A List<TypeScope> of types in the module</returns>
         private List<TypeScope> LoadTypes()
         {
             return (
                 from type
-                in Module.Types
+                    in Module.Types
                 where !type.FullName.StartsWith("<")
                 select new TypeScope(
                     type,

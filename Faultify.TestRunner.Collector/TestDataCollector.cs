@@ -25,7 +25,8 @@ namespace Faultify.TestRunner.Collector
             DataCollectionEvents events,
             DataCollectionSink dataSink,
             DataCollectionLogger logger,
-            DataCollectionEnvironmentContext environmentContext)
+            DataCollectionEnvironmentContext environmentContext
+        )
         {
             _logger = logger;
             context = environmentContext;
@@ -63,7 +64,7 @@ namespace Faultify.TestRunner.Collector
 
             // Register this test because there is a possibility for the test host to crash before the end event. 
             _testResults.Tests.Add(new TestResult
-                {Outcome = TestOutcome.None, Name = e.TestElement.FullyQualifiedName});
+                { Outcome = TestOutcome.None, Name = e.TestElement.FullyQualifiedName });
         }
 
         private void EventsOnTestCaseEnd(object sender, TestCaseEndEventArgs e)
@@ -71,7 +72,7 @@ namespace Faultify.TestRunner.Collector
             _logger.LogWarning(context.SessionDataCollectionContext, $"Test Case End: {e.TestCaseName}");
 
             // Find the test and set the correct test outcome.
-            var test = _testResults.Tests.FirstOrDefault(x => x.Name == e.TestElement.FullyQualifiedName);
+            TestResult test = _testResults.Tests.FirstOrDefault(x => x.Name == e.TestElement.FullyQualifiedName);
 
             if (test == null)
             {

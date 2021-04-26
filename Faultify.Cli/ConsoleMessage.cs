@@ -22,14 +22,14 @@ namespace Faultify.Cli
 
         public static void PrintSettings(Settings settings)
         {
-            var settingsString =
-                "\n" +
-                $"| Mutation Level: {settings.MutationLevel} \t\t \n" +
-                $"| Test Runners: {settings.Parallel} \t\t \n" +
-                $"| Report Path: {settings.ReportPath} \t\t \n" +
-                $"| Report Type: {settings.ReportType} \t\t \n" +
-                $"| Test Project Path: {settings.TestProjectPath} \t\t \n" +
-                "\n";
+            string settingsString =
+                "\n"
+                + $"| Mutation Level: {settings.MutationLevel} \t\t \n"
+                + $"| Test Runners: {settings.Parallel} \t\t \n"
+                + $"| Report Path: {settings.ReportPath} \t\t \n"
+                + $"| Report Type: {settings.ReportType} \t\t \n"
+                + $"| Test Project Path: {settings.TestProjectPath} \t\t \n"
+                + "\n";
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(settingsString);

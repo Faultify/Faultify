@@ -2,7 +2,7 @@ extern alias MC;
 using System.IO;
 using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
-using MC.Mono.Cecil.Cil;
+using MC::Mono.Cecil.Cil;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests
@@ -20,13 +20,13 @@ namespace Faultify.Tests.UnitTests
         public void Arithmetic_PreMutation(string methodName, object argument1, object argument2, int expected)
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
 
             // Act
-            using (var binaryInteractor = new DllTestHelper(binary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(binary))
             {
                 var actual = (int) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {argument1, argument2});
+                    new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
@@ -53,20 +53,25 @@ namespace Faultify.Tests.UnitTests
         [TestCase("Modulo", 10, 2, nameof(OpCodes.Mul), 20)]
         [TestCase("Modulo", 11, 5, nameof(OpCodes.Sub), 6)]
         [TestCase("Modulo", 22, 7, nameof(OpCodes.Div), 3)]
-        public void Arithmetic_PostMutation(string methodName, object argument1, object argument2,
-            string expectedOpCodeName, int expected)
+        public void Arithmetic_PostMutation(
+            string methodName,
+            object argument1,
+            object argument2,
+            string expectedOpCodeName,
+            int expected
+        )
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
-            var opCodeExpected = expectedOpCodeName.ParseOpCode();
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
+            OpCode opCodeExpected = expectedOpCodeName.ParseOpCode();
 
             // Act
-            var mutatedBinary =
+            byte[] mutatedBinary =
                 DllTestHelper.MutateMethod<ArithmeticAnalyzer>(binary, methodName, opCodeExpected);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual = (int) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {argument1, argument2});
+                    new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);

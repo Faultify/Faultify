@@ -3,8 +3,8 @@
     public enum TestHost
     {
         NUnit,
-        XUnit, 
+        XUnit,
         MsTest,
-        DotnetTest
+        DotnetTest,
     }
 }

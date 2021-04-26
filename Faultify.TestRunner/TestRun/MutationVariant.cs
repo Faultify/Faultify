@@ -10,8 +10,12 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     public readonly struct MutationVariantIdentifier
     {
-        public MutationVariantIdentifier(HashSet<string> testNames, string memberName, int mutationId,
-            int mutationGroupId)
+        public MutationVariantIdentifier(
+            HashSet<string> testNames,
+            string memberName,
+            int mutationId,
+            int mutationGroupId
+        )
         {
             TestCoverage = testNames;
             MemberName = memberName;

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Reflection.Metadata;
 using Faultify.Core.ProjectAnalyzing;
 using Faultify.Tests.UnitTests.Utils;
-using Mono.Cecil;
 using NUnit.Framework;
+using ModuleDefinition = Mono.Cecil.ModuleDefinition;
 
 namespace Faultify.Tests.UnitTests
 {
@@ -19,7 +20,7 @@ namespace Faultify.Tests.UnitTests
         [SetUp]
         public void LoadTestAssembly()
         {
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
             File.WriteAllBytes("test.dll", binary);
             _stream = new MemoryStream(File.ReadAllBytes("test.dll"));
             _module = ModuleDefinition.ReadModule(_stream);
@@ -39,12 +40,12 @@ namespace Faultify.Tests.UnitTests
         public void Decompile_Test_Type(string expectedNotClean)
         {
             // Arrange
-            var cd = new CodeDecompiler("test.dll", _stream);
-            var handle = DecompileHandleHelper.DecompileType(_module, TypeName);
-            var expected = expectedNotClean.CleanUpCode();
+            CodeDecompiler cd = new CodeDecompiler("test.dll", _stream);
+            EntityHandle handle = DecompileHandleHelper.DecompileType(_module, TypeName);
+            string expected = expectedNotClean.CleanUpCode();
 
             // Act
-            var actual = cd.Decompile(handle).CleanUpCode();
+            string actual = cd.Decompile(handle).CleanUpCode();
 
             // Assert
             Assert.AreEqual(expected, actual);
@@ -54,16 +55,19 @@ namespace Faultify.Tests.UnitTests
             typeof(int))]
         [TestCase("TestReturnInt",
             "public int TestReturnInt(int test, int test2){return test + test2;}", typeof(int), typeof(int))]
-        public void Decompile_Test_method(string methodName, string expectedNotClean,
-            params Type[] typeList)
+        public void Decompile_Test_method(
+            string methodName,
+            string expectedNotClean,
+            params Type[] typeList
+        )
         {
             // Arrange
-            var cd = new CodeDecompiler("test.dll", _stream);
-            var handle = DecompileHandleHelper.DecompileMethod(_module, TypeName, methodName, typeList);
-            var expected = expectedNotClean.CleanUpCode();
+            CodeDecompiler cd = new CodeDecompiler("test.dll", _stream);
+            EntityHandle handle = DecompileHandleHelper.DecompileMethod(_module, TypeName, methodName, typeList);
+            string expected = expectedNotClean.CleanUpCode();
 
             // Act
-            var actual = cd.Decompile(handle).CleanUpCode();
+            string actual = cd.Decompile(handle).CleanUpCode();
 
             // Assert
             Assert.AreEqual(expected, actual);
@@ -73,12 +77,12 @@ namespace Faultify.Tests.UnitTests
         public void Decompile_Test_Field(string fieldName, string expectedNotClean)
         {
             // Arrange
-            var cd = new CodeDecompiler("test.dll", _stream);
-            var handle = DecompileHandleHelper.DecompileField(_module, TypeName, fieldName);
-            var expected = expectedNotClean.CleanUpCode();
+            CodeDecompiler cd = new CodeDecompiler("test.dll", _stream);
+            EntityHandle handle = DecompileHandleHelper.DecompileField(_module, TypeName, fieldName);
+            string expected = expectedNotClean.CleanUpCode();
 
             // Act
-            var actual = cd.Decompile(handle).CleanUpCode();
+            string actual = cd.Decompile(handle).CleanUpCode();
 
             // Assert
             Assert.AreEqual(expected, actual);

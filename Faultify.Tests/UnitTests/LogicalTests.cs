@@ -2,7 +2,7 @@
 using System.IO;
 using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
-using MC.Mono.Cecil.Cil;
+using MC::Mono.Cecil.Cil;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests
@@ -16,13 +16,13 @@ namespace Faultify.Tests.UnitTests
         public void Logical_PreMutation_And()
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(folder);
             var expected = true;
 
             // Act
-            using (var binaryInteractor = new DllTestHelper(binary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(binary))
             {
-                var instance = binaryInteractor.CreateInstance(nameSpace);
+                dynamic instance = binaryInteractor.CreateInstance(nameSpace);
                 bool actual = instance.AndOperator(true, true);
 
                 // Assert
@@ -34,14 +34,14 @@ namespace Faultify.Tests.UnitTests
         public void Logical_PostMutation_AndToOr()
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(folder);
             var expected = true;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Or);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            byte[] mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Or);
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
-                var instance = binaryInteractor.CreateInstance(nameSpace);
+                dynamic instance = binaryInteractor.CreateInstance(nameSpace);
                 bool actual = instance.AndOperator(true, true);
 
                 // Assert
@@ -53,14 +53,14 @@ namespace Faultify.Tests.UnitTests
         public void Logical_PostMutation_AndToXor01()
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(folder);
             var expected = false;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Xor);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            byte[] mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Xor);
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
-                var instance = binaryInteractor.CreateInstance(nameSpace);
+                dynamic instance = binaryInteractor.CreateInstance(nameSpace);
                 bool actual = instance.AndOperator(true, true);
 
                 // Assert
@@ -72,14 +72,14 @@ namespace Faultify.Tests.UnitTests
         public void Logical_PostMutation_AndToXor02()
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(folder);
             var expected = true;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Xor);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            byte[] mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "AndOperator", OpCodes.Xor);
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
-                var instance = binaryInteractor.CreateInstance(nameSpace);
+                dynamic instance = binaryInteractor.CreateInstance(nameSpace);
                 bool actual = instance.AndOperator(true, false);
 
                 // Assert
@@ -91,13 +91,13 @@ namespace Faultify.Tests.UnitTests
         public void Logical_PreMutation_Or()
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(folder);
             var expected = true;
 
             // Act
-            using (var binaryInteractor = new DllTestHelper(binary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(binary))
             {
-                var instance = binaryInteractor.CreateInstance(nameSpace);
+                dynamic instance = binaryInteractor.CreateInstance(nameSpace);
                 bool actual = instance.OrOperator(true, true);
 
                 // Assert
@@ -109,14 +109,14 @@ namespace Faultify.Tests.UnitTests
         public void Logical_PostMutation_OrToAnd()
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(folder);
             var expected = true;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "OrOperator", OpCodes.And);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            byte[] mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "OrOperator", OpCodes.And);
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
-                var instance = binaryInteractor.CreateInstance(nameSpace);
+                dynamic instance = binaryInteractor.CreateInstance(nameSpace);
                 bool actual = instance.OrOperator(true, true);
 
                 // Assert
@@ -128,14 +128,14 @@ namespace Faultify.Tests.UnitTests
         public void Logical_PostMutation_OrToXor()
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(folder);
             var expected = false;
 
             // Act
-            var mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "OrOperator", OpCodes.Xor);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            byte[] mutatedBinary = DllTestHelper.MutateMethod<BitwiseAnalyzer>(binary, "OrOperator", OpCodes.Xor);
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
-                var instance = binaryInteractor.CreateInstance(nameSpace);
+                dynamic instance = binaryInteractor.CreateInstance(nameSpace);
                 bool actual = instance.OrOperator(true, true);
 
                 // Assert

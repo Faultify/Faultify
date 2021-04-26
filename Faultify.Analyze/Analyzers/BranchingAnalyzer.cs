@@ -13,12 +13,12 @@ namespace Faultify.Analyze.Analyzers
             new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
             {
                 // Opcodes for mutating 'if(condition)' to 'if(!condition)' or unconditional conditions.
-                {OpCodes.Brtrue, new[] {(MutationLevel.Simple, OpCodes.Brfalse)}},
-                {OpCodes.Brtrue_S, new[] {(MutationLevel.Simple, OpCodes.Brfalse_S)}},
+                { OpCodes.Brtrue, new[] { (MutationLevel.Simple, OpCodes.Brfalse) } },
+                { OpCodes.Brtrue_S, new[] { (MutationLevel.Simple, OpCodes.Brfalse_S) } },
 
                 // Opcodes for mutating 'if(!condition)' to 'if(condition)' or unconditional conditions.
-                {OpCodes.Brfalse, new[] {(MutationLevel.Simple, OpCodes.Brtrue)}},
-                {OpCodes.Brfalse_S, new[] {(MutationLevel.Simple, OpCodes.Brtrue_S)}}
+                { OpCodes.Brfalse, new[] { (MutationLevel.Simple, OpCodes.Brtrue) } },
+                { OpCodes.Brfalse_S, new[] { (MutationLevel.Simple, OpCodes.Brtrue_S) } },
             };
 
         public BranchingAnalyzer() : base(Bitwise) { }

@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil.Cil;
 using FieldDefinition = Mono.Cecil.FieldDefinition;
 using MethodDefinition = Mono.Cecil.MethodDefinition;
@@ -31,12 +31,14 @@ namespace Faultify.Analyze.AssemblyMutator
             TypeDefinition = typeDefinition;
 
             Fields = TypeDefinition.Fields.Select(x =>
-                new FieldScope(x)
-            ).ToList();
+                    new FieldScope(x)
+                )
+                .ToList();
 
             Methods = TypeDefinition.Methods.Select(x =>
-                new MethodScope(x)
-            ).ToList();
+                    new MethodScope(x)
+                )
+                .ToList();
         }
 
         /// <summary>
@@ -57,11 +59,11 @@ namespace Faultify.Analyze.AssemblyMutator
 
         public IEnumerable<IMutationGroup<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
-            foreach (var analyzer in _constantAnalyzers)
+            foreach (IAnalyzer<ConstantMutation, FieldDefinition> analyzer in _constantAnalyzers)
             {
-                foreach (var field in TypeDefinition.Fields)
+                foreach (FieldDefinition field in TypeDefinition.Fields)
                 {
-                    ConstGroup mutations = (ConstGroup)analyzer.GenerateMutations(field, mutationLevel);
+                    ConstGroup mutations = (ConstGroup) analyzer.GenerateMutations(field, mutationLevel);
 
                     if (mutations.Any())
                     {

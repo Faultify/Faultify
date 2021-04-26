@@ -27,7 +27,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns></returns>
         public TestProjectDuplication TakeTestProject()
         {
-            var first = _testProjectDuplications.FirstOrDefault();
+            TestProjectDuplication? first = _testProjectDuplications.FirstOrDefault();
             if (first == null) return null;
 
             _testProjectDuplications.RemoveAt(0);
@@ -44,7 +44,7 @@ namespace Faultify.TestRunner.ProjectDuplication
             // Make sure only one thread can attempt to access a free project at a time.
             lock (Lock)
             {
-                var freeProject = GetFreeProject();
+                TestProjectDuplication? freeProject = GetFreeProject();
 
                 if (freeProject != null) return freeProject;
 
@@ -53,7 +53,10 @@ namespace Faultify.TestRunner.ProjectDuplication
                 freeProject = GetFreeProject();
 
                 if (freeProject != null)
+                {
                     return freeProject;
+                }
+
                 return AcquireTestProject();
             }
         }
@@ -65,11 +68,13 @@ namespace Faultify.TestRunner.ProjectDuplication
         public TestProjectDuplication GetFreeProject()
         {
             foreach (var testProjectDuplication in _testProjectDuplications)
+            {
                 if (!testProjectDuplication.IsInUse)
                 {
                     testProjectDuplication.IsInUse = true;
                     return testProjectDuplication;
                 }
+            }
 
             return null;
         }

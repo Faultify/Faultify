@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using CommandLine;
 using Faultify.Analyze;
 using Faultify.TestRunner;
@@ -35,11 +34,8 @@ namespace Faultify.Cli
         [Option('d', "timeOut", Required = false, Default = 0, HelpText = "Time out in seconds for the mutations")]
         public double Seconds { get; set; }
 
-        public TimeSpan TimeOut
-        {
-            get => TimeSpan.FromSeconds(Seconds);
-        }
-        
+        public TimeSpan TimeOut => TimeSpan.FromSeconds(Seconds);
+
         public TestHost TestHost
         {
             get => Enum.Parse<TestHost>(TestHostName, true);

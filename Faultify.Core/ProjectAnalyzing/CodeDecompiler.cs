@@ -19,9 +19,9 @@ namespace Faultify.Core.ProjectAnalyzing
         public CodeDecompiler(string assemblyName, Stream stream)
         {
             // Necessary to create the decompiler.
-            var settings = new DecompilerSettings();
+            DecompilerSettings settings = new DecompilerSettings();
 
-            var file = new PEFile(assemblyName, stream);
+            PEFile file = new PEFile(assemblyName, stream);
 
             // Creates instance of CSharpDecompiler.
             _decompiler = new CSharpDecompiler(

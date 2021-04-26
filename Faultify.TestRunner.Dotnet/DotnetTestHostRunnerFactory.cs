@@ -1,9 +1,7 @@
 ﻿using System;
-using Microsoft.Extensions.Logging;
 
 namespace Faultify.TestRunner.Dotnet
 {
-
     [Obsolete("Deprecated parent interface")]
     public class DotnetTestHostRunnerFactory : ITestHostRunFactory
     {

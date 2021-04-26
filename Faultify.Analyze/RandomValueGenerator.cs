@@ -10,8 +10,8 @@ namespace Faultify.Analyze
     /// </summary>
     public class RandomValueGenerator
     {
-        private readonly Random _rng;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Random _rng;
 
         public RandomValueGenerator()
         {
@@ -70,7 +70,7 @@ namespace Faultify.Analyze
         /// <returns></returns>
         private object ChangeBoolean(object reference)
         {
-            bool value = Convert.ToBoolean(reference);
+            var value = Convert.ToBoolean(reference);
             return Convert.ToInt32(!value);
         }
 
@@ -83,7 +83,7 @@ namespace Faultify.Analyze
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var stringChars = new char[32];
 
-            for (int i = 0; i < stringChars.Length; i++)
+            for (var i = 0; i < stringChars.Length; i++)
             {
                 stringChars[i] = chars[_rng.Next(chars.Length)];
             }
@@ -100,15 +100,14 @@ namespace Faultify.Analyze
         {
             var original = Convert.ToChar(originalRef);
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var generated = chars[_rng.Next(chars.Length)];
+            char generated = chars[_rng.Next(chars.Length)];
 
-            return (original == generated) ? ChangeChar(original) : generated;
+            return original == generated ? ChangeChar(original) : generated;
         }
 
 
-
         /// <summary>
-        /// Generates a new value for the given number reference
+        ///     Generates a new value for the given number reference
         /// </summary>
         /// <param name="originalType">Type of the number</param>
         /// <param name="original">Original number</param>
@@ -118,7 +117,7 @@ namespace Faultify.Analyze
             Type type = TypeChecker.NumericTypes.First(type => type == originalType);
             object generated = Convert.ChangeType(_rng.Next(), type);
 
-            return (original == generated) ? ChangeNumber(originalType, original) : generated;
+            return original == generated ? ChangeNumber(originalType, original) : generated;
         }
     }
 }

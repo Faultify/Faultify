@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Faultify.MemoryTest.TestInformation;
 using Faultify.TestRunner.Shared;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.NUnit
@@ -15,11 +14,10 @@ namespace Faultify.TestRunner.NUnit
     [Obsolete("Moved into TestRunner.TestRun.TestHostRunners")]
     public class NUnitTestHostRunner : ITestHostRunner
     {
-        private readonly string _testProjectAssemblyPath;
-        private readonly TimeSpan _timeout;
-        private readonly TestResults _testResults = new TestResults();
         private readonly HashSet<string> _coverageTests = new HashSet<string>();
-        public TestFramework TestFramework => TestFramework.NUnit;
+        private readonly string _testProjectAssemblyPath;
+        private readonly TestResults _testResults = new TestResults();
+        private readonly TimeSpan _timeout;
 
         public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
@@ -27,11 +25,14 @@ namespace Faultify.TestRunner.NUnit
             _timeout = timeout;
         }
 
+        public TestFramework TestFramework => TestFramework.NUnit;
+
         public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress, IEnumerable<string> tests)
         {
-            var hashedTests = new HashSet<string>(tests);
+            HashSet<string>? hashedTests = new HashSet<string>(tests);
 
-            var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
+            MemoryTest.NUnit.NUnitTestHostRunner? nunitHostRunner =
+                new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
             nunitHostRunner.Settings.Add("DefaultTimeout", 3000);
             nunitHostRunner.Settings.Add("StopOnError", false);
             nunitHostRunner.Settings.Add("BaseDirectory", new FileInfo(_testProjectAssemblyPath).DirectoryName);
@@ -45,21 +46,22 @@ namespace Faultify.TestRunner.NUnit
 
         public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
         {
-            var nunitHostRunner = new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
+            MemoryTest.NUnit.NUnitTestHostRunner? nunitHostRunner =
+                new MemoryTest.NUnit.NUnitTestHostRunner(_testProjectAssemblyPath);
             nunitHostRunner.Settings.Add("DefaultTimeout", 1000);
             nunitHostRunner.Settings.Add("StopOnError", false);
             nunitHostRunner.Settings.Add("BaseDirectory", new FileInfo(_testProjectAssemblyPath).DirectoryName);
-            
+
             nunitHostRunner.TestEnd += OnTestEndCoverage;
 
             await nunitHostRunner.RunTestsAsync(CancellationToken.None);
 
             return ReadCoverageFile();
         }
-        
+
         private void OnTestEnd(object? sender, TestEnd e)
         {
-            _testResults.Tests.Add(new TestResult() { Name = e.FullTestName, Outcome = ParseTestOutcome(e.TestOutcome) });
+            _testResults.Tests.Add(new TestResult { Name = e.FullTestName, Outcome = ParseTestOutcome(e.TestOutcome) });
         }
 
         private void OnTestEndCoverage(object? sender, TestEnd e)
@@ -74,13 +76,13 @@ namespace Faultify.TestRunner.NUnit
                 MemoryTest.TestOutcome.Passed => TestOutcome.Passed,
                 MemoryTest.TestOutcome.Failed => TestOutcome.Failed,
                 MemoryTest.TestOutcome.Skipped => TestOutcome.Skipped,
-                _ => throw new ArgumentOutOfRangeException(nameof(outcome), outcome, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(outcome), outcome, null),
             };
         }
 
         private MutationCoverage ReadCoverageFile()
         {
-            var mutationCoverage = Utils.ReadMutationCoverageFile();
+            MutationCoverage? mutationCoverage = Utils.ReadMutationCoverageFile();
 
             mutationCoverage.Coverage = mutationCoverage.Coverage
                 .Where(pair => _coverageTests.Contains(pair.Key))

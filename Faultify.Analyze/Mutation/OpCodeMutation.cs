@@ -1,5 +1,4 @@
 ﻿using Mono.Cecil.Cil;
-using System;
 
 namespace Faultify.Analyze.Mutation
 {
@@ -43,10 +42,8 @@ namespace Faultify.Analyze.Mutation
                 {
                     return $"Change operator from: '{Original}' to: '{Replacement}'.";
                 }
-                else
-                {
-                    return $"Change operator from: '{Original}' to: '{Replacement}'. In line {LineNumber}";
-                }
+
+                return $"Change operator from: '{Original}' to: '{Replacement}'. In line {LineNumber}";
             }
         }
     }

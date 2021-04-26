@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Faultify.Analyze.MutationGroups;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze
@@ -28,7 +28,11 @@ namespace Faultify.Analyze
         /// </summary>
         /// <param name="scope">Scope in which to evaluate mutations</param>
         /// <param name="mutationLevel">Optimization and coverage level</param>
-        /// <returns>A <see cref="IMutationGroup{TMutation}"/> containing the mutations</returns>
-        IMutationGroup<TMutation> GenerateMutations(TScope scope, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null);
+        /// <returns>A <see cref="IMutationGroup{TMutation}" /> containing the mutations</returns>
+        IMutationGroup<TMutation> GenerateMutations(
+            TScope scope,
+            MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null
+        );
     }
 }

@@ -5,6 +5,6 @@
         Survived,
         Killed,
         Timeout,
-        NoCoverage
+        NoCoverage,
     }
 }

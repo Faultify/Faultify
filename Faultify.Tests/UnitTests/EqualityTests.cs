@@ -1,8 +1,9 @@
 ﻿extern alias MC;
 using System.IO;
+using System.Reflection;
 using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
-using MC.Mono.Cecil.Cil;
+using MC::Mono.Cecil.Cil;
 using NUnit.Framework;
 
 namespace Faultify.Tests.UnitTests
@@ -23,14 +24,14 @@ namespace Faultify.Tests.UnitTests
         public void Equality_PreMutation_False(string methodName, object argument1, object argument2)
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
             var expected = false;
 
             // Act
-            using (var binaryInteractor = new DllTestHelper(binary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(binary))
             {
                 var actual = (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {argument1, argument2});
+                    new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
@@ -50,14 +51,14 @@ namespace Faultify.Tests.UnitTests
         public void Equality_PreMutation_True(string methodName, object argument1, object argument2)
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
             var expected = true;
 
             // Act
-            using (var binaryInteractor = new DllTestHelper(binary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(binary))
             {
                 var actual = (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {argument1, argument2});
+                    new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
@@ -69,21 +70,25 @@ namespace Faultify.Tests.UnitTests
         [TestCase("LessThanOrdered", nameof(OpCodes.Cgt), 1, 3)]
         [TestCase("LessThanUnOrdered", nameof(OpCodes.Cgt_Un), (uint) 1, (uint) 3)]
         [TestCase("EqualOrdered", nameof(OpCodes.Clt), 1, 1)]
-        public void Equality_PostMutation_Conditional(string methodName, string expectedOpCodeName, object argument1,
-            object argument2)
+        public void Equality_PostMutation_Conditional(
+            string methodName,
+            string expectedOpCodeName,
+            object argument1,
+            object argument2
+        )
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
             var expected = false;
-            var opCodeExpected = expectedOpCodeName.ParseOpCode();
+            OpCode opCodeExpected = expectedOpCodeName.ParseOpCode();
 
             // Act
-            var mutatedBinary =
+            byte[] mutatedBinary =
                 DllTestHelper.MutateMethod<ComparisonAnalyzer>(binary, methodName, opCodeExpected);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual = (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {argument1, argument2});
+                    new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
@@ -102,24 +107,29 @@ namespace Faultify.Tests.UnitTests
         [TestCase("LessThanOrdered", nameof(OpCodes.Blt), nameof(OpCodes.Bge), 1, 3)]
         [TestCase("LessThanUnOrdered", nameof(OpCodes.Blt_Un), nameof(OpCodes.Bge_Un), (uint) 1, (uint) 3)]
         [TestCase("NotEqualOrdered", nameof(OpCodes.Bne_Un), nameof(OpCodes.Beq), 1, 3)]
-        public void Equality_PostMutation_Branch(string methodName, string defaultOpCodeName, string expectedOpCodeName,
-            object argument1, object argument2)
+        public void Equality_PostMutation_Branch(
+            string methodName,
+            string defaultOpCodeName,
+            string expectedOpCodeName,
+            object argument1,
+            object argument2
+        )
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
             var expected = false;
-            var opCodeDefault = defaultOpCodeName.ParseOpCode();
-            var opCodeExpected = expectedOpCodeName.ParseOpCode();
+            OpCode opCodeDefault = defaultOpCodeName.ParseOpCode();
+            OpCode opCodeExpected = expectedOpCodeName.ParseOpCode();
 
             // Act
             binary = Utils.Utils.ChangeComparisonToBranchOperator(binary, methodName, opCodeDefault);
-            var mutatedBinary =
+            byte[] mutatedBinary =
                 DllTestHelper.MutateMethod<ComparisonAnalyzer>(binary, methodName, opCodeExpected);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
-                var instance = binaryInteractor.CreateInstance(_nameSpace);
-                var method = ((object) instance).GetType().GetMethod(methodName.FirstCharToUpper());
-                var actual = (bool) method.Invoke(instance, new[] {argument1, argument2});
+                dynamic instance = binaryInteractor.CreateInstance(_nameSpace);
+                MethodInfo? method = ((object) instance).GetType().GetMethod(methodName.FirstCharToUpper());
+                var actual = (bool) method.Invoke(instance, new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
