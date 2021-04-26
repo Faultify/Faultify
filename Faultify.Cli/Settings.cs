@@ -32,8 +32,13 @@ namespace Faultify.Cli
             HelpText = "The name of the test host framework.")]
         public string TestHostName { get; set; }
 
-        [Option('d', "timeout", Required = false, Default = 0, HelpText = "Time out in seconds for the mutations")]
-        public int TimeOut { get; set; }
+        [Option('d', "timeOut", Required = false, Default = 0, HelpText = "Time out in seconds for the mutations")]
+        public double Seconds { get; set; }
+
+        public TimeSpan TimeOut
+        {
+            get => TimeSpan.FromSeconds(Seconds);
+        }
         
         public TestHost TestHost
         {

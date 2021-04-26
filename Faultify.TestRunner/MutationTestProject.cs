@@ -30,11 +30,11 @@ namespace Faultify.TestRunner
         private readonly int _parallel;
         private readonly TestHost _testHost;
         private readonly string _testProjectPath;
-        private readonly int  _timeOut;
+        private readonly TimeSpan  _timeOut;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
-            ILoggerFactory loggerFactoryFactory, TestHost testHost, int timeOut)
+            ILoggerFactory loggerFactoryFactory, TestHost testHost, TimeSpan timeOut)
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
@@ -43,13 +43,16 @@ namespace Faultify.TestRunner
             _timeOut = timeOut;
         }
 
+        //Sets the time out for the mutations to be either the specified number of seconds or the time it takes to run the test project.
+        //When timeout is less then 0.51 seconds it will be set to .51 seconds to make sure the MaxTestDuration is at least one second.
         private TimeSpan CreateTimeOut(Stopwatch stopwatch)
         {
-            if (_timeOut == 0)
+            TimeSpan timeOut = _timeOut;
+            if (_timeOut.Equals(TimeSpan.FromSeconds(0)))
             {
-                return stopwatch.Elapsed < TimeSpan.FromSeconds(1) ? TimeSpan.FromSeconds(1) : stopwatch.Elapsed;
+                timeOut = stopwatch.Elapsed;
             }
-            return TimeSpan.FromSeconds(_timeOut);
+            return timeOut < TimeSpan.FromSeconds(.51) ? TimeSpan.FromSeconds(.51) : timeOut;
         }
 
         /// <summary>
