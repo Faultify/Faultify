@@ -118,7 +118,7 @@ namespace Faultify.TestRunner
             GC.WaitForPendingFinalizers();
 
             _logger.Info("Freeing test project");
-            coverageProject.FreeTestProject();
+            coverageProject.MarkAsFree();
 
             // Start test session.
             Dictionary<RegisteredCoverage, HashSet<string>>? testsPerMutation = GroupMutationsWithTests(coverage);
@@ -135,11 +135,10 @@ namespace Faultify.TestRunner
             TestFramework testFramework = GetTestFramework(testProjectInfo);
 
             // Read the test project into memory.
-            TestProjectInfo? projectInfo = new TestProjectInfo
-            {
-                TestFramework = testFramework,
-                TestModule = ModuleDefinition.ReadModule(duplication.TestProjectFile.FullFilePath()),
-            };
+            TestProjectInfo? projectInfo = new TestProjectInfo(
+                testFramework,
+                ModuleDefinition.ReadModule(duplication.TestProjectFile.FullFilePath())
+            );
 
             // Foreach project reference load it in memory as an 'assembly mutator'.
             foreach (FileDuplication projectReferencePath in duplication.TestProjectReferences)
@@ -249,16 +248,17 @@ namespace Faultify.TestRunner
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
             _logger.Info("Running coverage analysis");
-            using MemoryMappedFile? _file = Utils.CreateCoverageMemoryMappedFile();
-            ITestHostRunner testRunner = null;
+            using MemoryMappedFile? file = Utils.CreateCoverageMemoryMappedFile();
+            ITestHostRunner testRunner;
             try
             {
-                testRunner =
-                    TestHostRunnerFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHost);
+                testRunner = TestHostRunnerFactory
+                    .CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHost);
             }
             catch (Exception e)
             {
                 _logger.Error(e, "Unable to create Test Runner");
+                throw; // TODO: Maybe return null
             }
 
             return await testRunner.RunCodeCoverage(cancellationToken);
@@ -319,7 +319,7 @@ namespace Faultify.TestRunner
             // Double the time the code coverage took such that test runs have some time run their tests (needs to be in seconds).
             TimeSpan maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
 
-            TestProjectReportModelBuilder? reportBuilder =
+            TestProjectReportModelBuilder reportBuilder =
                 new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);
 
 
@@ -348,26 +348,27 @@ namespace Faultify.TestRunner
 
                     Stopwatch? singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-                    IEnumerable<TestRunResult>? results = await testRun.RunMutationTestAsync(
+                    IEnumerable<TestRunResult> results = await testRun.RunMutationTestAsync(
                         maxTestDuration,
                         sessionProgressTracker,
                         testHost,
                         testProject);
-                    if (results != null)
+                    
+                    foreach (var testResult in results)
                     {
-                        foreach (var testResult in results)
-                        {
-                            // Store the timed out mutations such that they can be excluded.
-                            timedOutMutations.AddRange(testResult.GetTimedOutTests());
+                        // Store the timed out mutations such that they can be excluded.
+                        timedOutMutations.AddRange(testResult.GetTimedOutTests());
 
-                            // For each mutation add it to the report builder.
-                            reportBuilder.AddTestResult(testResult.TestResults, testResult.Mutations,
-                                singRunsStopwatch.Elapsed);
-                        }
-
-                        singRunsStopwatch.Stop();
-                        singRunsStopwatch.Reset();
+                        // For each mutation add it to the report builder.
+                        reportBuilder.AddTestResult(
+                            testResult.TestResults,
+                            testResult.Mutations,
+                            singRunsStopwatch.Elapsed);
                     }
+
+                    singRunsStopwatch.Stop();
+                    singRunsStopwatch.Reset();
+                    
                 }
                 catch (Exception e)
                 {
@@ -386,7 +387,7 @@ namespace Faultify.TestRunner
                         sessionProgressTracker.LogTestRunUpdate(completedRuns, totalRunsCount, failedRuns);
                     }
 
-                    testProject.FreeTestProject(); //TODO: replace with deletion
+                    testProject.MarkAsFree(); //TODO: replace with deletion
                 }
             }
 

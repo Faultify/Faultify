@@ -17,7 +17,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
     /// </summary>
     public class DotnetTestHostRunner : ITestHostRunner
     {
-        private static readonly bool DisableOutput = true;
+        private const bool DisableOutput = true;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string _testAdapterPath;
         private readonly DirectoryInfo _testDirectoryInfo;
@@ -28,11 +28,11 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout)
         {
             _testFileInfo = new FileInfo(testProjectAssemblyPath);
-            _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName);
+            _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName ?? string.Empty);
 
             _timeout = timeout;
 
-            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         }
 
         public TestFramework TestFramework => TestFramework.None;
@@ -40,8 +40,6 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         /// <summary>
         ///     Runs the given tests and returns the results.
         /// </summary>
-        /// <param name="progress"></param>
-        /// <param name="tests"></param>
         /// <returns></returns>
         public async Task<TestResults> RunTests(
             TimeSpan timeout,
@@ -148,7 +146,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
         private ProcessRunner BuildTestProcessRunner(IEnumerable<string> tests)
         {
             _logger.Info("Building test runner");
-            string? testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
+            string testArguments = new DotnetTestArgumentBuilder(_testFileInfo.Name)
                 .Silent()
                 .WithoutLogo()
                 .WithTimeout(_timeout)
@@ -158,7 +156,7 @@ namespace Faultify.TestRunner.TestRun.TestHostRunners
                 .DisableDump()
                 .Build();
 
-            ProcessStartInfo? testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
+            ProcessStartInfo testProcessStartInfo = new ProcessStartInfo("dotnet", testArguments)
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,

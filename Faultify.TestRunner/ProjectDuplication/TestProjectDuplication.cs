@@ -57,14 +57,13 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <summary>
         ///     Event that notifies when ever this test project is given free by a given test runner.
         /// </summary>
-        public event EventHandler<TestProjectDuplication> TestProjectFreed;
+        public event EventHandler<TestProjectDuplication>? TestProjectFreed;
 
         /// <summary>
         ///     Mark this project as free for any test runner.
         /// </summary>
-        public void FreeTestProject()
+        public void MarkAsFree()
         {
-            //TODO: rename to MarkAsFree(). Currently, it gives the false impression that it actually does something to free the project.
             IsInUse = false;
             TestProjectFreed?.Invoke(this, this);
         }
@@ -72,7 +71,8 @@ namespace Faultify.TestRunner.ProjectDuplication
 
         /// <summary>
         ///     Delete the test project completely
-        ///     Currently does not work, given that Nunit restricts access to the files await's been given
+        ///     Currently does not work, given that Nunit restricts access to the files awaits been given
+        ///     TODO: This is not used
         /// </summary>
         public void DeleteTestProject()
         {
@@ -86,7 +86,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <param name="mutationLevel"></param>
         /// <returns></returns>
         public IList<MutationVariant> GetMutationVariants(
-            IList<MutationVariantIdentifier> mutationIdentifiers,
+            IList<MutationVariantIdentifier>? mutationIdentifiers,
             MutationLevel mutationLevel
         )
         {
@@ -95,16 +95,16 @@ namespace Faultify.TestRunner.ProjectDuplication
             foreach (var reference in TestProjectReferences)
             {
                 // Read the reference and its contents
-                using Stream? stream = reference.OpenReadStream();
-                using BinaryReader? binReader = new BinaryReader(stream);
+                using Stream stream = reference.OpenReadStream();
+                using BinaryReader binReader = new BinaryReader(stream);
                 byte[] data = binReader.ReadBytes((int) stream.Length);
 
                 CodeDecompiler? decompiler = new CodeDecompiler(reference.FullFilePath(), new MemoryStream(data));
 
                 // Create assembly mutator and look up the mutations according to the passed identifiers.
                 AssemblyMutator assembly = new AssemblyMutator(reference.FullFilePath());
-                HashSet<string>? toMutateMethods = new HashSet<string>(
-                    mutationIdentifiers.Select(x => x.MemberName)
+                HashSet<string> toMutateMethods = new HashSet<string>(
+                    mutationIdentifiers?.Select(x => x.MemberName) ?? Enumerable.Empty<string>()
                 );
 
                 foreach (TypeScope type in assembly.Types)
@@ -118,27 +118,25 @@ namespace Faultify.TestRunner.ProjectDuplication
                         {
                             foreach (var mutation in mutationGroup)
                             {
-                                MutationVariantIdentifier mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
+                                MutationVariantIdentifier? mutationIdentifier = mutationIdentifiers?.FirstOrDefault(x =>
                                     x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
-                                if (mutationIdentifier.MemberName != null)
+                                if (mutationIdentifier?.MemberName != null)
                                 {
-                                    foundMutations.Add(new MutationVariant
-                                    {
-                                        Assembly = assembly,
-                                        CausesTimeOut = false,
-                                        MemberHandle = method.Handle,
-                                        OriginalSource =
-                                            decompiler.Decompile(method.Handle), // this might not be a good idea
-                                        MutatedSource = "",
-                                        Mutation = mutation,
-                                        MutationAnalyzerInfo = new MutationAnalyzerInfo
+                                    foundMutations.Add(new MutationVariant(
+                                        causesTimeOut: false,
+                                        assembly: assembly,
+                                        mutationIdentifier: mutationIdentifier.Value,
+                                        mutationAnalyzerInfo: new MutationAnalyzerInfo
                                         {
                                             AnalyzerDescription = mutationGroup.Description,
                                             AnalyzerName = mutationGroup.Name,
                                         },
-                                        MutationIdentifier = mutationIdentifier,
-                                    });
+                                        memberHandle: method.Handle,
+                                        mutation: mutation,
+                                        mutatedSource: "",
+                                        originalSource: decompiler.Decompile(method.Handle) // this might not be a good idea
+                                    ));
                                 }
 
                                 methodMutationId++;

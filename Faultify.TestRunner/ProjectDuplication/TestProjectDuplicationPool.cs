@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -25,12 +26,13 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Takes and removes a test project from the pool
         /// </summary>
         /// <returns></returns>
-        public TestProjectDuplication TakeTestProject()
+        public TestProjectDuplication? TakeTestProject()
         {
             TestProjectDuplication? first = _testProjectDuplications.FirstOrDefault();
-            if (first == null) return null;
-
-            _testProjectDuplications.RemoveAt(0);
+            if (first != null)
+            {
+                _testProjectDuplications.RemoveAt(0);
+            }
             return first;
         }
 
@@ -65,18 +67,15 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Returns a free project or null if none exit.
         /// </summary>
         /// <returns></returns>
-        public TestProjectDuplication GetFreeProject()
+        public TestProjectDuplication? GetFreeProject()
         {
-            foreach (var testProjectDuplication in _testProjectDuplications)
+            TestProjectDuplication? project = _testProjectDuplications.First(x => !x.IsInUse);
+            if (project != null)
             {
-                if (!testProjectDuplication.IsInUse)
-                {
-                    testProjectDuplication.IsInUse = true;
-                    return testProjectDuplication;
-                }
+                project.IsInUse = true;
             }
 
-            return null;
+            return project;
         }
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// </summary>
         /// <param name="e"></param>
         /// <param name="_"></param>
-        private void OnTestProjectFreed(object e, TestProjectDuplication _)
+        private void OnTestProjectFreed(object? e, TestProjectDuplication _)
         {
             _signalEvent.Set();
         }

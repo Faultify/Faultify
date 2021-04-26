@@ -1,4 +1,5 @@
-﻿extern alias MC;
+﻿#nullable enable
+extern alias MC;
 using System;
 using System.IO;
 using System.Linq;
@@ -245,8 +246,8 @@ namespace Faultify.Tests.UnitTests.Utils
         /// </summary>
         public object GetField(string assemblyQualifiedName, string field)
         {
-            Type? type = _assembly.GetType(assemblyQualifiedName);
-            return type.GetField(field).GetRawConstantValue();
+            Type type = _assembly.GetType(assemblyQualifiedName)!;
+            return type.GetField(field)!.GetRawConstantValue()!;
         }
 
         /// <summary>

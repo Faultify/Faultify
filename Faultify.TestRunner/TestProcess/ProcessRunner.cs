@@ -26,9 +26,9 @@ namespace Faultify.TestRunner.TestProcess
             _logger.Info("Starting new process");
             Process? process = new Process();
 
-            TaskCompletionSource<object>? taskCompletionSource = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> taskCompletionSource = new TaskCompletionSource<object>();
             process.EnableRaisingEvents = true;
-            process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); };
+            process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); }; // TODO: This has to be bad practice
 
             process.StartInfo = _processStartInfo;
 

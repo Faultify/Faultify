@@ -18,6 +18,7 @@
 
 		<UserSecretsId>a54b9b03-4c3a-41e0-97a0-d891b6b20697</UserSecretsId>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup>

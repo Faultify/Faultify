@@ -11,11 +11,11 @@ namespace Faultify.TestRunner.ProjectDuplication
     {
         private readonly string _testDirectory;
 
-        private DirectoryInfo _newDirInfo;
+        private DirectoryInfo? _newDirInfo;
 
-        private List<string> allFiles;
+        private List<string>? _allFiles;
 
-        private IProjectInfo projectInfo;
+        private IProjectInfo? _projectInfo;
 
         public TestProjectDuplicator(string testDirectory)
         {
@@ -31,7 +31,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         public TestProjectDuplication MakeInitialCopy(IProjectInfo testProject)
         {
             DirectoryInfo? dirInfo = new DirectoryInfo(_testDirectory);
-            projectInfo = testProject;
+            _projectInfo = testProject;
             // Remove useless folders.
             foreach (var directory in dirInfo.GetDirectories("*"))
             {
@@ -44,11 +44,11 @@ namespace Faultify.TestRunner.ProjectDuplication
             List<TestProjectDuplication>? testProjectDuplications = new List<TestProjectDuplication>();
 
             // Start the initial copy
-            allFiles = Directory.GetFiles(_testDirectory, "*.*", SearchOption.AllDirectories).ToList();
+            _allFiles = Directory.GetFiles(_testDirectory, "*.*", SearchOption.AllDirectories).ToList();
             _newDirInfo = Directory.CreateDirectory(Path.Combine(_testDirectory, "test-duplication-0"));
 
 
-            foreach (var file in allFiles)
+            foreach (var file in _allFiles)
             {
                 try
                 {
@@ -101,9 +101,14 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns> The newly created duplication </returns>
         public TestProjectDuplication MakeCopy(int i)
         {
+            if (_newDirInfo == null || _projectInfo == null) throw new NullReferenceException();
+            
             string duplicatedDirectoryPath = Path.Combine(_testDirectory, $"test-duplication-{i + 1}");
+            
             CopyFilesRecursively(_newDirInfo, Directory.CreateDirectory(duplicatedDirectoryPath));
-            IEnumerable<FileDuplication> duplicatedAssemblies = projectInfo.ProjectReferences
+            
+            IEnumerable<FileDuplication> duplicatedAssemblies = _projectInfo
+                .ProjectReferences
                 .Select(x =>
                     new FileDuplication(duplicatedDirectoryPath, Path.GetFileNameWithoutExtension(x) + ".dll"));
 
@@ -111,7 +116,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 new TestProjectDuplication(
                     new FileDuplication(
                         duplicatedDirectoryPath,
-                        Path.GetFileName(projectInfo.AssemblyPath)),
+                        Path.GetFileName(_projectInfo.AssemblyPath)),
                     duplicatedAssemblies,
                     i);
         }

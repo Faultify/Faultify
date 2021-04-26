@@ -4,6 +4,9 @@ using CommandLine;
 using Faultify.Analyze;
 using Faultify.TestRunner;
 
+// Disable Non-nullable is uninitialized, this is handled by the CommandLine package
+#pragma warning disable 8618
+
 namespace Faultify.Cli
 {
     internal class Settings

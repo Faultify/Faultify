@@ -75,7 +75,7 @@ namespace Faultify.Tests.UnitTests
             {
                 TestProjectDuplication project1 = pool.AcquireTestProject();
                 Assert.NotNull(project1);
-                project1.FreeTestProject();
+                project1.MarkAsFree();
             });
 
             Assert.IsNotNull(pool.GetFreeProject());

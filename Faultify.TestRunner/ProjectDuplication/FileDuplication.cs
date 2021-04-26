@@ -9,7 +9,7 @@ namespace Faultify.TestRunner.ProjectDuplication
     /// </summary>
     public class FileDuplication : IDisposable
     {
-        private FileStream _fileStream;
+        private FileStream? _fileStream;
 
         public FileDuplication(string directory, string name)
         {
@@ -29,7 +29,7 @@ namespace Faultify.TestRunner.ProjectDuplication
 
         public void Dispose()
         {
-            if (_fileStream != null) _fileStream.Close();
+            _fileStream?.Close();
             _fileStream = null;
         }
 
@@ -48,7 +48,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns></returns>
         public bool IsWriteModeEnabled()
         {
-            return _fileStream.CanWrite;
+            return _fileStream?.CanWrite ?? false;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns></returns>
         public bool IsReadModeEnabled()
         {
-            return _fileStream.CanRead;
+            return _fileStream?.CanRead ?? false;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         public Stream OpenReadWriteStream()
         {
             if (_fileStream == null || IsReadModeEnabled()) EnableReadWriteOnly();
-            return _fileStream;
+            return _fileStream!;
         }
 
 
@@ -78,8 +78,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         public Stream OpenReadStream()
         {
             if (_fileStream == null || IsWriteModeEnabled()) EnableReadOnly();
-
-            return _fileStream;
+            return _fileStream!;
         }
 
         /// <summary>
@@ -89,7 +88,11 @@ namespace Faultify.TestRunner.ProjectDuplication
         {
             Dispose();
 
-            _fileStream = new FileStream(FullFilePath(), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            _fileStream = new FileStream(
+                path: FullFilePath(),
+                mode: FileMode.Open,
+                access: FileAccess.ReadWrite,
+                share: FileShare.ReadWrite);
         }
 
         /// <summary>
@@ -99,7 +102,11 @@ namespace Faultify.TestRunner.ProjectDuplication
         {
             Dispose();
 
-            _fileStream = new FileStream(FullFilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            _fileStream = new FileStream(
+                path: FullFilePath(),
+                mode: FileMode.Open,
+                access: FileAccess.Read,
+                share: FileShare.ReadWrite);
         }
     }
 }

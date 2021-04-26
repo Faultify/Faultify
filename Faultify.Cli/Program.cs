@@ -24,7 +24,7 @@ namespace Faultify.Cli
 {
     internal class Program
     {
-        private static string _outputDirectory;
+        private static string? _outputDirectory;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ILoggerFactory _loggerFactory;
 
@@ -53,7 +53,8 @@ namespace Faultify.Cli
             services.AddSingleton<Program>();
 
             ServiceProvider serviceProvider = services.BuildServiceProvider();
-            Program? program = serviceProvider.GetService<Program>();
+            Program program = serviceProvider.GetService<Program>()
+                ?? throw new Exception("Couldn't get the Faultify service from the system");
 
             ConfigureNLog();
 
@@ -227,7 +228,7 @@ namespace Faultify.Cli
 
             string reportFileName = DateTime.Now.ToString("yy-MM-dd-H-mm") + reporter.FileExtension;
 
-            await File.WriteAllBytesAsync(Path.Combine(_outputDirectory, reportFileName), reportBytes);
+            await File.WriteAllBytesAsync(Path.Combine(_outputDirectory ?? string.Empty, reportFileName), reportBytes);
         }
 
         private IReporter ReportFactory(string type)
