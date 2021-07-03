@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using Faultify.TestRunner.Shared;
+using NLog;
 
 namespace Faultify.Injection
 {
@@ -11,10 +12,11 @@ namespace Faultify.Injection
     /// </summary>
     public static class CoverageRegistry
     {
-        private static readonly MutationCoverage MutationCoverage = new MutationCoverage();
+        private static readonly MutationCoverage MutationCoverage = new();
         private static string _currentTestCoverage = "NONE";
-        private static readonly object RegisterMutex = new object();
+        private static readonly object RegisterMutex = new();
         private static MemoryMappedFile _mmf;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Is injected into <Module> by <see cref="TestCoverageInjector" /> and will be called on assembly load.
@@ -32,8 +34,9 @@ namespace Faultify.Injection
             {
                 Utils.WriteMutationCoverageFile(MutationCoverage, _mmf);
             }
-            catch (Exception _)
+            catch (Exception ex)
             {
+                _logger.Debug(ex, "Previously ignored Exception caught in CoverageRegistry: {0}");
                 // ignored
             }
         }
@@ -48,7 +51,8 @@ namespace Faultify.Injection
             {
                 try
                 {
-                    if (!MutationCoverage.Coverage.TryGetValue(_currentTestCoverage, out var targetHandles))
+                    if (!MutationCoverage.Coverage.TryGetValue(_currentTestCoverage,
+                        out List<RegisteredCoverage> targetHandles))
                     {
                         targetHandles = new List<RegisteredCoverage>();
                         MutationCoverage.Coverage[_currentTestCoverage] = targetHandles;
@@ -60,6 +64,7 @@ namespace Faultify.Injection
                 }
                 catch (Exception ex)
                 {
+                    _logger.Debug(ex, "Previously ignored Exception-2 caught in CoverageRegistry: {0}");
                     // ignored
                 }
             }

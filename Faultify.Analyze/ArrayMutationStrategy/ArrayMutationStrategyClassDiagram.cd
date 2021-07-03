@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Faultify.Analyze.ArrayMutationStrategy.ArrayBuilder" Collapsed="true">
+    <Position X="6" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>ArrayMutationStrategy\ArrayBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Faultify.Analyze.ArrayMutationStrategy.ArrayMutationStrategy" Collapsed="true">
+    <Position X="3.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ArrayMutationStrategy\ArrayMutationStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Faultify.Analyze.ArrayMutationStrategy.DynamicArrayRandomizerStrategy" Collapsed="true">
+    <Position X="3.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAABAQAAAAAAAAAAAAAAAAACAEAAAAAAAA=</HashCode>
+      <FileName>ArrayMutationStrategy\DynamicArrayRandomizerStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Faultify.Analyze.ArrayMutationStrategy.IArrayMutationStrategy" Collapsed="true">
+    <Position X="6" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ArrayMutationStrategy\IArrayMutationStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

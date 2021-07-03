@@ -18,22 +18,22 @@ namespace Faultify.Report.HTMLReporter
 
         private async Task<string> Template(MutationProjectReportModel model)
         {
-            var currentAssembly = Assembly.GetExecutingAssembly();
-            var resourceName = currentAssembly
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            string resourceName = currentAssembly
                 .GetManifestResourceNames()
                 .Single(str => str.EndsWith("HTML.cshtml"));
 
-            using var streamReader = new StreamReader(currentAssembly.GetManifestResourceStream(resourceName));
-            var template = await streamReader.ReadToEndAsync();
+            using StreamReader streamReader = new StreamReader(currentAssembly.GetManifestResourceStream(resourceName));
+            string template = await streamReader.ReadToEndAsync();
 
-            var engine = new RazorLightEngineBuilder()
+            RazorLightEngine engine = new RazorLightEngineBuilder()
                 // required to have a default RazorLightProject type,
                 // but not required to create a template from string.
                 .UseEmbeddedResourcesProject(typeof(HtmlReporter))
                 .UseMemoryCachingProvider()
                 .Build();
 
-            var result = await engine.CompileRenderStringAsync("templateKey", template, model);
+            string result = await engine.CompileRenderStringAsync("templateKey", template, model);
             return result;
         }
     }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿extern alias MC;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,28 +17,49 @@ using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.ProjectDuplication;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestRun;
+using MC::Mono.Cecil;
 using Microsoft.Extensions.Logging;
-using Mono.Cecil;
 using Newtonsoft.Json.Linq;
+using NLog;
 
 namespace Faultify.TestRunner
 {
     public class MutationTestProject
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly MutationLevel _mutationLevel;
         private readonly int _parallel;
-        private readonly ILogger _testHostLogger;
-        private readonly ITestHostRunFactory _testHostRunFactory;
+        private readonly TestHost _testHost;
         private readonly string _testProjectPath;
+        private readonly TimeSpan _timeOut;
 
-        public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
-            ILoggerFactory loggerFactoryFactory, ITestHostRunFactory testHostRunFactory)
+        public MutationTestProject(
+            string testProjectPath,
+            MutationLevel mutationLevel,
+            int parallel,
+            ILoggerFactory loggerFactoryFactory,
+            TestHost testHost,
+            TimeSpan timeOut
+        )
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
             _parallel = parallel;
-            _testHostRunFactory = testHostRunFactory;
-            _testHostLogger = loggerFactoryFactory.CreateLogger("Faultify.TestHost");
+            _testHost = testHost;
+            _timeOut = timeOut;
+        }
+
+        //Sets the time out for the mutations to be either the specified number of seconds or the time it takes to run the test project.
+        //When timeout is less then 0.51 seconds it will be set to .51 seconds to make sure the MaxTestDuration is at least one second.
+        private TimeSpan CreateTimeOut(Stopwatch stopwatch)
+        {
+            TimeSpan timeOut = _timeOut;
+            if (_timeOut.Equals(TimeSpan.FromSeconds(0)))
+            {
+                timeOut = stopwatch.Elapsed;
+            }
+
+            return timeOut < TimeSpan.FromSeconds(.51) ? TimeSpan.FromSeconds(.51) : timeOut;
         }
 
         /// <summary>
@@ -51,42 +74,56 @@ namespace Faultify.TestRunner
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<TestProjectReportModel> Test(MutationSessionProgressTracker progressTracker,
-            CancellationToken cancellationToken = default)
+        public async Task<TestProjectReportModel> Test(
+            MutationSessionProgressTracker progressTracker,
+            CancellationToken cancellationToken = default
+        )
         {
             // Build project
             progressTracker.LogBeginPreBuilding();
-            var projectInfo = await BuildProject(progressTracker, _testProjectPath);
+            IProjectInfo? projectInfo = await BuildProject(progressTracker, _testProjectPath);
             progressTracker.LogEndPreBuilding();
 
             // Copy project N times
-            progressTracker.LogBeginProjectDuplication(_parallel);
-            var testProjectCopier = new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
-            var duplications = testProjectCopier.MakeInitialCopies(projectInfo, _parallel);
+            TestProjectDuplicator? testProjectCopier =
+                new TestProjectDuplicator(Directory.GetParent(projectInfo.AssemblyPath).FullName);
+
+            // This is for some reason necessary when running tests with Dotnet,
+            // otherwise the coverage analysis breaks future clones.
+            // TODO: Should be investigated further.
+            TestProjectDuplication? initialCopy = testProjectCopier.MakeInitialCopy(projectInfo);
 
             // Begin code coverage on first project.
-            var duplicationPool = new TestProjectDuplicationPool(duplications);
-            var coverageProject = duplicationPool.TakeTestProject();
-            var coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
+            TestProjectDuplication coverageProject = testProjectCopier.MakeCopy(1);
+            TestProjectInfo coverageProjectInfo = GetTestProjectInfo(coverageProject, projectInfo);
 
             // Measure the test coverage 
             progressTracker.LogBeginCoverage();
+
+            // Rewrites assemblies
+            // FIX: Breaks line numbers
+            // To fix, we need to restore the initial state of the assemblies prior to performing mutation testing.
             PrepareAssembliesForCodeCoverage(coverageProjectInfo);
 
-            var coverageTimer = new Stopwatch();
+            Stopwatch? coverageTimer = new Stopwatch();
             coverageTimer.Start();
-            var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
+            MutationCoverage coverage =
+                await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
 
+            TimeSpan timeout = CreateTimeOut(coverageTimer);
+
+            _logger.Info("Collecting garbage");
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            coverageProject.FreeTestProject();
+            _logger.Info("Freeing test project");
+            coverageProject.MarkAsFree();
 
             // Start test session.
-            var testsPerMutation = GroupMutationsWithTests(coverage);
+            Dictionary<RegisteredCoverage, HashSet<string>>? testsPerMutation = GroupMutationsWithTests(coverage);
             return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
-                coverageTimer.Elapsed, duplicationPool);
+                timeout, testProjectCopier, _testHost);
         }
 
         /// <summary>
@@ -95,22 +132,23 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private TestProjectInfo GetTestProjectInfo(TestProjectDuplication duplication, IProjectInfo testProjectInfo)
         {
-            var testFramework = GetTestFramework(testProjectInfo);
+            TestFramework testFramework = GetTestFramework(testProjectInfo);
 
             // Read the test project into memory.
-            var projectInfo = new TestProjectInfo
-            {
-                TestFramework = testFramework,
-                TestModule = ModuleDefinition.ReadModule(duplication.TestProjectFile.FullFilePath())
-            };
+            TestProjectInfo? projectInfo = new TestProjectInfo(
+                testFramework,
+                ModuleDefinition.ReadModule(duplication.TestProjectFile.FullFilePath())
+            );
 
             // Foreach project reference load it in memory as an 'assembly mutator'.
-            foreach (var projectReferencePath in duplication.TestProjectReferences)
+            foreach (FileDuplication projectReferencePath in duplication.TestProjectReferences)
             {
-                var loadProjectReferenceModel = new AssemblyMutator(projectReferencePath.FullFilePath());
+                AssemblyMutator loadProjectReferenceModel = new AssemblyMutator(projectReferencePath.FullFilePath());
 
                 if (loadProjectReferenceModel.Types.Count > 0)
+                {
                     projectInfo.DependencyAssemblies.Add(loadProjectReferenceModel);
+                }
             }
 
             return projectInfo;
@@ -118,16 +156,22 @@ namespace Faultify.TestRunner
 
         private TestFramework GetTestFramework(IProjectInfo projectInfo)
         {
-            var projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
+            string projectFile = File.ReadAllText(projectInfo.ProjectFilePath);
 
             if (Regex.Match(projectFile, "xunit").Captures.Any())
+            {
                 return TestFramework.XUnit;
+            }
 
             if (Regex.Match(projectFile, "nunit").Captures.Any())
-                return TestFramework.XUnit;
+            {
+                return TestFramework.NUnit;
+            }
 
             if (Regex.Match(projectFile, "mstest").Captures.Any())
-                return TestFramework.XUnit;
+            {
+                return TestFramework.MsTest;
+            }
 
             return TestFramework.None;
         }
@@ -139,10 +183,12 @@ namespace Faultify.TestRunner
         /// <param name="sessionProgressTracker"></param>
         /// <param name="projectPath"></param>
         /// <returns></returns>
-        private async Task<IProjectInfo> BuildProject(MutationSessionProgressTracker sessionProgressTracker,
-            string projectPath)
+        private async Task<IProjectInfo> BuildProject(
+            MutationSessionProgressTracker sessionProgressTracker,
+            string projectPath
+        )
         {
-            var projectReader = new ProjectReader();
+            ProjectReader? projectReader = new ProjectReader();
             return await projectReader.ReadProjectAsync(projectPath, sessionProgressTracker);
         }
 
@@ -154,11 +200,12 @@ namespace Faultify.TestRunner
         /// <param name="projectInfo"></param>
         private void PrepareAssembliesForCodeCoverage(TestProjectInfo projectInfo)
         {
+            _logger.Info("Preparing assemblies for code coverage");
             TestCoverageInjector.Instance.InjectTestCoverage(projectInfo.TestModule);
             TestCoverageInjector.Instance.InjectModuleInit(projectInfo.TestModule);
             TestCoverageInjector.Instance.InjectAssemblyReferences(projectInfo.TestModule);
 
-            using var ms = new MemoryStream();
+            using MemoryStream? ms = new MemoryStream();
             projectInfo.TestModule.Write(ms);
             projectInfo.TestModule.Dispose();
 
@@ -166,31 +213,28 @@ namespace Faultify.TestRunner
 
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
-                var dependencyInjectionPath = assembly.Module.FileName;
+                _logger.Trace($"Writing assembly {assembly.Module.FileName}");
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
-                assembly.Module.Write(dependencyInjectionPath);
-                assembly.Module.Dispose();
+                assembly.Flush(); // SHAME ON YOU, SHAME
+                assembly.Dispose();
             }
 
-            switch (projectInfo.TestFramework)
+            if (projectInfo.TestFramework == TestFramework.XUnit)
             {
-                case TestFramework.XUnit:
-                    var testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
-                    var xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
-                    var xunitCoverageSettings = JObject.FromObject(new {parallelizeTestCollections = false});
-                    if (!File.Exists(xunitConfigFileName))
-                    {
-                        File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
-                    }
-                    else
-                    {
-                        var originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
-                        originalJsonConfig.Merge(xunitCoverageSettings);
-                        File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
-                    }
-
-                    break;
+                DirectoryInfo testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
+                string xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
+                JObject xunitCoverageSettings = JObject.FromObject(new { parallelizeTestCollections = false });
+                if (!File.Exists(xunitConfigFileName))
+                {
+                    File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
+                }
+                else
+                {
+                    JObject? originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
+                    originalJsonConfig.Merge(xunitCoverageSettings);
+                    File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
+                }
             }
         }
 
@@ -203,10 +247,20 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
-            using var _file = Utils.CreateCoverageMemoryMappedFile();
+            _logger.Info("Running coverage analysis");
+            using MemoryMappedFile? file = Utils.CreateCoverageMemoryMappedFile();
+            ITestHostRunner testRunner;
+            try
+            {
+                testRunner = TestHostRunnerFactory
+                    .CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHost);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Unable to create Test Runner");
+                throw; // TODO: Maybe return null
+            }
 
-            var testRunner =
-                _testHostRunFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHostLogger);
             return await testRunner.RunCodeCoverage(cancellationToken);
         }
 
@@ -217,18 +271,22 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private Dictionary<RegisteredCoverage, HashSet<string>> GroupMutationsWithTests(MutationCoverage coverage)
         {
+            _logger.Info("Grouping mutations with registered tests");
             // Group mutations with tests.
-            var testsPerMutation = new Dictionary<RegisteredCoverage, HashSet<string>>();
+            Dictionary<RegisteredCoverage, HashSet<string>>? testsPerMutation =
+                new Dictionary<RegisteredCoverage, HashSet<string>>();
             foreach (var (testName, mutationIds) in coverage.Coverage)
-            foreach (var registeredCoverage in mutationIds)
             {
-                if (!testsPerMutation.TryGetValue(registeredCoverage, out var testNames))
+                foreach (var registeredCoverage in mutationIds)
                 {
-                    testNames = new HashSet<string>();
-                    testsPerMutation.Add(registeredCoverage, testNames);
-                }
+                    if (!testsPerMutation.TryGetValue(registeredCoverage, out var testNames))
+                    {
+                        testNames = new HashSet<string>();
+                        testsPerMutation.Add(registeredCoverage, testNames);
+                    }
 
-                testNames.Add(testName);
+                    testNames.Add(testName);
+                }
             }
 
             return testsPerMutation;
@@ -243,27 +301,34 @@ namespace Faultify.TestRunner
         /// <param name="coverageTestRunTime"></param>
         /// <param name="testProjectDuplicationPool"></param>
         /// <returns></returns>
-        private TestProjectReportModel StartMutationTestSession(TestProjectInfo testProjectInfo,
+        private TestProjectReportModel StartMutationTestSession(
+            TestProjectInfo testProjectInfo,
             Dictionary<RegisteredCoverage, HashSet<string>> testsPerMutation,
-            MutationSessionProgressTracker sessionProgressTracker, TimeSpan coverageTestRunTime,
-            TestProjectDuplicationPool testProjectDuplicationPool)
+            MutationSessionProgressTracker sessionProgressTracker,
+            TimeSpan coverageTestRunTime,
+            TestProjectDuplicator testProjectDuplicator,
+            TestHost testHost
+        )
         {
+            _logger.Info("Starting mutation session");
             // Generate the mutation test runs for the mutation session.
-            var defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
-            var runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(testsPerMutation, testProjectInfo,
+            DefaultMutationTestRunGenerator? defaultMutationTestRunGenerator = new DefaultMutationTestRunGenerator();
+            IEnumerable<IMutationTestRun>? runs = defaultMutationTestRunGenerator.GenerateMutationTestRuns(
+                testsPerMutation, testProjectInfo,
                 _mutationLevel);
-
             // Double the time the code coverage took such that test runs have some time run their tests (needs to be in seconds).
-            var maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
+            TimeSpan maxTestDuration = TimeSpan.FromSeconds((coverageTestRunTime * 2).Seconds);
 
-            var reportBuilder = new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);
+            TestProjectReportModelBuilder reportBuilder =
+                new TestProjectReportModelBuilder(testProjectInfo.TestModule.Name);
 
-            var allRunsStopwatch = new Stopwatch();
+
+            Stopwatch? allRunsStopwatch = new Stopwatch();
             allRunsStopwatch.Start();
 
-            var mutationTestRuns = runs.ToList();
-            var totalRunsCount = mutationTestRuns.Count();
-            var mutationCount = mutationTestRuns.Sum(x => x.MutationCount);
+            List<IMutationTestRun>? mutationTestRuns = runs.ToList();
+            int totalRunsCount = mutationTestRuns.Count();
+            int mutationCount = mutationTestRuns.Sum(x => x.MutationCount);
             var completedRuns = 0;
             var failedRuns = 0;
 
@@ -271,37 +336,39 @@ namespace Faultify.TestRunner
 
             // Stores timed out mutations which will be excluded from test runs if they occur. 
             // Timed out mutations will be removed because they can cause serious test delays.
-            var timedOutMutations = new List<MutationVariantIdentifier>();
+            List<MutationVariantIdentifier>? timedOutMutations = new List<MutationVariantIdentifier>();
 
             async Task RunTestRun(IMutationTestRun testRun)
             {
-                var testProject = testProjectDuplicationPool.AcquireTestProject();
+                TestProjectDuplication? testProject = testProjectDuplicator.MakeCopy(testRun.RunId + 2);
 
                 try
                 {
                     testRun.InitializeMutations(testProject, timedOutMutations);
 
-                    var singRunsStopwatch = new Stopwatch();
+                    Stopwatch? singRunsStopwatch = new Stopwatch();
                     singRunsStopwatch.Start();
-
-                    var results = await testRun.RunMutationTestAsync(maxTestDuration, sessionProgressTracker,
-                        _testHostRunFactory, testProject, _testHostLogger);
-
-                    if (results != null)
+                    IEnumerable<TestRunResult> results = await testRun.RunMutationTestAsync(
+                        maxTestDuration,
+                        sessionProgressTracker,
+                        testHost,
+                        testProject);
+                    
+                    foreach (var testResult in results)
                     {
-                        foreach (var testResult in results)
-                        {
-                            // Store the timed out mutations such that they can be excluded.
-                            timedOutMutations.AddRange(testResult.GetTimedOutTests());
+                        // Store the timed out mutations such that they can be excluded.
+                        timedOutMutations.AddRange(testResult.GetTimedOutTests());
 
-                            // For each mutation add it to the report builder.
-                            reportBuilder.AddTestResult(testResult.TestResults, testResult.Mutations,
-                                singRunsStopwatch.Elapsed);
-                        }
-
-                        singRunsStopwatch.Stop();
-                        singRunsStopwatch.Reset();
+                        // For each mutation add it to the report builder.
+                        reportBuilder.AddTestResult(
+                            testResult.TestResults,
+                            testResult.Mutations,
+                            singRunsStopwatch.Elapsed);
                     }
+
+                    singRunsStopwatch.Stop();
+                    singRunsStopwatch.Reset();
+                    
                 }
                 catch (Exception e)
                 {
@@ -309,25 +376,27 @@ namespace Faultify.TestRunner
                         $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}",
                         LogMessageType.Error);
                     failedRuns += 1;
+                    _logger.Error(e, "The test process encountered an unexpected error.");
                 }
                 finally
                 {
                     lock (this)
                     {
                         completedRuns += 1;
+
                         sessionProgressTracker.LogTestRunUpdate(completedRuns, totalRunsCount, failedRuns);
                     }
 
-                    testProject.FreeTestProject();
+                    testProject.MarkAsFree(); //TODO: replace with deletion
                 }
             }
 
-            var tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
+            IEnumerable<Task>? tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
 
             Task.WaitAll(tasks.ToArray());
             allRunsStopwatch.Stop();
 
-            var report = reportBuilder.Build(allRunsStopwatch.Elapsed, totalRunsCount);
+            TestProjectReportModel? report = reportBuilder.Build(allRunsStopwatch.Elapsed, totalRunsCount);
             sessionProgressTracker.LogEndTestSession(allRunsStopwatch.Elapsed, completedRuns, mutationCount,
                 report.ScorePercentage);
 

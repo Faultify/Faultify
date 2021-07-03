@@ -30,7 +30,8 @@ namespace Faultify.Report
             TotalTestRuns = totalTestRuns;
             TestSessionDuration = testSessionDuration;
 
-            foreach (var mutation in Mutations)
+            foreach (MutationVariantReportModel mutation in Mutations)
+            {
                 switch (mutation.TestStatus)
                 {
                     case MutationStatus.Survived:
@@ -46,6 +47,7 @@ namespace Faultify.Report
                         MutationsTimedOut++;
                         break;
                 }
+            }
 
             TotalMutations = MutationsKilled + MutationsSurvived + MutationsTimedOut + MutationsNoCoverage;
             ScorePercentage = (int) (100.0 / TotalMutations * MutationsKilled);

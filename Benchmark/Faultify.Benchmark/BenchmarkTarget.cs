@@ -10,7 +10,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)
@@ -23,7 +23,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)
@@ -95,7 +95,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)
@@ -108,7 +108,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)
@@ -167,6 +167,13 @@ namespace Faultify.Benchmark
         public bool If(bool condition)
         {
             if (condition) return true;
+
+            return false;
+        }
+
+        public bool isNull(object obj)
+        {
+            if (obj == null) return true;
 
             return false;
         }
@@ -180,7 +187,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)
@@ -193,7 +200,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)
@@ -252,6 +259,13 @@ namespace Faultify.Benchmark
         public bool If(bool condition)
         {
             if (condition) return true;
+
+            return false;
+        }
+
+        public bool isNull(object obj)
+        {
+            if (obj == null) return true;
 
             return false;
         }
@@ -265,7 +279,7 @@ namespace Faultify.Benchmark
 
         public int[] ConstructArray()
         {
-            return new[] {1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7};
+            return new[] { 1, 2, 3, 6, 4, 2, 5, 3, 2, 6, 7 };
         }
 
         public int WhileLoop(int loops)
@@ -278,7 +292,7 @@ namespace Faultify.Benchmark
 
         public void ForLoop(int loops)
         {
-            for (var i = 0; i < loops; i++) Console.WriteLine();
+            for (var i = 0; i < loops; i++) Console.Write("");
         }
 
         public bool MoreThan(int lhs, int rhs)
@@ -337,6 +351,13 @@ namespace Faultify.Benchmark
         public bool If(bool condition)
         {
             if (condition) return true;
+
+            return false;
+        }
+
+        public bool isNull(object obj)
+        {
+            if (obj == null) return true;
 
             return false;
         }

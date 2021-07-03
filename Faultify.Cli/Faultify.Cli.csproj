@@ -18,6 +18,7 @@
 
 		<UserSecretsId>a54b9b03-4c3a-41e0-97a0-d891b6b20697</UserSecretsId>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -28,6 +29,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
 		<None Include="..\docs\small-logo.png">
 		  <Pack>True</Pack>
 		  <PackagePath></PackagePath>
@@ -39,19 +41,21 @@
 		<PackageReference Include="CommandLineParser" Version="2.8.0" />
 		<PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Include="NLog" Version="4.7.9" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Faultify.Report\Faultify.Report.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner.Collector\Faultify.TestRunner.Collector.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner.Dotnet\Faultify.TestRunner.Dotnet.csproj" />
+		<ProjectReference Include="..\Faultify.TestRunner.NUnit\Faultify.TestRunner.NUnit.csproj" />
+		<ProjectReference Include="..\Faultify.TestRunner.XUnit\Faultify.TestRunner.XUnit.csproj" />
 		<ProjectReference Include="..\Faultify.TestRunner\Faultify.TestRunner.csproj" />
 	</ItemGroup>
+	
 
 </Project>

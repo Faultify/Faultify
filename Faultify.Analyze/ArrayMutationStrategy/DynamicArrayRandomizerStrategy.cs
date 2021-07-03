@@ -9,7 +9,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
     /// <summary>
     ///     Contains Mutating Strategy for Dynamic Arrays.
     /// </summary>
-    public class DynamicArrayRandomizerStrategy : ArrayMutationStrategy
+    public class DynamicArrayRandomizerStrategy : IArrayMutationStrategy
     {
         private readonly ArrayBuilder _arrayBuilder;
         private readonly MethodDefinition _methodDefinition;
@@ -24,37 +24,37 @@ namespace Faultify.Analyze.ArrayMutationStrategy
         /// <summary>
         ///     Mutates a dynamic array by creating a new array with random values with the arraybuilder.
         /// </summary>
-        public override void Mutate()
+        public void Mutate()
         {
-            var processor = _methodDefinition.Body.GetILProcessor();
+            ILProcessor processor = _methodDefinition.Body.GetILProcessor();
             _methodDefinition.Body.SimplifyMacros();
 
             var length = 0;
-            var beforeArray = new List<Instruction>();
-            var afterArray = new List<Instruction>();
+            List<Instruction> beforeArray = new List<Instruction>();
+            List<Instruction> afterArray = new List<Instruction>();
 
             // Find array to replace
-            foreach (var instruction in _methodDefinition.Body.Instructions)
+            foreach (Instruction instruction in _methodDefinition.Body.Instructions)
                 // add all instruction before dynamic array to list.
+            {
                 if (!instruction.IsDynamicArray())
                 {
                     beforeArray.Add(instruction);
                 }
-
                 // if dynamic array add all instructions after the array initialisation.
-                else if (instruction.IsDynamicArray())
+                else
                 {
                     beforeArray.Remove(instruction.Previous);
                     // get type of array
                     _type = (TypeReference) instruction.Operand;
 
-                    var previous = instruction.Previous;
-                    var call = instruction.Next.Next.Next;
+                    Instruction previous = instruction.Previous;
+                    Instruction call = instruction.Next.Next.Next;
                     // get length of array.
                     length = (int) previous.Operand;
 
                     // Add all other nodes to the list.
-                    var next = call.Next;
+                    Instruction next = call.Next;
                     while (next != null)
                     {
                         afterArray.Add(next);
@@ -63,20 +63,33 @@ namespace Faultify.Analyze.ArrayMutationStrategy
 
                     break;
                 }
+            }
 
             processor.Clear();
 
             // append everything before array.
-            foreach (var before in beforeArray) processor.Append(before);
+            foreach (Instruction before in beforeArray) processor.Append(before);
 
-            var newArray = _arrayBuilder.CreateArray(processor, length, _type);
+            List<Instruction> newArray = _arrayBuilder.CreateArray(processor, length, _type);
 
             // append new array
-            foreach (var newInstruction in newArray) processor.Append(newInstruction);
+            foreach (Instruction newInstruction in newArray) processor.Append(newInstruction);
 
             // append after array.
-            foreach (var after in afterArray) processor.Append(after);
+            foreach (Instruction after in afterArray) processor.Append(after);
             _methodDefinition.Body.OptimizeMacros();
+        }
+
+        /// <summary>
+        ///     Clears the mutated method body and pushes the original method body.
+        /// </summary>
+        /// <param name="mutatedMethodDef"></param>
+        /// <param name="methodClone"></param>
+        public void Reset(MethodDefinition mutatedMethodDef, MethodDefinition methodClone)
+        {
+            mutatedMethodDef.Body.Instructions.Clear();
+            foreach (Instruction instruction in methodClone.Body.Instructions)
+                mutatedMethodDef.Body.Instructions.Add(instruction);
         }
     }
 }

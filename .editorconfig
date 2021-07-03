@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# IDE0008: Use explicit type
+csharp_style_var_when_type_is_apparent = false
+
+# IDE0011: Add braces
+dotnet_diagnostic.IDE0011.severity = suggestion

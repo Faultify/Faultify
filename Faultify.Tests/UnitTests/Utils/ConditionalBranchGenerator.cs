@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+﻿extern alias MC;
+using System.Collections.Generic;
+using MC::Mono.Cecil;
+using MC::Mono.Cecil.Cil;
 
 namespace Faultify.Tests.UnitTests.Utils
 {
@@ -35,24 +36,24 @@ namespace Faultify.Tests.UnitTests.Utils
         /// <param name="comparison"></param>
         public ConditionalBranchGenerator(OpCode comparison)
         {
-            var ia = Instruction.Create(OpCodes.Ldloc_1);
-            var ib = Instruction.Create(OpCodes.Ret);
-            var i7 = Instruction.Create(OpCodes.Ldc_I4_1);
+            Instruction ia = Instruction.Create(OpCodes.Ldloc_1);
+            Instruction ib = Instruction.Create(OpCodes.Ret);
+            Instruction i7 = Instruction.Create(OpCodes.Ldc_I4_1);
 
             // load the two parameter booleans
-            var i1 = Instruction.Create(OpCodes.Ldarg_1);
-            var i2 = Instruction.Create(OpCodes.Ldarg_2);
+            Instruction i1 = Instruction.Create(OpCodes.Ldarg_1);
+            Instruction i2 = Instruction.Create(OpCodes.Ldarg_2);
 
             // if comparison true branch to i7.
-            var i3 = Instruction.Create(comparison, i7);
+            Instruction i3 = Instruction.Create(comparison, i7);
 
             // if comparison false load '0' (false) and branch to return. 
-            var i4 = Instruction.Create(OpCodes.Ldc_I4_0);
-            var i5 = Instruction.Create(OpCodes.Stloc_1);
-            var i6 = Instruction.Create(OpCodes.Br_S, ia);
+            Instruction i4 = Instruction.Create(OpCodes.Ldc_I4_0);
+            Instruction i5 = Instruction.Create(OpCodes.Stloc_1);
+            Instruction i6 = Instruction.Create(OpCodes.Br_S, ia);
 
-            var i8 = Instruction.Create(OpCodes.Stloc_1);
-            var i9 = Instruction.Create(OpCodes.Br_S, ia);
+            Instruction i8 = Instruction.Create(OpCodes.Stloc_1);
+            Instruction i9 = Instruction.Create(OpCodes.Br_S, ia);
 
             i1.Next = i2;
             i2.Next = i3;
@@ -90,7 +91,7 @@ namespace Faultify.Tests.UnitTests.Utils
 
             _instructions = new List<Instruction>
             {
-                i1, i2, i3, i4, i5, i6, i7, i8, i9, ia, ib
+                i1, i2, i3, i4, i5, i6, i7, i8, i9, ia, ib,
             };
         }
 
@@ -103,7 +104,7 @@ namespace Faultify.Tests.UnitTests.Utils
         {
             method.Body.Instructions.Clear();
 
-            foreach (var instruction in _instructions)
+            foreach (Instruction instruction in _instructions)
                 method.Body.Instructions.Add(instruction);
         }
     }

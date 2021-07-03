@@ -21,6 +21,6 @@ namespace Faultify.Analyze
         ///     All mutations that are found will be included in the test process.
         ///     This will likely increase the test process duration however it will give a more accurate score.
         /// </summary>
-        Detailed = 2 | Medium
+        Detailed = 2 | Medium,
     }
 }

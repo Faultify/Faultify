@@ -37,10 +37,6 @@ namespace Faultify.Analyze.Mutation
             ConstantField.Constant = Original;
         }
 
-        public override string ToString()
-        {
-            return
-                $"Change constant '{ConstantName}' from: '{Original}' to: '{Replacement}'.";
-        }
+        public string Report => $"Change constant '{ConstantName}' from: '{Original}' to: '{Replacement}'.";
     }
 }

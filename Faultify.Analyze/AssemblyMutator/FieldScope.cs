@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
-using Faultify.Analyze.Groupings;
+using Faultify.Analyze.Analyzers;
 using Faultify.Analyze.Mutation;
+using Faultify.Analyze.MutationGroups;
 using FieldDefinition = Mono.Cecil.FieldDefinition;
 
 namespace Faultify.Analyze.AssemblyMutator
@@ -11,27 +12,29 @@ namespace Faultify.Analyze.AssemblyMutator
     /// <summary>
     ///     Represents a raw field definition.
     /// </summary>
-    public class FaultifyFieldDefinition : IMutationProvider, IFaultifyMemberDefinition
+    public class FieldScope : IMutationProvider, IMemberScope
     {
-        private readonly HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> _fieldAnalyzers;
+        private readonly HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> _fieldAnalyzers;
 
         /// <summary>
         ///     Underlying Mono.Cecil FieldDefinition.
         /// </summary>
         private readonly FieldDefinition _fieldDefinition;
 
-        public FaultifyFieldDefinition(FieldDefinition fieldDefinition,
-            HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> fieldAnalyzers)
+        public FieldScope(FieldDefinition fieldDefinition)
         {
             _fieldDefinition = fieldDefinition;
-            _fieldAnalyzers = fieldAnalyzers;
+            _fieldAnalyzers = new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
+            {
+                new ConstantAnalyzer(),
+            };
         }
 
         public string AssemblyQualifiedName => _fieldDefinition.FullName;
         public string Name => _fieldDefinition.Name;
         public EntityHandle Handle => MetadataTokens.EntityHandle(_fieldDefinition.MetadataToken.ToInt32());
 
-        public IEnumerable<IMutationGrouping<IMutation>> AllMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<IMutation>> AllMutations(MutationLevel mutationLevel)
         {
             return ConstantFieldMutations(mutationLevel);
         }
@@ -40,20 +43,17 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Returns possible constant field mutations.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ConstGrouping> ConstantFieldMutations(MutationLevel mutationLevel)
+        public IEnumerable<IMutationGroup<ConstantMutation>> ConstantFieldMutations(MutationLevel mutationLevel)
         {
-            foreach (var analyzer in _fieldAnalyzers)
+            foreach (IAnalyzer<ConstantMutation, FieldDefinition> analyzer in _fieldAnalyzers)
             {
-                var mutations = analyzer.AnalyzeMutations(_fieldDefinition, mutationLevel);
+                IMutationGroup<ConstantMutation>
+                    mutations = analyzer.GenerateMutations(_fieldDefinition, mutationLevel);
 
                 if (mutations.Any())
-                    yield return new ConstGrouping
-                    {
-                        Mutations = mutations,
-                        Key = analyzer.Name,
-                        AnalyzerName = analyzer.Name,
-                        AnalyzerDescription = analyzer.Description
-                    };
+                {
+                    yield return mutations;
+                }
             }
         }
     }

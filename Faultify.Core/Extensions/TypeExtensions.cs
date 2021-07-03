@@ -20,7 +20,7 @@ namespace Faultify.Core.Extensions
                 TypeCode.Double => true,
                 TypeCode.Single => true,
                 TypeCode.Char => true,
-                _ => false
+                _ => false,
             };
         }
     }

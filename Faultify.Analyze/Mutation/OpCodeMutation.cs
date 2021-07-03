@@ -17,6 +17,8 @@ namespace Faultify.Analyze.Mutation
         /// </summary>
         public OpCode Replacement;
 
+        public int LineNumber { get; set; }
+
         /// <summary>
         ///     Reference to the instruction line in witch the opcode can be mutated.
         /// </summary>
@@ -32,9 +34,17 @@ namespace Faultify.Analyze.Mutation
             Instruction.OpCode = Original;
         }
 
-        public override string ToString()
+        public string Report
         {
-            return $"Change operator from: '{Original}' to: '{Replacement}'.";
+            get
+            {
+                if (LineNumber == -1)
+                {
+                    return $"Change operator from: '{Original}' to: '{Replacement}'.";
+                }
+
+                return $"Change operator from: '{Original}' to: '{Replacement}'. In line {LineNumber}";
+            }
         }
     }
 }

@@ -12,14 +12,22 @@ namespace Faultify.TestRunner
     public interface ITestHostRunner
     {
         /// <summary>
+        ///     Identifies what test framework is being used
+        /// </summary>
+        public TestFramework TestFramework { get; }
+
+        /// <summary>
         ///     Runs the given tests and returns the results.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <param name="progress"></param>
         /// <param name="tests"></param>
         /// <returns></returns>
-        Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress,
-            IEnumerable<string> tests);
+        Task<TestResults> RunTests(
+            TimeSpan timeout,
+            IProgress<string> progress,
+            IEnumerable<string> tests
+        );
 
         /// <summary>
         ///     Run the code coverage process.

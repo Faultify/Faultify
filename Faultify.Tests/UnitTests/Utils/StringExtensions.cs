@@ -1,6 +1,7 @@
-﻿using System;
+﻿extern alias MC;
+using System;
 using System.Linq;
-using Mono.Cecil.Cil;
+using MC::Mono.Cecil.Cil;
 
 namespace Faultify.Tests.UnitTests.Utils
 {
@@ -12,7 +13,7 @@ namespace Faultify.Tests.UnitTests.Utils
             {
                 null => throw new ArgumentNullException(nameof(input)),
                 "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
-                _ => input.First().ToString().ToUpper() + input.Substring(1)
+                _ => input.First().ToString().ToUpper() + input.Substring(1),
             };
         }
 

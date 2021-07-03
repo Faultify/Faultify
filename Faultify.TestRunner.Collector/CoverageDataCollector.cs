@@ -30,7 +30,8 @@ namespace Faultify.TestRunner.Collector
             DataCollectionEvents events,
             DataCollectionSink dataSink,
             DataCollectionLogger logger,
-            DataCollectionEnvironmentContext environmentContext)
+            DataCollectionEnvironmentContext environmentContext
+        )
         {
             _logger = logger;
             context = environmentContext;
@@ -62,14 +63,14 @@ namespace Faultify.TestRunner.Collector
             try
             {
                 if (_coverageFlushed) return;
-                
-                var mutationCoverage = Utils.ReadMutationCoverageFile();
-                
+
+                MutationCoverage mutationCoverage = Utils.ReadMutationCoverageFile();
+
                 // Filter out functions that are not tests
                 mutationCoverage.Coverage = mutationCoverage.Coverage
                     .Where(pair => _testNames.Contains(pair.Key))
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
-                
+
                 Utils.WriteMutationCoverageFile(mutationCoverage);
 
                 _coverageFlushed = true;

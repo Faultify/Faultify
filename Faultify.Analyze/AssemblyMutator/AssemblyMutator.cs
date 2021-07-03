@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Faultify.Analyze.ConstantAnalyzer;
+using Faultify.Analyze.Analyzers;
 using Faultify.Analyze.Mutation;
-using Faultify.Analyze.OpcodeAnalyzer;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -15,10 +14,10 @@ namespace Faultify.Analyze.AssemblyMutator
     ///     It can be extended with custom analyzers.
     ///     Though an extension must correspond to one of the following collections in `AssemblyMutator`:
     ///     <br /><br />
-    ///     - ArrayMutationAnalyzers(<see cref="ArrayMutationAnalyzer" />)<br />
-    ///     - ConstantAnalyzers(<see cref="VariableMutationAnalyzer" />)<br />
-    ///     - VariableMutationAnalyzer(<see cref="ConstantMutationAnalyzer" />)<br />
-    ///     - OpCodeMutationAnalyzer(<see cref="OpCodeMutationAnalyzer" />)<br />
+    ///     - ArrayMutationAnalyzers(<see cref="ArrayAnalyzer" />)<br />
+    ///     - ConstantAnalyzers(<see cref="VariableAnalyzer" />)<br />
+    ///     - VariableMutationAnalyzer(<see cref="Analyzers.ConstantAnalyzer" />)<br />
+    ///     - OpCodeMutationAnalyzer(<see cref="OpCodeAnalyzer" />)<br />
     ///     <br /><br />
     ///     If you add your analyzer to one of those collections then it will be used in the process of analyzing.
     ///     Unfortunately, if your analyzer does not fit the interfaces, it can not be used with the `AssemblyMutator`.
@@ -28,82 +27,101 @@ namespace Faultify.Analyze.AssemblyMutator
         /// <summary>
         ///     Analyzers that search for possible array mutations inside a method definition.
         /// </summary>
-        public HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> ArrayMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>>
+        public HashSet<IAnalyzer<ArrayMutation, MethodDefinition>> ArrayMutationAnalyzers =
+            new HashSet<IAnalyzer<ArrayMutation, MethodDefinition>>
             {
-                new ArrayMutationAnalyzer()
+                new ArrayAnalyzer(),
             };
 
         /// <summary>
         ///     Analyzers that search for possible constant mutations.
         /// </summary>
-        public HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
-            new HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>>
+        public HashSet<IAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
+            new HashSet<IAnalyzer<ConstantMutation, FieldDefinition>>
             {
-                new BooleanConstantMutationAnalyzer(),
-                new NumberConstantMutationAnalyzer(),
-                new StringConstantMutationAnalyzer()
+                new ConstantAnalyzer(),
             };
 
         /// <summary>
         ///     Analyzers that search for possible opcode mutations.
         /// </summary>
-        public HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> OpCodeMethodAnalyzers =
-            new HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>>
+        public HashSet<IAnalyzer<OpCodeMutation, Instruction>> OpCodeMethodAnalyzers =
+            new HashSet<IAnalyzer<OpCodeMutation, Instruction>>
             {
-                new ArithmeticMutationAnalyzer(),
-                new ComparisonMutationAnalyzer(),
-                new BitwiseMutationAnalyzer()
+                new ArithmeticAnalyzer(),
+                new ComparisonAnalyzer(),
+                new BitwiseAnalyzer(),
             };
 
         /// <summary>
         ///     Analyzers that search for possible variable mutations.
         /// </summary>
-        public HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> VariableMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>>
+        public HashSet<IAnalyzer<VariableMutation, MethodDefinition>> VariableMutationAnalyzers =
+            new HashSet<IAnalyzer<VariableMutation, MethodDefinition>>
             {
-                new VariableMutationAnalyzer()
+                new VariableAnalyzer(),
             };
 
-        public AssemblyMutator(Stream stream)
+        [Obsolete("Use AssemblyMutator(string assemblyPath)")]
+        private AssemblyMutator(Stream stream)
         {
-            Open(stream);
+            Module = ModuleDefinition.ReadModule(
+                stream,
+                new ReaderParameters
+                {
+                    InMemory = true,
+                    ReadSymbols = false,
+                }
+            );
             Types = LoadTypes();
         }
 
-        public AssemblyMutator(string assemblyPath) : this(new MemoryStream(File.ReadAllBytes(assemblyPath)))
+        public AssemblyMutator(string assemblyPath)
         {
-            Module = ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters {InMemory = true});
+            Module = ModuleDefinition.ReadModule(
+                assemblyPath,
+                new ReaderParameters
+                {
+                    InMemory = true,
+                    ReadSymbols = true,
+                }
+            );
             Types = LoadTypes();
         }
 
         /// <summary>
         ///     Underlying Mono.Cecil ModuleDefinition.
         /// </summary>
-        public ModuleDefinition Module { get; private set; }
+        public ModuleDefinition Module { get; }
 
         /// <summary>
         ///     The types in the assembly.
         /// </summary>
-        public List<FaultifyTypeDefinition> Types { get; }
+        public List<TypeScope> Types { get; }
 
         public void Dispose()
         {
             Module?.Dispose();
         }
 
-        private List<FaultifyTypeDefinition> LoadTypes()
+        /// <summary>
+        ///     Loads all of the types within the raw module definition into the class
+        /// </summary>
+        /// <returns>A List<TypeScope> of types in the module</returns>
+        private List<TypeScope> LoadTypes()
         {
-            return Module.Types
-                .Where(type => !type.FullName.StartsWith("<"))
-                .Select(type => new FaultifyTypeDefinition(type, OpCodeMethodAnalyzers, FieldAnalyzers,
-                    VariableMutationAnalyzers, ArrayMutationAnalyzers))
-                .ToList();
-        }
-
-        public void Open(Stream stream)
-        {
-            Module = ModuleDefinition.ReadModule(stream);
+            return (
+                from type
+                    in Module.Types
+                where !type.FullName.StartsWith("<")
+                select new TypeScope(
+                    type,
+                    OpCodeMethodAnalyzers,
+                    FieldAnalyzers,
+                    VariableMutationAnalyzers,
+                    ArrayMutationAnalyzers
+                )
+            ).ToList();
         }
 
         /// <summary>

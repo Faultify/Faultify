@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Faultify.Analyze;
+using Faultify.Analyze.Analyzers;
 using Faultify.Tests.UnitTests.Utils;
 using NUnit.Framework;
 
@@ -15,12 +15,12 @@ namespace Faultify.Tests.UnitTests
         public void Boolean_Variable_PostMutation(string methodName, bool expected, bool simplify)
         {
             // Arrange
-            var binary = DllTestHelper.CompileTestBinary(_folder);
+            byte[] binary = DllTestHelper.CompileTestBinary(_folder);
 
             // Act
-            var mutatedBinary =
-                DllTestHelper.MutateMethodVariables<VariableMutationAnalyzer>(binary, methodName, simplify);
-            using (var binaryInteractor = new DllTestHelper(mutatedBinary))
+            byte[] mutatedBinary =
+                DllTestHelper.MutateMethodVariables<VariableAnalyzer>(binary, methodName, simplify);
+            using (DllTestHelper binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual =
                     (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),

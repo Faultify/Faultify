@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Mono.Cecil.Cil;
 
-namespace Faultify.Analyze.OpcodeAnalyzer
+namespace Faultify.Analyze.Analyzers
 {
     /// <summary>
     ///     Analyzer that searches for possible arithmetic mutations inside a method definition.
     ///     Mutations such as '+' to '-', '*', '/', and '%'.
     /// </summary>
-    public class ArithmeticMutationAnalyzer : OpCodeMutationAnalyzer
+    public class ArithmeticAnalyzer : OpCodeAnalyzer
     {
         private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Arithmetic =
             new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
@@ -19,7 +19,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                         (MutationLevel.Simple, OpCodes.Sub),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -30,7 +30,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -41,7 +41,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Sub),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -52,7 +52,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Sub),
-                        (MutationLevel.Detailed, OpCodes.Rem)
+                        (MutationLevel.Detailed, OpCodes.Rem),
                     }
                 },
 
@@ -63,14 +63,12 @@ namespace Faultify.Analyze.OpcodeAnalyzer
                         (MutationLevel.Simple, OpCodes.Add),
                         (MutationLevel.Medium, OpCodes.Mul),
                         (MutationLevel.Detailed, OpCodes.Div),
-                        (MutationLevel.Detailed, OpCodes.Sub)
+                        (MutationLevel.Detailed, OpCodes.Sub),
                     }
-                }
+                },
             };
 
-        public ArithmeticMutationAnalyzer() : base(Arithmetic)
-        {
-        }
+        public ArithmeticAnalyzer() : base(Arithmetic) { }
 
         public override string Description =>
             "Analyzer that searches for possible arithmetic mutations such as '+' to '-', '*', '/', and '%'.";

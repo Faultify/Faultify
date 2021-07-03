@@ -43,7 +43,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Faultify.TestRunner.Dotnet"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Faultify.Benchmark.MSTest", "Benchmark\Faultify.Benchmark.MSTest\Faultify.Benchmark.MSTest.csproj", "{B0329651-CF38-48B9-B9D2-B69890C2E2C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faultify.TestRunner.XUnit", "Faultify.TestRunner.XUnit\Faultify.TestRunner.XUnit.csproj", "{4889C6B6-B19B-44FA-869C-7C34CE87868A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Faultify.TestRunner.XUnit", "Faultify.TestRunner.XUnit\Faultify.TestRunner.XUnit.csproj", "{4889C6B6-B19B-44FA-869C-7C34CE87868A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E2C63F0D-1C41-43F2-87D3-66A8DBAE5B67}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		mutationOptimizations.md = mutationOptimizations.md
+		NLog.config = NLog.config
+		RefactorChanges.md = RefactorChanges.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

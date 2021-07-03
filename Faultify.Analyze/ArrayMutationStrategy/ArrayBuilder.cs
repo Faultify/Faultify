@@ -23,28 +23,40 @@ namespace Faultify.Analyze.ArrayMutationStrategy
         public List<Instruction> CreateArray(ILProcessor processor, int length, TypeReference arrayType)
         {
             _randomValueGenerator = new RandomValueGenerator();
-            var opcodeTypeValueAssignment = arrayType.GetLdcOpCodeByTypeReference();
-            var stelem = arrayType.GetStelemByTypeReference();
+            OpCode opcodeTypeValueAssignment = arrayType.GetLdcOpCodeByTypeReference();
+            OpCode stelem = arrayType.GetStelemByTypeReference();
             if (arrayType.ToSystemType() == typeof(long) || arrayType.ToSystemType() == typeof(ulong))
+            {
                 opcodeTypeValueAssignment = OpCodes.Ldc_I4;
+            }
 
-            var list = new List<Instruction>
+            List<Instruction> list = new List<Instruction>
             {
                 processor.Create(OpCodes.Ldc_I4, length),
-                processor.Create(OpCodes.Newarr, arrayType)
+                processor.Create(OpCodes.Newarr, arrayType),
             };
             for (var i = 0; i < length; i++)
             {
-                var random = _randomValueGenerator.GenerateValueForField(arrayType.ToSystemType(), 0);
+                object random = _randomValueGenerator.GenerateValueForField(arrayType.ToSystemType(), 0);
 
                 list.Add(processor.Create(OpCodes.Dup));
 
-                if (length > 2147483647 && length < -2147483647) list.Add(processor.Create(OpCodes.Ldc_I8, i));
-                else list.Add(processor.Create(OpCodes.Ldc_I4, i));
+                if (length > 2147483647 && length < -2147483647)
+                {
+                    list.Add(processor.Create(OpCodes.Ldc_I8, i));
+                }
+                else
+                {
+                    list.Add(processor.Create(OpCodes.Ldc_I4, i));
+                }
+
                 list.Add(processor.Create(opcodeTypeValueAssignment, random));
 
                 if (arrayType.ToSystemType() == typeof(long) || arrayType.ToSystemType() == typeof(ulong))
+                {
                     list.Add(processor.Create(OpCodes.Conv_I8));
+                }
+
                 list.Add(processor.Create(stelem));
             }
 

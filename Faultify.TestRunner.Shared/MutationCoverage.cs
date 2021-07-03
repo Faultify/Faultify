@@ -21,8 +21,9 @@ namespace Faultify.TestRunner.Shared
 
         public override bool Equals(object obj)
         {
-            return obj is RegisteredCoverage objCast && AssemblyName == objCast.AssemblyName &&
-                   EntityHandle == objCast.EntityHandle;
+            return obj is RegisteredCoverage objCast
+                && AssemblyName == objCast.AssemblyName
+                && EntityHandle == objCast.EntityHandle;
         }
     }
 
@@ -38,14 +39,14 @@ namespace Faultify.TestRunner.Shared
 
         public byte[] Serialize()
         {
-            var memoryStream = new MemoryStream();
-            var binaryWriter = new BinaryWriter(memoryStream);
+            MemoryStream memoryStream = new MemoryStream();
+            BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
             binaryWriter.Write(Coverage.Count);
-            foreach (var (key, value) in Coverage)
+            foreach ((string key, List<RegisteredCoverage> value) in Coverage)
             {
                 binaryWriter.Write(key);
                 binaryWriter.Write(value.Count);
-                foreach (var entityHandle in value)
+                foreach (RegisteredCoverage entityHandle in value)
                 {
                     binaryWriter.Write(entityHandle.AssemblyName);
                     binaryWriter.Write(entityHandle.EntityHandle);
@@ -57,20 +58,20 @@ namespace Faultify.TestRunner.Shared
 
         public static MutationCoverage Deserialize(byte[] data)
         {
-            var mutationCoverage = new MutationCoverage();
-            var memoryStream = new MemoryStream(data);
-            var binaryReader = new BinaryReader(memoryStream);
+            MutationCoverage mutationCoverage = new MutationCoverage();
+            MemoryStream memoryStream = new MemoryStream(data);
+            BinaryReader binaryReader = new BinaryReader(memoryStream);
 
-            var count = binaryReader.ReadInt32();
+            int count = binaryReader.ReadInt32();
             for (var i = 0; i < count; i++)
             {
-                var key = binaryReader.ReadString();
-                var listCount = binaryReader.ReadInt32();
-                var entityHandles = new List<RegisteredCoverage>(listCount);
+                string key = binaryReader.ReadString();
+                int listCount = binaryReader.ReadInt32();
+                List<RegisteredCoverage> entityHandles = new List<RegisteredCoverage>(listCount);
                 for (var j = 0; j < listCount; j++)
                 {
-                    var fullQualifiedName = binaryReader.ReadString();
-                    var entityHandle = binaryReader.ReadInt32();
+                    string fullQualifiedName = binaryReader.ReadString();
+                    int entityHandle = binaryReader.ReadInt32();
                     entityHandles.Add(new RegisteredCoverage(fullQualifiedName, entityHandle));
                 }
 

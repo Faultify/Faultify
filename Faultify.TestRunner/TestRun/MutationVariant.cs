@@ -10,8 +10,12 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     public readonly struct MutationVariantIdentifier
     {
-        public MutationVariantIdentifier(HashSet<string> testNames, string memberName, int mutationId,
-            int mutationGroupId)
+        public MutationVariantIdentifier(
+            HashSet<string> testNames,
+            string memberName,
+            int mutationId,
+            int mutationGroupId
+        )
         {
             TestCoverage = testNames;
             MemberName = memberName;
@@ -31,6 +35,27 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     public class MutationVariant
     {
+        public MutationVariant(
+            bool causesTimeOut,
+            AssemblyMutator assembly,
+            MutationVariantIdentifier mutationIdentifier,
+            MutationAnalyzerInfo mutationAnalyzerInfo,
+            EntityHandle memberHandle,
+            IMutation mutation,
+            string mutatedSource,
+            string originalSource
+        )
+        {
+            CausesTimeOut = causesTimeOut;
+            Assembly = assembly;
+            MutationIdentifier = mutationIdentifier;
+            MutationAnalyzerInfo = mutationAnalyzerInfo;
+            MemberHandle = memberHandle;
+            Mutation = mutation;
+            MutatedSource = mutatedSource;
+            OriginalSource = originalSource;
+        }
+        
         public bool CausesTimeOut { get; set; } = false;
 
         public AssemblyMutator Assembly { get; set; }

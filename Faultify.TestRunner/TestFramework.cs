@@ -5,6 +5,6 @@
         XUnit,
         NUnit,
         MsTest,
-        None
+        None,
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Faultify.TestRunner.TestProcess
 {
@@ -9,17 +9,8 @@ namespace Faultify.TestRunner.TestProcess
     /// </summary>
     public class ProcessRunner
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ProcessStartInfo _processStartInfo;
-
-        /// <summary>
-        ///     The error message of this process.
-        /// </summary>
-        public StringBuilder Error;
-
-        /// <summary>
-        ///     The output message of this process.
-        /// </summary>
-        public StringBuilder Output;
 
         public ProcessRunner(ProcessStartInfo processStartInfo)
         {
@@ -32,24 +23,23 @@ namespace Faultify.TestRunner.TestProcess
         /// <returns></returns>
         public async Task<Process> RunAsync()
         {
-            var process = new Process();
+            _logger.Info("Starting new process");
+            Process? process = new Process();
 
-            var taskCompletionSource = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> taskCompletionSource = new TaskCompletionSource<object>();
             process.EnableRaisingEvents = true;
-            process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); };
+            process.Exited += (o, e) => { taskCompletionSource.TrySetResult(null); }; // TODO: This has to be bad practice
 
             process.StartInfo = _processStartInfo;
 
-            Output = new StringBuilder();
-            Error = new StringBuilder();
-
-            process.OutputDataReceived += (sender, e) => { Output.AppendLine(e.Data); };
-            process.ErrorDataReceived += (sender, e) => { Error.AppendLine(e.Data); };
+            process.OutputDataReceived += (sender, e) => { _logger.Debug(e.Data); };
+            process.ErrorDataReceived += (sender, e) => { _logger.Error(e.Data); };
 
             process.Start();
 
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
+
 
             await taskCompletionSource.Task;
 
