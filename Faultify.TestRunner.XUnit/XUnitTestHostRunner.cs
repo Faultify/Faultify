@@ -21,7 +21,9 @@ namespace Faultify.TestRunner.XUnit
         {
             _testProjectAssemblyPath = testProjectAssemblyPath;
         }
-        
+
+        public TestFramework TestFramework => TestFramework.XUnit;
+
         public async Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress, IEnumerable<string> tests)
         {
             var hashedTests = new HashSet<string>(tests);

@@ -14,5 +14,7 @@
         ///     Reverts the mutation to its original.
         /// </summary>
         void Reset();
+
+        public string Report { get; }
     }
 }

@@ -22,6 +22,9 @@ namespace Faultify.TestRunner
         public void AddTestResult(TestResults testResults, IEnumerable<MutationVariant> mutations,
             TimeSpan testRunDuration)
         {
+            if (testResults == null) return;
+            if (mutations == null) return;
+
             lock (Mutext)
             {
                 foreach (var testResult in testResults.Tests)
@@ -38,7 +41,7 @@ namespace Faultify.TestRunner
                         x.MutationId == mutation.MutationIdentifier.MutationId &&
                         mutation.MutationIdentifier.MemberName == x.MemberName))
                         _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
-                            mutation.Mutation.ToString(), "",
+                            mutation.Mutation.Report, "",
                             new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
                                 mutation.MutationAnalyzerInfo.AnalyzerDescription),
                             mutationStatus,

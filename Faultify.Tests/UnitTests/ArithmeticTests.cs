@@ -18,6 +18,8 @@ namespace Faultify.Tests.UnitTests
         [TestCase("Modulo", 22, 7, 1)]
         public void Arithmetic_PreMutation(string methodName, object argument1, object argument2, int expected)
         {
+
+
             // Arrange
             var binary = DllTestHelper.CompileTestBinary(_folder);
 

@@ -67,20 +67,36 @@ namespace Faultify.Analyze.AssemblyMutator
 
         public AssemblyMutator(Stream stream)
         {
-            Open(stream);
+            Module = ModuleDefinition.ReadModule(
+                stream,
+                new ReaderParameters
+                {
+                    InMemory = true,
+                    ReadSymbols = false,
+                }
+            );
+
             Types = LoadTypes();
         }
 
         public AssemblyMutator(string assemblyPath) : this(new MemoryStream(File.ReadAllBytes(assemblyPath)))
         {
-            Module = ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters {InMemory = true});
+            Module = ModuleDefinition.ReadModule(
+                assemblyPath,
+                new ReaderParameters
+                {
+                    InMemory = true,
+                    ReadSymbols = true,
+                }
+            );
+
             Types = LoadTypes();
         }
 
         /// <summary>
         ///     Underlying Mono.Cecil ModuleDefinition.
         /// </summary>
-        public ModuleDefinition Module { get; private set; }
+        public ModuleDefinition Module { get; }
 
         /// <summary>
         ///     The types in the assembly.
@@ -100,12 +116,7 @@ namespace Faultify.Analyze.AssemblyMutator
                     VariableMutationAnalyzers, ArrayMutationAnalyzers))
                 .ToList();
         }
-
-        public void Open(Stream stream)
-        {
-            Module = ModuleDefinition.ReadModule(stream);
-        }
-
+        
         /// <summary>
         ///     Flush the assembly changes to the given file.
         /// </summary>

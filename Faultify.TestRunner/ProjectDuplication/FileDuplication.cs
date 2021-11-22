@@ -45,18 +45,18 @@ namespace Faultify.TestRunner.ProjectDuplication
         ///     Returns whether write mode for the file stream is enabled.
         /// </summary>
         /// <returns></returns>
-        public bool WriteModesEnabled()
+        public bool IsWriteModeEnabled()
         {
-            return _fileStream.CanWrite;
+            return _fileStream?.CanWrite ?? false;
         }
 
         /// <summary>
         ///     Returns whether read mode for the file stream is enabled.
         /// </summary>
         /// <returns></returns>
-        public bool ReadModesEnabled()
+        public bool IsReadModeEnabled()
         {
-            return _fileStream.CanRead;
+            return _fileStream?.CanRead ?? false;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns></returns>
         public Stream OpenReadWriteStream()
         {
-            if (_fileStream == null || ReadModesEnabled()) EnableReadWriteOnly();
+            if (_fileStream == null || IsReadModeEnabled()) EnableReadWriteOnly();
             return _fileStream;
         }
 
@@ -76,7 +76,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <returns></returns>
         public Stream OpenReadStream()
         {
-            if (_fileStream == null || WriteModesEnabled()) EnableReadOnly();
+            if (_fileStream == null || IsWriteModeEnabled()) EnableReadOnly();
 
             return _fileStream;
         }

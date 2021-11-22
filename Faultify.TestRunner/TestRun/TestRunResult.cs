@@ -2,6 +2,7 @@
 using System.Linq;
 using Faultify.TestRunner.Shared;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.TestRun
 {
@@ -26,7 +27,10 @@ namespace Faultify.TestRunner.TestRun
         /// <returns></returns>
         public IEnumerable<MutationVariantIdentifier> GetTimedOutTests()
         {
-            var nonResultTests = TestResults.Tests.Where(x => x.Outcome == TestOutcome.None);
+            IEnumerable<TestResult> nonResultTests = TestResults?
+                                                         .Tests
+                                                         .Where(x => x.Outcome == TestOutcome.None)
+                                                     ?? Enumerable.Empty<TestResult>();
 
             var timedOutTests = new List<MutationVariantIdentifier>();
             foreach (var nonResult in nonResultTests)

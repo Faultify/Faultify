@@ -18,6 +18,17 @@ namespace Faultify.Benchmark.XUnit
         {
             var targets = new BenchmarkTarget();
             var actual = targets.Addition(5, 4);
+
+            var expected = 9;
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestAddition1()
+        {
+            var targets = new BenchmarkTarget();
+            var actual = targets.Addition(5, 4);
+
             var expected = 9;
             Assert.Equal(expected, actual);
         }

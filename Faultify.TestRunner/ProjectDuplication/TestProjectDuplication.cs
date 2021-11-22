@@ -56,7 +56,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <summary>
         ///     Mark this project as free for any test runner.
         /// </summary>
-        public void FreeTestProject()
+        public void MarkAsFree()
         {
             IsInUse = false;
             TestProjectFreed?.Invoke(this, this);

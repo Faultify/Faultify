@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -6,13 +7,40 @@ namespace Faultify.Core.Extensions
 {
     public static class InstructionExtensions
     {
+        //list of opcodes
+        private static readonly List<OpCode> OpCodeList = new List<OpCode>
+        {
+            OpCodes.Ldc_I4_1,
+            OpCodes.Ldc_I4_2,
+            OpCodes.Ldc_I4_3,
+            OpCodes.Ldc_I4_4,
+            OpCodes.Ldc_I4_5,
+            OpCodes.Ldc_I4_6,
+            OpCodes.Ldc_I4_7,
+            OpCodes.Ldc_I4_8,
+            OpCodes.Ldc_I4_0,
+            OpCodes.Ldc_I4,
+            OpCodes.Ldc_I8,
+            OpCodes.Ldc_R4,
+            OpCodes.Ldc_R8,
+            OpCodes.Ldc_I4_M1,
+            OpCodes.Ldc_I4_S,
+        };
+
         public static bool IsDynamicArray(this Instruction instruction)
         {
-            return
-                instruction.OpCode == OpCodes.Newarr &&
-                instruction.Next.OpCode == OpCodes.Dup &&
-                instruction.Next.Next.OpCode == OpCodes.Ldtoken &&
-                instruction.Next.Next.Next.OpCode == OpCodes.Call;
+            try
+            {
+                return
+                    instruction.OpCode == OpCodes.Newarr
+                    && instruction.Next.OpCode == OpCodes.Dup
+                    && instruction.Next.Next.OpCode == OpCodes.Ldtoken
+                    && instruction.Next.Next.Next.OpCode == OpCodes.Call;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static Type ToSystemType(this TypeReference typeRef)
@@ -22,62 +50,63 @@ namespace Faultify.Core.Extensions
 
         public static OpCode GetLdcOpCodeByTypeReference(this TypeReference reference)
         {
-            var systemType = reference.ToSystemType();
-
-            if (systemType == typeof(int) || systemType == typeof(uint) || systemType == typeof(bool)
-                || systemType == typeof(byte) || systemType == typeof(sbyte)
-                || systemType == typeof(short) || systemType == typeof(ushort) || systemType == typeof(char))
-                return OpCodes.Ldc_I4;
-            if (systemType == typeof(long) || systemType == typeof(ulong))
-                return OpCodes.Ldc_I8;
-            if (systemType == typeof(float))
-                return OpCodes.Ldc_R4;
-            if (systemType == typeof(double))
-                return OpCodes.Ldc_R8;
-            if (systemType == typeof(string)) return OpCodes.Ldloc_0;
-
-            return OpCodes.Nop;
+            switch (Type.GetTypeCode(reference.ToSystemType()))
+            {
+                case TypeCode.Int32: //int
+                case TypeCode.UInt32: //uint
+                case TypeCode.Boolean: //bool
+                case TypeCode.Byte: //byte
+                case TypeCode.SByte: //sbyt
+                case TypeCode.Int16: //short
+                case TypeCode.UInt16: //ushort
+                case TypeCode.Char: //char
+                    return OpCodes.Ldc_I4;
+                case TypeCode.Int64: //long
+                case TypeCode.UInt64: //ulong
+                    return OpCodes.Ldc_I8;
+                case TypeCode.Single: //float
+                    return OpCodes.Ldc_R4;
+                case TypeCode.Double: //double
+                    return OpCodes.Ldc_R8;
+                case TypeCode.String: //string
+                    return OpCodes.Ldloc_0;
+                default:
+                    return OpCodes.Nop;
+            }
         }
 
         public static OpCode GetStelemByTypeReference(this TypeReference reference)
         {
-            var systemType = reference.ToSystemType();
-
-            if (systemType == typeof(int) || systemType == typeof(bool) || systemType == typeof(uint))
-                return OpCodes.Stelem_I4;
-            if (systemType == typeof(byte) || systemType == typeof(sbyte))
-                return OpCodes.Stelem_I1;
-            if (systemType == typeof(short) || systemType == typeof(ushort) || systemType == typeof(char))
-                return OpCodes.Stelem_I2;
-            if (systemType == typeof(long) || systemType == typeof(ulong))
-                return OpCodes.Stelem_I8;
-            if (systemType == typeof(float))
-                return OpCodes.Stelem_R4;
-            if (systemType == typeof(double))
-                return OpCodes.Stelem_R8;
-            if (systemType == typeof(string)) return OpCodes.Stelem_Ref;
-
-            return OpCodes.Nop;
+            switch (Type.GetTypeCode(reference.ToSystemType()))
+            {
+                case TypeCode.Int32: //int
+                case TypeCode.UInt32: //uint
+                case TypeCode.Boolean: //bool
+                    return OpCodes.Stelem_I4;
+                case TypeCode.Byte: //byte
+                case TypeCode.SByte: //sbyte
+                    return OpCodes.Stelem_I1;
+                case TypeCode.Int16: //short
+                case TypeCode.UInt16: //ushort
+                case TypeCode.Char: //char
+                    return OpCodes.Stelem_I2;
+                case TypeCode.Int64: //long
+                case TypeCode.UInt64: //ulong
+                    return OpCodes.Stelem_I8;
+                case TypeCode.Single: //float
+                    return OpCodes.Stelem_R4;
+                case TypeCode.Double: //double
+                    return OpCodes.Stelem_R8;
+                case TypeCode.String: //string
+                    return OpCodes.Stelem_Ref;
+                default:
+                    return OpCodes.Nop;
+            }
         }
 
         public static bool IsLdc(this Instruction instruction)
         {
-            var o = instruction.OpCode;
-            return o == OpCodes.Ldc_I4_1
-                   || o == OpCodes.Ldc_I4_2
-                   || o == OpCodes.Ldc_I4_3
-                   || o == OpCodes.Ldc_I4_4
-                   || o == OpCodes.Ldc_I4_5
-                   || o == OpCodes.Ldc_I4_6
-                   || o == OpCodes.Ldc_I4_7
-                   || o == OpCodes.Ldc_I4_8
-                   || o == OpCodes.Ldc_I4_0
-                   || o == OpCodes.Ldc_I4
-                   || o == OpCodes.Ldc_I8
-                   || o == OpCodes.Ldc_R4
-                   || o == OpCodes.Ldc_R8
-                   || o == OpCodes.Ldc_I4_M1
-                   || o == OpCodes.Ldc_I4_S;
+            return OpCodeList.Contains(instruction.OpCode);
         }
     }
 }

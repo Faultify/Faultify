@@ -30,11 +30,13 @@ namespace Faultify.Analyze
 
         public string Name => "Variable Mutation Analyzer";
 
-        public IEnumerable<VariableMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel)
+        public IEnumerable<VariableMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             //TODO Check Quick fix
             if (method?.Body == null)
                 return Enumerable.Empty<VariableMutation>();
+
+            int lineNumber = -1;
 
             var mutations = new List<VariableMutation>();
             foreach (var instruction in method.Body.Instructions)
@@ -52,8 +54,19 @@ namespace Faultify.Analyze
 
                 try
                 {
-                    // Get variable type.
-                    var variableType = Type.GetType(variableDefinition.VariableType.ToString());
+                    if (debug != null)
+                    {
+                        debug.TryGetValue(instruction, out SequencePoint tempSeqPoint);
+
+                        if (tempSeqPoint != null)
+                        {
+                            lineNumber = tempSeqPoint.StartLine;
+                        }
+                    }
+
+                    // Get variable type. Might throw InvalidCastException
+                    Type type = ((TypeReference)instruction.Operand).ToSystemType();
+
 
                     // Get previous instruction.
                     var variableInstruction = instruction.Previous;
@@ -62,13 +75,17 @@ namespace Faultify.Analyze
                     if (!variableInstruction.IsLdc()) continue;
 
                     // If the value is mapped then mutate it.
-                    if (Mapped.Types.TryGetValue(variableType, out var type))
-                        mutations.Add(new VariableMutation
-                        {
-                            Original = variableInstruction.Operand,
-                            Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
-                            Variable = variableInstruction
-                        });
+                    if (TypeChecker.IsVariableType(type))
+                    {
+                        mutations.Add(
+                            new VariableMutation
+                            {
+                                Original = variableInstruction.Operand,
+                                Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
+                                Variable = variableInstruction,
+                                LineNumber = lineNumber,
+                            });
+                    }
                 }
                 catch
                 {

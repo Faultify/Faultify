@@ -25,19 +25,22 @@ namespace Faultify.TestRunner
     {
         private readonly MutationLevel _mutationLevel;
         private readonly int _parallel;
-        private readonly ILogger _testHostLogger;
         private readonly ITestHostRunFactory _testHostRunFactory;
+        private readonly TimeSpan _timeOut;
+        private readonly ILogger _testHostLogger;
         private readonly string _testProjectPath;
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
-            ILoggerFactory loggerFactoryFactory, ITestHostRunFactory testHostRunFactory)
+            ILoggerFactory loggerFactoryFactory, ITestHostRunFactory testHostRunFactory, TimeSpan timeOut)
         {
             _testProjectPath = testProjectPath;
             _mutationLevel = mutationLevel;
             _parallel = parallel;
             _testHostRunFactory = testHostRunFactory;
+            _timeOut = timeOut;
             _testHostLogger = loggerFactoryFactory.CreateLogger("Faultify.TestHost");
         }
+        
 
         /// <summary>
         ///     Executes the mutation test session for the given test project.
@@ -78,15 +81,17 @@ namespace Faultify.TestRunner
             var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
 
+            TimeSpan timeout = _createTimeOut(coverageTimer);
+
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            coverageProject.FreeTestProject();
+            coverageProject.MarkAsFree();
 
             // Start test session.
             var testsPerMutation = GroupMutationsWithTests(coverage);
             return StartMutationTestSession(coverageProjectInfo, testsPerMutation, progressTracker,
-                coverageTimer.Elapsed, duplicationPool);
+                timeout, duplicationPool);
         }
 
         /// <summary>
@@ -124,10 +129,10 @@ namespace Faultify.TestRunner
                 return TestFramework.XUnit;
 
             if (Regex.Match(projectFile, "nunit").Captures.Any())
-                return TestFramework.XUnit;
+                return TestFramework.NUnit;
 
             if (Regex.Match(projectFile, "mstest").Captures.Any())
-                return TestFramework.XUnit;
+                return TestFramework.MsTest;
 
             return TestFramework.None;
         }
@@ -166,31 +171,27 @@ namespace Faultify.TestRunner
 
             foreach (var assembly in projectInfo.DependencyAssemblies)
             {
-                var dependencyInjectionPath = assembly.Module.FileName;
                 TestCoverageInjector.Instance.InjectAssemblyReferences(assembly.Module);
                 TestCoverageInjector.Instance.InjectTargetCoverage(assembly.Module);
-                assembly.Module.Write(dependencyInjectionPath);
-                assembly.Module.Dispose();
+                assembly.Flush();
+                assembly.Dispose();
             }
 
-            switch (projectInfo.TestFramework)
+            if (projectInfo.TestFramework == TestFramework.XUnit)
             {
-                case TestFramework.XUnit:
-                    var testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
-                    var xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
-                    var xunitCoverageSettings = JObject.FromObject(new {parallelizeTestCollections = false});
-                    if (!File.Exists(xunitConfigFileName))
-                    {
-                        File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
-                    }
-                    else
-                    {
-                        var originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
-                        originalJsonConfig.Merge(xunitCoverageSettings);
-                        File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
-                    }
-
-                    break;
+                var testDirectory = new FileInfo(projectInfo.TestModule.FileName).Directory;
+                var xunitConfigFileName = Path.Combine(testDirectory.FullName, "xunit.runner.json");
+                var xunitCoverageSettings = JObject.FromObject(new { parallelizeTestCollections = false });
+                if (!File.Exists(xunitConfigFileName))
+                {
+                    File.WriteAllText(xunitConfigFileName, xunitCoverageSettings.ToString());
+                }
+                else
+                {
+                    var originalJsonConfig = JObject.Parse(File.ReadAllText(xunitConfigFileName));
+                    originalJsonConfig.Merge(xunitCoverageSettings);
+                    File.WriteAllText(xunitConfigFileName, originalJsonConfig.ToString());
+                }
             }
         }
 
@@ -203,11 +204,18 @@ namespace Faultify.TestRunner
         /// <returns></returns>
         private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
         {
-            using var _file = Utils.CreateCoverageMemoryMappedFile();
-
-            var testRunner =
-                _testHostRunFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHostLogger);
-            return await testRunner.RunCodeCoverage(cancellationToken);
+            using var file = Utils.CreateCoverageMemoryMappedFile();
+            try
+            {
+                var testRunner =
+                    _testHostRunFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHostLogger);
+                return await testRunner.RunCodeCoverage(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _testHostLogger.LogError(e, "Unable to create Test Coverage Runner");
+                throw; // TODO: Maybe return null
+            }
         }
 
         /// <summary>
@@ -305,6 +313,7 @@ namespace Faultify.TestRunner
                 }
                 catch (Exception e)
                 {
+                    _testHostLogger.LogError(e, "The test process encountered an unexpected error.");
                     sessionProgressTracker.Log(
                         $"The test process encountered an unexpected error. Continuing without this test run. Please consider to submit an github issue. {e}",
                         LogMessageType.Error);
@@ -318,7 +327,7 @@ namespace Faultify.TestRunner
                         sessionProgressTracker.LogTestRunUpdate(completedRuns, totalRunsCount, failedRuns);
                     }
 
-                    testProject.FreeTestProject();
+                    testProject.MarkAsFree();
                 }
             }
 
@@ -332,6 +341,19 @@ namespace Faultify.TestRunner
                 report.ScorePercentage);
 
             return report;
+        }
+
+        // Sets the time out for the mutations to be either the specified number of seconds or the time it takes to run the test project.
+        // When timeout is less then 0.51 seconds it will be set to .51 seconds to make sure the MaxTestDuration is at least one second.
+        private TimeSpan _createTimeOut(Stopwatch stopwatch)
+        {
+            TimeSpan timeOut = _timeOut;
+            if (_timeOut.Equals(TimeSpan.FromSeconds(0)))
+            {
+                timeOut = stopwatch.Elapsed;
+            }
+
+            return timeOut < TimeSpan.FromSeconds(.51) ? TimeSpan.FromSeconds(.51) : timeOut;
         }
     }
 }

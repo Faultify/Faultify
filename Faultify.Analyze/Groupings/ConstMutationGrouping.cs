@@ -5,7 +5,7 @@ namespace Faultify.Analyze.Groupings
     /// <summary>
     ///     Mutation group for constant mutations.
     /// </summary>
-    public class ConstGrouping : BaseGrouping<ConstantMutation>
+    public class ConstMutationGrouping : BaseGrouping<ConstantMutation>
     {
     }
 }

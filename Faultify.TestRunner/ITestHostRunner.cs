@@ -11,6 +11,8 @@ namespace Faultify.TestRunner
     /// </summary>
     public interface ITestHostRunner
     {
+        public TestFramework TestFramework { get; }
+
         /// <summary>
         ///     Runs the given tests and returns the results.
         /// </summary>
@@ -18,7 +20,7 @@ namespace Faultify.TestRunner
         /// <param name="progress"></param>
         /// <param name="tests"></param>
         /// <returns></returns>
-        Task<TestResults> RunTests(TimeSpan timeout, IProgress<string> progress,
+        Task <TestResults> RunTests(TimeSpan timeout, IProgress<string> progress,
             IEnumerable<string> tests);
 
         /// <summary>

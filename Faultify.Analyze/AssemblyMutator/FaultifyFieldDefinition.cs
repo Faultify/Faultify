@@ -40,14 +40,14 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Returns possible constant field mutations.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ConstGrouping> ConstantFieldMutations(MutationLevel mutationLevel)
+        public IEnumerable<ConstMutationGrouping> ConstantFieldMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _fieldAnalyzers)
             {
                 var mutations = analyzer.AnalyzeMutations(_fieldDefinition, mutationLevel);
 
                 if (mutations.Any())
-                    yield return new ConstGrouping
+                    yield return new ConstMutationGrouping
                     {
                         Mutations = mutations,
                         Key = analyzer.Name,

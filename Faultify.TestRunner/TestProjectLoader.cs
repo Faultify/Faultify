@@ -15,7 +15,7 @@ namespace Faultify.TestRunner
         {
             foreach (var assemblyMutator in DependencyAssemblies) assemblyMutator.Dispose();
             DependencyAssemblies.Clear();
-            TestModule.Dispose();
+            TestModule!.Dispose();
         }
     }
 }
