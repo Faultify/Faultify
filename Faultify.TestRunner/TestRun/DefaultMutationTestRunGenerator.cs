@@ -33,7 +33,8 @@ namespace Faultify.TestRunner.TestRun
 
         /// <summary>
         ///     Greedy algorithm for the set cover problem of test coverage. It iterates through the list of mutations, adding them
-        ///     to      the first bucket where it doesn't overlap with any tests. If there are no valid buckets, a new one is created.
+        ///     to      the first bucket where it doesn't overlap with any tests. If there are no valid buckets, a new one is
+        ///     created.
         /// </summary>
         /// <param name="mutationVariants">List of mutation variants to group</param>
         /// <returns>A collection of collections containing the non-overlapping sets.</returns>
@@ -41,29 +42,24 @@ namespace Faultify.TestRunner.TestRun
             IList<MutationVariantIdentifier> mutationVariants
         )
         {
-            List<MutationBucket>? buckets = new List<MutationBucket>();
-            IOrderedEnumerable<MutationVariantIdentifier>? mutations =
+            var buckets = new List<MutationBucket>();
+            var mutations =
                 mutationVariants.OrderByDescending(mutation => mutation.TestCoverage.Count);
 
-            foreach (MutationVariantIdentifier mutation in mutations)
+            foreach (var mutation in mutations)
             {
                 // Attempt to add the mutation to a bucket
                 var wasInserted = false;
-                foreach (MutationBucket bucket in buckets)
-                {
+                foreach (var bucket in buckets)
                     if (!bucket.IntersectsWith(mutation.TestCoverage))
                     {
                         bucket.AddMutation(mutation);
                         wasInserted = true;
                         break;
                     }
-                }
 
                 // If it fails, make a new bucket
-                if (!wasInserted)
-                {
-                    buckets.Add(new MutationBucket(mutation));
-                }
+                if (!wasInserted) buckets.Add(new MutationBucket(mutation));
             }
 
             return buckets.Select(bucket => bucket.Mutations);
@@ -80,22 +76,22 @@ namespace Faultify.TestRunner.TestRun
         )
         {
             // Get all MutationsInfo
-            List<MutationVariantIdentifier>? allMutations = new List<MutationVariantIdentifier>(mutationVariants);
+            var allMutations = new List<MutationVariantIdentifier>(mutationVariants);
 
             while (allMutations.Count > 0)
             {
                 // Mark all tests as free slots
-                HashSet<string>? freeTests = new HashSet<string>(mutationVariants.SelectMany(x => x.TestCoverage));
+                var freeTests = new HashSet<string>(mutationVariants.SelectMany(x => x.TestCoverage));
 
-                List<MutationVariantIdentifier>? mutationsForThisRun = new List<MutationVariantIdentifier>();
+                var mutationsForThisRun = new List<MutationVariantIdentifier>();
 
-                foreach (MutationVariantIdentifier mutation in allMutations.ToArray())
+                foreach (var mutation in allMutations.ToArray())
                 {
                     // If all tests of slot are free
                     if (freeTests.IsSupersetOf(mutation.TestCoverage))
                     {
                         // Remove all free slots
-                        foreach (string test in mutation.TestCoverage) freeTests.Remove(test);
+                        foreach (var test in mutation.TestCoverage) freeTests.Remove(test);
 
                         mutationsForThisRun.Add(mutation);
                         allMutations.Remove(mutation);
@@ -118,10 +114,8 @@ namespace Faultify.TestRunner.TestRun
         )
         {
             if (mutationVariants.Count > 500) // Magic number, optimal run size not yet clear
-            {
                 // Faster but non-optimal
                 return GreedyCoverageAlgorithm(mutationVariants);
-            }
 
             // Very poor time scaling
             return OptimalCoverageAlgorithm(mutationVariants);

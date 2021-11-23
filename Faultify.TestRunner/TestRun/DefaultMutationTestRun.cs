@@ -41,7 +41,7 @@ namespace Faultify.TestRunner.TestRun
 
             return new List<TestRunResult>
             {
-                new TestRunResult
+                new()
                 {
                     TestResults = testResults,
                     Mutations = _mutationVariants

@@ -6,18 +6,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Faultify.MemoryTest.TestInformation;
 using Faultify.TestRunner.Shared;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TestResult = Faultify.TestRunner.Shared.TestResult;
 
 namespace Faultify.TestRunner.NUnit
 {
     public class NUnitTestHostRunner : ITestHostRunner
     {
+        private readonly HashSet<string> _coverageTests = new();
         private readonly string _testProjectAssemblyPath;
+        private readonly TestResults _testResults = new();
         private readonly TimeSpan _timeout;
-        private readonly TestResults _testResults = new TestResults();
-        private readonly HashSet<string> _coverageTests = new HashSet<string>();
 
         public NUnitTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger _)
         {
@@ -49,17 +49,17 @@ namespace Faultify.TestRunner.NUnit
             nunitHostRunner.Settings.Add("DefaultTimeout", 1000);
             nunitHostRunner.Settings.Add("StopOnError", false);
             nunitHostRunner.Settings.Add("BaseDirectory", new FileInfo(_testProjectAssemblyPath).DirectoryName);
-            
+
             nunitHostRunner.TestEnd += OnTestEndCoverage;
 
             await nunitHostRunner.RunTestsAsync(CancellationToken.None);
 
             return ReadCoverageFile();
         }
-        
+
         private void OnTestEnd(object? sender, TestEnd e)
         {
-            _testResults.Tests.Add(new TestResult() { Name = e.FullTestName, Outcome = ParseTestOutcome(e.TestOutcome) });
+            _testResults.Tests.Add(new TestResult { Name = e.FullTestName, Outcome = ParseTestOutcome(e.TestOutcome) });
         }
 
         private void OnTestEndCoverage(object? sender, TestEnd e)

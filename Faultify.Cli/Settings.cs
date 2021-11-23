@@ -27,7 +27,7 @@ namespace Faultify.Cli
             HelpText = "The mutation level indicating the test depth. ")]
         public MutationLevel MutationLevel { get; set; }
 
-        [Option('t', "testHost", Required = false, Default = nameof(TestRunner.TestHost.DotnetTest),
+        [Option('t', "testHost", Required = false, Default = nameof(TestHost.DotnetTest),
             HelpText = "The name of the test host framework.")]
         public string TestHostName { get; set; }
 
@@ -35,7 +35,8 @@ namespace Faultify.Cli
         public double Seconds { get; set; }
 
         public TimeSpan TimeOut => TimeSpan.FromSeconds(Seconds);
-        
-        public TestHost TestHost => TestRunner.TestHost.DotnetTest; // TODO: when NUnit, XUnit issues are fixed we can support in memory testers. 
+
+        public TestHost TestHost =>
+            TestHost.DotnetTest; // TODO: when NUnit, XUnit issues are fixed we can support in memory testers. 
     }
 }

@@ -6,10 +6,10 @@ namespace Faultify.Report
 {
     public class MutationProjectReportModel
     {
-        public List<TestProjectReportModel> TestProjects { get; set; } = new List<TestProjectReportModel>();
+        public List<TestProjectReportModel> TestProjects { get; set; } = new();
         public string Name { get; set; }
 
-        public TimeSpan TestDuration => new TimeSpan(TestProjects.Sum(x => x.TestSessionDuration.Ticks));
+        public TimeSpan TestDuration => new(TestProjects.Sum(x => x.TestSessionDuration.Ticks));
 
         public int TotalMutationsSurvived => TestProjects.Sum(x => x.MutationsSurvived);
         public int TotalMutationsKilled => TestProjects.Sum(x => x.MutationsKilled);

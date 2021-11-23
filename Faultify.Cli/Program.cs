@@ -60,12 +60,14 @@ namespace Faultify.Cli
                         new LogFileOptions
                         {
                             Path = "testhost-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
-                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestHost, LogLevel.Trace}}
+                            MinLevel = new Dictionary<string, LogLevel>
+                                { { LogConfiguration.TestHost, LogLevel.Trace } }
                         },
                         new LogFileOptions
                         {
                             Path = "testprocess-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
-                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestRunner, LogLevel.Trace}}
+                            MinLevel = new Dictionary<string, LogLevel>
+                                { { LogConfiguration.TestRunner, LogLevel.Trace } }
                         }
                     };
                 });

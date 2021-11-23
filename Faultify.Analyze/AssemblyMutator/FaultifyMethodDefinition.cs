@@ -80,7 +80,8 @@ namespace Faultify.Analyze.AssemblyMutator
                 if (MethodDefinition.Body?.Instructions != null)
                     foreach (var instruction in MethodDefinition.Body?.Instructions)
                     {
-                        var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel, MethodDefinition.DebugInformation.GetSequencePointMapping()).ToList();
+                        var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel,
+                            MethodDefinition.DebugInformation.GetSequencePointMapping()).ToList();
 
                         if (mutations.Any())
                             yield return new OpCodeMutationGrouping
@@ -117,7 +118,8 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             return _variableMutationAnalyzers.Select(analyzer => new VariableMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel, MethodDefinition.DebugInformation.GetSequencePointMapping()),
+                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel,
+                    MethodDefinition.DebugInformation.GetSequencePointMapping()),
                 Key = MethodDefinition.Name,
                 AnalyzerName = analyzer.Name,
                 AnalyzerDescription = analyzer.Description

@@ -18,16 +18,14 @@ namespace Faultify.Tests.UnitTests
         [TestCase("Modulo", 22, 7, 1)]
         public void Arithmetic_PreMutation(string methodName, object argument1, object argument2, int expected)
         {
-
-
             // Arrange
             var binary = DllTestHelper.CompileTestBinary(_folder);
 
             // Act
             using (var binaryInteractor = new DllTestHelper(binary))
             {
-                var actual = (int) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {argument1, argument2});
+                var actual = (int)binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
+                    new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
@@ -66,8 +64,8 @@ namespace Faultify.Tests.UnitTests
                 DllTestHelper.MutateMethod<ArithmeticMutationAnalyzer>(binary, methodName, opCodeExpected);
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
-                var actual = (int) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {argument1, argument2});
+                var actual = (int)binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
+                    new[] { argument1, argument2 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);

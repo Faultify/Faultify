@@ -9,8 +9,8 @@ namespace Faultify.TestRunner.ProjectDuplication
     /// </summary>
     public class TestProjectDuplicationPool
     {
-        private static readonly object Lock = new object();
-        private readonly AutoResetEvent _signalEvent = new AutoResetEvent(false);
+        private static readonly object Lock = new();
+        private readonly AutoResetEvent _signalEvent = new(false);
         private readonly List<TestProjectDuplication> _testProjectDuplications;
 
         public TestProjectDuplicationPool(List<TestProjectDuplication> duplications)

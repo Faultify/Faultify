@@ -10,7 +10,7 @@ namespace Faultify.Analyze.OpcodeAnalyzer
     public class ArithmeticMutationAnalyzer : OpCodeMutationAnalyzer
     {
         private static readonly Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>> Arithmetic =
-            new Dictionary<OpCode, IEnumerable<(MutationLevel, OpCode)>>
+            new()
             {
                 // Opcodes for mutating arithmetic operation: '+' to '-' ,  '*',  '/' , and '%'.
                 {

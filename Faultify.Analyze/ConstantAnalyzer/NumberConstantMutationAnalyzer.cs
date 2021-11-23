@@ -13,7 +13,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
     /// </summary>
     public class NumberConstantMutationAnalyzer : ConstantMutationAnalyzer
     {
-        private readonly RandomValueGenerator _rng = new RandomValueGenerator();
+        private readonly RandomValueGenerator _rng = new();
 
         public NumberConstantMutationAnalyzer()
         {

@@ -14,13 +14,13 @@ namespace Faultify.Analyze
             typeof(sbyte), typeof(byte),
             typeof(short), typeof(ushort),
             typeof(int), typeof(uint),
-            typeof(long), typeof(ulong),
+            typeof(long), typeof(ulong)
         };
 
         // TODO: Why is this never used?
         public static readonly ICollection<Type> stringTypes = new HashSet<Type>
         {
-            typeof(string), typeof(char),
+            typeof(string), typeof(char)
         };
 
         /// <summary>

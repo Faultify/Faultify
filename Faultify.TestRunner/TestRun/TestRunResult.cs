@@ -27,10 +27,10 @@ namespace Faultify.TestRunner.TestRun
         /// <returns></returns>
         public IEnumerable<MutationVariantIdentifier> GetTimedOutTests()
         {
-            IEnumerable<TestResult> nonResultTests = TestResults?
-                                                         .Tests
-                                                         .Where(x => x.Outcome == TestOutcome.None)
-                                                     ?? Enumerable.Empty<TestResult>();
+            var nonResultTests = TestResults?
+                                     .Tests
+                                     .Where(x => x.Outcome == TestOutcome.None)
+                                 ?? Enumerable.Empty<TestResult>();
 
             var timedOutTests = new List<MutationVariantIdentifier>();
             foreach (var nonResult in nonResultTests)

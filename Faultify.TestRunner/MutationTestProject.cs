@@ -25,10 +25,10 @@ namespace Faultify.TestRunner
     {
         private readonly MutationLevel _mutationLevel;
         private readonly int _parallel;
-        private readonly ITestHostRunFactory _testHostRunFactory;
-        private readonly TimeSpan _timeOut;
         private readonly ILogger _testHostLogger;
+        private readonly ITestHostRunFactory _testHostRunFactory;
         private readonly string _testProjectPath;
+        private readonly TimeSpan _timeOut;
 
         public MutationTestProject(string testProjectPath, MutationLevel mutationLevel, int parallel,
             ILoggerFactory loggerFactoryFactory, ITestHostRunFactory testHostRunFactory, TimeSpan timeOut)
@@ -40,7 +40,7 @@ namespace Faultify.TestRunner
             _timeOut = timeOut;
             _testHostLogger = loggerFactoryFactory.CreateLogger("Faultify.TestHost");
         }
-        
+
 
         /// <summary>
         ///     Executes the mutation test session for the given test project.
@@ -81,7 +81,7 @@ namespace Faultify.TestRunner
             var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
             coverageTimer.Stop();
 
-            TimeSpan timeout = _createTimeOut(coverageTimer);
+            var timeout = _createTimeOut(coverageTimer);
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -347,11 +347,8 @@ namespace Faultify.TestRunner
         // When timeout is less then 0.51 seconds it will be set to .51 seconds to make sure the MaxTestDuration is at least one second.
         private TimeSpan _createTimeOut(Stopwatch stopwatch)
         {
-            TimeSpan timeOut = _timeOut;
-            if (_timeOut.Equals(TimeSpan.FromSeconds(0)))
-            {
-                timeOut = stopwatch.Elapsed;
-            }
+            var timeOut = _timeOut;
+            if (_timeOut.Equals(TimeSpan.FromSeconds(0))) timeOut = stopwatch.Elapsed;
 
             return timeOut < TimeSpan.FromSeconds(.51) ? TimeSpan.FromSeconds(.51) : timeOut;
         }

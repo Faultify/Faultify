@@ -8,7 +8,7 @@ namespace Faultify.Core.Extensions
     public static class InstructionExtensions
     {
         //list of opcodes
-        private static readonly List<OpCode> OpCodeList = new List<OpCode>
+        private static readonly List<OpCode> OpCodeList = new()
         {
             OpCodes.Ldc_I4_1,
             OpCodes.Ldc_I4_2,
@@ -24,7 +24,7 @@ namespace Faultify.Core.Extensions
             OpCodes.Ldc_R4,
             OpCodes.Ldc_R8,
             OpCodes.Ldc_I4_M1,
-            OpCodes.Ldc_I4_S,
+            OpCodes.Ldc_I4_S
         };
 
         public static bool IsDynamicArray(this Instruction instruction)

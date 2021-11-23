@@ -27,7 +27,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
             foreach (var instruction in methodClone.Body.Instructions)
                 mutatedMethodDef.Body.Instructions.Add(instruction);
         }
-        
+
         /// <summary>
         ///     Mutates a dynamic array by creating a new array with random values with the arraybuilder.
         /// </summary>
@@ -53,12 +53,12 @@ namespace Faultify.Analyze.ArrayMutationStrategy
                 {
                     beforeArray.Remove(instruction.Previous);
                     // get type of array
-                    _type = (TypeReference) instruction.Operand;
+                    _type = (TypeReference)instruction.Operand;
 
                     var previous = instruction.Previous;
                     var call = instruction.Next.Next.Next;
                     // get length of array.
-                    length = (int) previous.Operand;
+                    length = (int)previous.Operand;
 
                     // Add all other nodes to the list.
                     var next = call.Next;

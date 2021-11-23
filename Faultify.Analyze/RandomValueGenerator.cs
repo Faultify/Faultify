@@ -30,7 +30,7 @@ namespace Faultify.Analyze
                 return GenerateString();
             if (fieldType == typeof(char))
                 return GenerateChar(fieldReference);
-            if (fieldType.IsNumericType()) 
+            if (fieldType.IsNumericType())
                 return GenerateNumber(fieldType, fieldReference);
 
             return null;
@@ -64,7 +64,7 @@ namespace Faultify.Analyze
         {
             var original = Convert.ToChar(originalRef);
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            char generated = chars[_rng.Next(chars.Length)];
+            var generated = chars[_rng.Next(chars.Length)];
 
             return original == generated ? GenerateChar(original) : generated;
         }
@@ -76,8 +76,8 @@ namespace Faultify.Analyze
         /// <returns></returns>
         public object GenerateNumber(Type fieldType, object originalField)
         {
-            Type type = TypeChecker.NumericTypes.First(type => type == fieldType);
-            object generated = Convert.ChangeType(_rng.Next(), type);
+            var type = TypeChecker.NumericTypes.First(type => type == fieldType);
+            var generated = Convert.ChangeType(_rng.Next(), type);
 
             return fieldType == generated ? GenerateNumber(fieldType, originalField) : generated;
         }

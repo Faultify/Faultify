@@ -78,7 +78,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 // Read the reference its contents
                 using var stream = reference.OpenReadStream();
                 using var binReader = new BinaryReader(stream);
-                var data = binReader.ReadBytes((int) stream.Length);
+                var data = binReader.ReadBytes((int)stream.Length);
 
                 var decompiler = new CodeDecompiler(reference.FullFilePath(), new MemoryStream(data));
 
@@ -104,8 +104,9 @@ namespace Faultify.TestRunner.ProjectDuplication
                             var mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
                                 x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
-                                if (mutationIdentifier.MemberName != null)
-                                    foundMutations.Add(new MutationVariant(false, assembly, mutationIdentifier, new MutationAnalyzerInfo
+                            if (mutationIdentifier.MemberName != null)
+                                foundMutations.Add(new MutationVariant(false, assembly, mutationIdentifier,
+                                    new MutationAnalyzerInfo
                                     {
                                         AnalyzerDescription = group.AnalyzerDescription,
                                         AnalyzerName = group.AnalyzerName

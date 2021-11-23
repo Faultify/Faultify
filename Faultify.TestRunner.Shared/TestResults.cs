@@ -24,7 +24,7 @@ namespace Faultify.TestRunner.Shared
             foreach (var testResult in Tests)
             {
                 binaryWriter.Write(testResult.Name);
-                binaryWriter.Write((int) testResult.Outcome);
+                binaryWriter.Write((int)testResult.Outcome);
             }
 
             return memoryStream.ToArray();
@@ -40,7 +40,7 @@ namespace Faultify.TestRunner.Shared
             {
                 var testResult = new TestResult();
                 var name = binaryReader.ReadString();
-                var testOutcome = (TestOutcome) binaryReader.ReadInt32();
+                var testOutcome = (TestOutcome)binaryReader.ReadInt32();
                 testResult.Name = name;
                 testResult.Outcome = testOutcome;
                 testResults.Tests.Add(testResult);

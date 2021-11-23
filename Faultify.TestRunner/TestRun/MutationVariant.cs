@@ -52,7 +52,7 @@ namespace Faultify.TestRunner.TestRun
             OriginalSource = originalSource;
         }
 
-        public bool CausesTimeOut { get; set; } = false;
+        public bool CausesTimeOut { get; set; }
 
         public AssemblyMutator Assembly { get; set; }
         public MutationVariantIdentifier MutationIdentifier { get; set; }

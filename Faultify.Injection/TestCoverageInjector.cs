@@ -13,7 +13,7 @@ namespace Faultify.Injection
     public class TestCoverageInjector
     {
         private static readonly Lazy<TestCoverageInjector> Lazy =
-            new Lazy<TestCoverageInjector>(() => new TestCoverageInjector());
+            new(() => new TestCoverageInjector());
 
         private readonly string _currentAssemblyPath = typeof(TestCoverageInjector).Assembly.Location;
         private readonly MethodDefinition _initializeMethodDefinition;

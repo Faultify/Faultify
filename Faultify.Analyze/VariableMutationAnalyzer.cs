@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Faultify.Analyze.Mutation;
 using Faultify.Core.Extensions;
@@ -30,13 +29,14 @@ namespace Faultify.Analyze
 
         public string Name => "Variable Mutation Analyzer";
 
-        public IEnumerable<VariableMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
+        public IEnumerable<VariableMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null)
         {
             //TODO Check Quick fix
             if (method?.Body == null)
                 return Enumerable.Empty<VariableMutation>();
 
-            int lineNumber = -1;
+            var lineNumber = -1;
 
             var mutations = new List<VariableMutation>();
             foreach (var instruction in method.Body.Instructions)
@@ -56,16 +56,13 @@ namespace Faultify.Analyze
                 {
                     if (debug != null)
                     {
-                        debug.TryGetValue(instruction, out SequencePoint tempSeqPoint);
+                        debug.TryGetValue(instruction, out var tempSeqPoint);
 
-                        if (tempSeqPoint != null)
-                        {
-                            lineNumber = tempSeqPoint.StartLine;
-                        }
+                        if (tempSeqPoint != null) lineNumber = tempSeqPoint.StartLine;
                     }
 
                     // Get variable type. Might throw InvalidCastException
-                    Type type = ((TypeReference)instruction.Operand).ToSystemType();
+                    var type = ((TypeReference)instruction.Operand).ToSystemType();
 
 
                     // Get previous instruction.
@@ -76,16 +73,14 @@ namespace Faultify.Analyze
 
                     // If the value is mapped then mutate it.
                     if (TypeChecker.IsVariableType(type))
-                    {
                         mutations.Add(
                             new VariableMutation
                             {
                                 Original = variableInstruction.Operand,
                                 Replacement = _valueGenerator.GenerateValueForField(type, instruction.Previous.Operand),
                                 Variable = variableInstruction,
-                                LineNumber = lineNumber,
+                                LineNumber = lineNumber
                             });
-                    }
                 }
                 catch
                 {

@@ -11,7 +11,7 @@ namespace Faultify.TestRunner
 {
     public class TestProjectReportModelBuilder
     {
-        private static readonly object Mutext = new object();
+        private static readonly object Mutext = new();
         private readonly TestProjectReportModel _testProjectReportModel;
 
         public TestProjectReportModelBuilder(string testProjectName)

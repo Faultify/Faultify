@@ -5,6 +5,8 @@
     /// </summary>
     public interface IMutation
     {
+        public string Report { get; }
+
         /// <summary>
         ///     Mutates the the bytecode to its mutated version.
         /// </summary>
@@ -14,7 +16,5 @@
         ///     Reverts the mutation to its original.
         /// </summary>
         void Reset();
-
-        public string Report { get; }
     }
 }

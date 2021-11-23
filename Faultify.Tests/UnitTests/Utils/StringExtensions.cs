@@ -18,7 +18,7 @@ namespace Faultify.Tests.UnitTests.Utils
 
         public static OpCode ParseOpCode(this string opCode)
         {
-            return (OpCode) typeof(OpCodes).GetField(opCode).GetValue(null);
+            return (OpCode)typeof(OpCodes).GetField(opCode).GetValue(null);
         }
 
         public static string CleanUpCode(this string input)

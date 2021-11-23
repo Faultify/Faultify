@@ -25,6 +25,7 @@ namespace Faultify.Analyze
         ///     Analyzes possible mutations in the given scope.
         ///     Returns the mutation that can be either executed or reverted.
         /// </summary>
-        IEnumerable<TMutation> AnalyzeMutations(TScope scope, MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null);
+        IEnumerable<TMutation> AnalyzeMutations(TScope scope, MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null);
     }
 }

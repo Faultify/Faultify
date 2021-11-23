@@ -29,7 +29,7 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible array mutations inside a method definition.
         /// </summary>
         public HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> ArrayMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>>
+            new()
             {
                 new ArrayMutationAnalyzer()
             };
@@ -38,7 +38,7 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible constant mutations.
         /// </summary>
         public HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
-            new HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>>
+            new()
             {
                 new BooleanConstantMutationAnalyzer(),
                 new NumberConstantMutationAnalyzer(),
@@ -49,7 +49,7 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible opcode mutations.
         /// </summary>
         public HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> OpCodeMethodAnalyzers =
-            new HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>>
+            new()
             {
                 new ArithmeticMutationAnalyzer(),
                 new ComparisonMutationAnalyzer(),
@@ -60,7 +60,7 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible variable mutations.
         /// </summary>
         public HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> VariableMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>>
+            new()
             {
                 new VariableMutationAnalyzer()
             };
@@ -72,7 +72,7 @@ namespace Faultify.Analyze.AssemblyMutator
                 new ReaderParameters
                 {
                     InMemory = true,
-                    ReadSymbols = false,
+                    ReadSymbols = false
                 }
             );
 
@@ -86,7 +86,7 @@ namespace Faultify.Analyze.AssemblyMutator
                 new ReaderParameters
                 {
                     InMemory = true,
-                    ReadSymbols = true,
+                    ReadSymbols = true
                 }
             );
 
@@ -116,7 +116,7 @@ namespace Faultify.Analyze.AssemblyMutator
                     VariableMutationAnalyzers, ArrayMutationAnalyzers))
                 .ToList();
         }
-        
+
         /// <summary>
         ///     Flush the assembly changes to the given file.
         /// </summary>

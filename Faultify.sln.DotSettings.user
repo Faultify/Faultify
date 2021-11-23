@@ -19,7 +19,7 @@
     &lt;Project Location="E:\programming\FaultifyNew\Faultify\Benchmark\Faultify.Benchmark.MSTest" Presentation="&amp;lt;Benchmark&amp;gt;\&amp;lt;Faultify.Benchmark.MSTest&amp;gt;" /&gt;&#xD;
   &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=32a3a768_002Db6da_002D4330_002D8cc9_002D95f92b9fb31e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Arithmetic_PostMutation_MinToPlus" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=32a3a768_002Db6da_002D4330_002D8cc9_002D95f92b9fb31e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Arithmetic_PostMutation_MinToPlus" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::CBF4B950-7AA2-47A1-852E-A31A175E1114::.NETCoreApp,Version=v3.1::Faultify.Benchmark.Nunit.BenchmarkNUnit&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
