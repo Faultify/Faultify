@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace Faultify.Cli
 {
+
     internal class Program
     {
         private static string _outputDirectory;
