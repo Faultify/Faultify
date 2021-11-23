@@ -20,7 +20,7 @@ namespace Faultify.Benchmark.Runner
             }
 
             var elapsedStryker = BenchmarkStryker();
-
+            
             foreach (var elapse in elapsedStryker)
             {
                 var mps = stryker_found_mutations / TimeSpan.FromMilliseconds(elapse.Item2).Seconds;
@@ -62,7 +62,7 @@ namespace Faultify.Benchmark.Runner
             for (var i = 1; i < 7; i++)
             {
                 var faultifyConfig =
-                    @" -t ..\..\..\..\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj -f html -p " + i;
+                    @" -t ..\..\..\..\Faultify.Benchmark.NUnit\Faultify.Benchmark.NUnit.csproj -f html -i " + i;
 
                 var st = Stopwatch.StartNew();
 

@@ -76,7 +76,7 @@ namespace Faultify.Analyze
         /// <returns></returns>
         public object GenerateNumber(Type fieldType, object originalField)
         {
-            Type type = TypeChecker.NumericTypes.First(type => type == originalField);
+            Type type = TypeChecker.NumericTypes.First(type => type == fieldType);
             object generated = Convert.ChangeType(_rng.Next(), type);
 
             return fieldType == generated ? GenerateNumber(fieldType, originalField) : generated;

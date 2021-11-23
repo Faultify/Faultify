@@ -104,22 +104,12 @@ namespace Faultify.TestRunner.ProjectDuplication
                             var mutationIdentifier = mutationIdentifiers.FirstOrDefault(x =>
                                 x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
-                            if (mutationIdentifier.MemberName != null)
-                                foundMutations.Add(new MutationVariant
-                                {
-                                    Assembly = assembly,
-                                    CausesTimeOut = false,
-                                    MemberHandle = method.Handle,
-                                    OriginalSource = decompiler.Decompile(method.Handle),
-                                    MutatedSource = "",
-                                    Mutation = mutation,
-                                    MutationAnalyzerInfo = new MutationAnalyzerInfo
+                                if (mutationIdentifier.MemberName != null)
+                                    foundMutations.Add(new MutationVariant(false, assembly, mutationIdentifier, new MutationAnalyzerInfo
                                     {
                                         AnalyzerDescription = group.AnalyzerDescription,
                                         AnalyzerName = group.AnalyzerName
-                                    },
-                                    MutationIdentifier = mutationIdentifier
-                                });
+                                    }, method.Handle, mutation, "", decompiler.Decompile(method.Handle)));
 
                             methodMutationId++;
                         }

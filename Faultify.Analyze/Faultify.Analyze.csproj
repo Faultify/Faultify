@@ -12,7 +12,7 @@
 	  <Title>Dotnet, byte level, mutation analyzers</Title>
 	  <Product>Mutation Testing</Product>
 
-	  <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
 	<PropertyGroup>

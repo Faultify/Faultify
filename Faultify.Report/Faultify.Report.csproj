@@ -11,7 +11,7 @@
 	  <RepositoryUrl>https://github.com/Faultify/Faultify.git</RepositoryUrl>
 	  <Title>Dotnet, byte level, mutation test utility</Title>
 
-	  <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Haukcode.WkHtmlToPdfDotNet" Version="1.5.59" />
+    <PackageReference Include="Haukcode.WkHtmlToPdfDotNet" Version="1.5.62" />
     <PackageReference Include="RazorLight" Version="2.0.0-rc.2" />
   </ItemGroup>
 

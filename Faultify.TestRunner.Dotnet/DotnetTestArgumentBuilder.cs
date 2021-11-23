@@ -31,7 +31,7 @@ namespace Faultify.TestRunner.Dotnet
 
         public DotnetTestArgumentBuilder Silent()
         {
-            _arguments.Append(" -v s");
+            _arguments.Append(" -v d");
             return this;
         }
 

@@ -209,4 +209,3 @@ namespace Faultify.TestRunner.TestRun
         }
     }
 }
-}

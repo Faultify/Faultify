@@ -147,7 +147,7 @@ namespace Faultify.Cli
 
             var mutationTestProject =
                 new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
-                    _loggerFactory, testHost);
+                    _loggerFactory, testHost, settings.TimeOut);
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }
@@ -181,7 +181,7 @@ namespace Faultify.Cli
         private static IConfigurationRoot BuildConfigurationRoot()
         {
             var builder = new ConfigurationBuilder();
-            builder.AddUserSecrets<Program>();
+            builder.AddUserSecrets<Program>(true);
             var configurationRoot = builder.Build();
             return configurationRoot;
         }
