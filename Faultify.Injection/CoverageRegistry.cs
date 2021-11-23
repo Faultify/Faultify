@@ -11,9 +11,9 @@ namespace Faultify.Injection
     /// </summary>
     public static class CoverageRegistry
     {
-        private static readonly MutationCoverage MutationCoverage = new MutationCoverage();
+        private static readonly MutationCoverage MutationCoverage = new();
         private static string _currentTestCoverage = "NONE";
-        private static readonly object RegisterMutex = new object();
+        private static readonly object RegisterMutex = new();
         private static MemoryMappedFile _mmf;
 
         /// <summary>

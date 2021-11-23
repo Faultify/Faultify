@@ -5,7 +5,7 @@ namespace Faultify.Analyze.Groupings
     /// <summary>
     ///     Mutation group for opcode mutations.
     /// </summary>
-    public class OpCodeGrouping : BaseGrouping<OpCodeMutation>
+    public class OpCodeMutationGrouping : BaseGrouping<OpCodeMutation>
     {
     }
 }

@@ -8,19 +8,19 @@ namespace Faultify.Analyze
     /// </summary>
     public class TypeCollection
     {
-        private static readonly List<Type> _integerTypes = new List<Type>
+        private static readonly List<Type> _integerTypes = new()
         {
             typeof(float), typeof(double),
             typeof(byte), typeof(short), typeof(int), typeof(long),
             typeof(sbyte), typeof(ushort), typeof(uint), typeof(ulong)
         };
 
-        private static readonly List<Type> _stringTypes = new List<Type>
+        private static readonly List<Type> _stringTypes = new()
         {
             typeof(string), typeof(char)
         };
 
-        private static readonly List<Type> _booleanTypes = new List<Type>
+        private static readonly List<Type> _booleanTypes = new()
         {
             typeof(bool)
         };

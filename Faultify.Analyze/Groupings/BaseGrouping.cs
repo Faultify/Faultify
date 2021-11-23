@@ -25,6 +25,10 @@ namespace Faultify.Analyze.Groupings
         public string AnalyzerDescription { get; set; }
         public string AnalyzerName { get; set; }
 
+        public string Description => AnalyzerDescription;
+
+        public string Name => AnalyzerName;
+
         public override string ToString()
         {
             return $"Analyzed by {AnalyzerName} ({AnalyzerDescription}), Key: {Key}";

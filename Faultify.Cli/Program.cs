@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace Faultify.Cli
 {
+
     internal class Program
     {
         private static string _outputDirectory;
@@ -60,12 +61,14 @@ namespace Faultify.Cli
                         new LogFileOptions
                         {
                             Path = "testhost-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
-                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestHost, LogLevel.Trace}}
+                            MinLevel = new Dictionary<string, LogLevel>
+                                { { LogConfiguration.TestHost, LogLevel.Trace } }
                         },
                         new LogFileOptions
                         {
                             Path = "testprocess-" + DateTime.Now.ToString("yy-MM-dd-H-mm") + ".log",
-                            MinLevel = new Dictionary<string, LogLevel> {{LogConfiguration.TestRunner, LogLevel.Trace}}
+                            MinLevel = new Dictionary<string, LogLevel>
+                                { { LogConfiguration.TestRunner, LogLevel.Trace } }
                         }
                     };
                 });
@@ -147,7 +150,7 @@ namespace Faultify.Cli
 
             var mutationTestProject =
                 new MutationTestProject(settings.TestProjectPath, settings.MutationLevel, settings.Parallel,
-                    _loggerFactory, testHost);
+                    _loggerFactory, testHost, settings.TimeOut);
 
             return await mutationTestProject.Test(progressTracker, CancellationToken.None);
         }
@@ -181,7 +184,7 @@ namespace Faultify.Cli
         private static IConfigurationRoot BuildConfigurationRoot()
         {
             var builder = new ConfigurationBuilder();
-            builder.AddUserSecrets<Program>();
+            builder.AddUserSecrets<Program>(true);
             var configurationRoot = builder.Build();
             return configurationRoot;
         }

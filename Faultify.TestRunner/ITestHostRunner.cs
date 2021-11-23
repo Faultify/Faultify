@@ -11,6 +11,8 @@ namespace Faultify.TestRunner
     /// </summary>
     public interface ITestHostRunner
     {
+        public TestFramework TestFramework { get; }
+
         /// <summary>
         ///     Runs the given tests and returns the results.
         /// </summary>

@@ -74,16 +74,17 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Returns all possible mutations from the method its instructions.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<OpCodeGrouping> OpCodeMutations(MutationLevel mutationLevel)
+        public IEnumerable<OpCodeMutationGrouping> OpCodeMutations(MutationLevel mutationLevel)
         {
             foreach (var analyzer in _opcodeMethodAnalyzers)
                 if (MethodDefinition.Body?.Instructions != null)
                     foreach (var instruction in MethodDefinition.Body?.Instructions)
                     {
-                        var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel).ToList();
+                        var mutations = analyzer.AnalyzeMutations(instruction, mutationLevel,
+                            MethodDefinition.DebugInformation.GetSequencePointMapping()).ToList();
 
                         if (mutations.Any())
-                            yield return new OpCodeGrouping
+                            yield return new OpCodeMutationGrouping
                             {
                                 Key = instruction.OpCode.ToString(),
                                 Mutations = mutations,
@@ -93,7 +94,7 @@ namespace Faultify.Analyze.AssemblyMutator
                     }
         }
 
-        public IEnumerable<ConstGrouping> ConstantReferenceMutations(MutationLevel mutationLevel)
+        public IEnumerable<ConstMutationGrouping> ConstantReferenceMutations(MutationLevel mutationLevel)
         {
             var fieldReferences = MethodDefinition.Body.Instructions
                 .OfType<FieldReference>();
@@ -103,7 +104,7 @@ namespace Faultify.Analyze.AssemblyMutator
             {
                 var mutations = analyzer.AnalyzeMutations(field.Resolve(), mutationLevel);
 
-                yield return new ConstGrouping
+                yield return new ConstMutationGrouping
                 {
                     AnalyzerName = analyzer.Name,
                     AnalyzerDescription = analyzer.Description,
@@ -117,7 +118,8 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             return _variableMutationAnalyzers.Select(analyzer => new VariableMutationGrouping
             {
-                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel),
+                Mutations = analyzer.AnalyzeMutations(MethodDefinition, mutationLevel,
+                    MethodDefinition.DebugInformation.GetSequencePointMapping()),
                 Key = MethodDefinition.Name,
                 AnalyzerName = analyzer.Name,
                 AnalyzerDescription = analyzer.Description

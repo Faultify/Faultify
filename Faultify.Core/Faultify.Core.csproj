@@ -12,20 +12,20 @@
 	</RepositoryUrl>
 	<Title>Dotnet byte level mutation testing utility</Title>
 
-	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<TargetFramework>net5.0</TargetFramework>
 	<PreserveCompilationContext>true</PreserveCompilationContext>
 	<NoWarn>NU1701</NoWarn><!--To dissable html to pdf lib warning-->
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Buildalyzer" Version="3.2.0" />
-    <PackageReference Include="ICSharpCode.Decompiler" Version="6.2.1.6137" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.8.3" />
-    <PackageReference Include="Mono.Cecil" Version="0.11.3" />
+    <PackageReference Include="Buildalyzer" Version="3.2.3" />
+    <PackageReference Include="ICSharpCode.Decompiler" Version="7.1.0.6543" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.0.0" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.4" />
     <PackageReference Include="RazorLight" Version="2.0.0-rc.2" />
-    <PackageReference Include="MonoMod.Utils" Version="21.1.11.1" />
+    <PackageReference Include="MonoMod.Utils" Version="21.11.1.1" />
   </ItemGroup>
 
 </Project>

@@ -28,13 +28,14 @@ namespace Faultify.TestRunner.Dotnet
         public DotnetTestHostRunner(string testProjectAssemblyPath, TimeSpan timeout, ILogger logger)
         {
             _testFileInfo = new FileInfo(testProjectAssemblyPath);
-            _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName);
+            _testDirectoryInfo = new DirectoryInfo(_testFileInfo.DirectoryName ?? string.Empty);
 
-            // _timeout = timeout;
             _timeout = timeout;
             _logger = logger;
-            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _testAdapterPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         }
+
+        public TestFramework TestFramework => TestFramework.DotNet;
 
         /// <summary>
         ///     Runs the given tests and returns the results.
@@ -76,6 +77,10 @@ namespace Faultify.TestRunner.Dotnet
                         "Consider opening up an issue with the logs found in the output folder."
                     );
                 }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
                 finally
                 {
                     if (File.Exists(testResultOutputPath)) File.Delete(testResultOutputPath);
@@ -106,15 +111,22 @@ namespace Faultify.TestRunner.Dotnet
 
                 return Utils.ReadMutationCoverageFile();
             }
-            catch (FileNotFoundException)
+            catch (FileNotFoundException e)
             {
-                _logger.LogError(
-                    "The file 'coverage.bin' was not generated." +
-                    "This implies that the test run can not be completed. " +
-                    "Consider opening up an issue with the logs found in the output folder."
-                );
-                return new MutationCoverage();
+                _logger.LogError(e,
+                    "The file 'coverage.bin' was not generated."
+                    + "This implies that the test run can not be completed. ");
             }
+            catch (ExitCodeException e)
+            {
+                _logger.LogError(e, $"Subprocess terminated with error code {e.ExitCode}");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error running code coverage.");
+            }
+
+            return new MutationCoverage();
         }
 
         /// <summary>

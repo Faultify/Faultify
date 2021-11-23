@@ -29,7 +29,7 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible array mutations inside a method definition.
         /// </summary>
         public HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>> ArrayMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<ArrayMutation, MethodDefinition>>
+            new()
             {
                 new ArrayMutationAnalyzer()
             };
@@ -38,7 +38,7 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible constant mutations.
         /// </summary>
         public HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>> FieldAnalyzers =
-            new HashSet<IMutationAnalyzer<ConstantMutation, FieldDefinition>>
+            new()
             {
                 new BooleanConstantMutationAnalyzer(),
                 new NumberConstantMutationAnalyzer(),
@@ -49,7 +49,7 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible opcode mutations.
         /// </summary>
         public HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>> OpCodeMethodAnalyzers =
-            new HashSet<IMutationAnalyzer<OpCodeMutation, Instruction>>
+            new()
             {
                 new ArithmeticMutationAnalyzer(),
                 new ComparisonMutationAnalyzer(),
@@ -60,27 +60,43 @@ namespace Faultify.Analyze.AssemblyMutator
         ///     Analyzers that search for possible variable mutations.
         /// </summary>
         public HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>> VariableMutationAnalyzers =
-            new HashSet<IMutationAnalyzer<VariableMutation, MethodDefinition>>
+            new()
             {
                 new VariableMutationAnalyzer()
             };
 
         public AssemblyMutator(Stream stream)
         {
-            Open(stream);
+            Module = ModuleDefinition.ReadModule(
+                stream,
+                new ReaderParameters
+                {
+                    InMemory = true,
+                    ReadSymbols = false
+                }
+            );
+
             Types = LoadTypes();
         }
 
         public AssemblyMutator(string assemblyPath) : this(new MemoryStream(File.ReadAllBytes(assemblyPath)))
         {
-            Module = ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters {InMemory = true});
+            Module = ModuleDefinition.ReadModule(
+                assemblyPath,
+                new ReaderParameters
+                {
+                    InMemory = true,
+                    ReadSymbols = true
+                }
+            );
+
             Types = LoadTypes();
         }
 
         /// <summary>
         ///     Underlying Mono.Cecil ModuleDefinition.
         /// </summary>
-        public ModuleDefinition Module { get; private set; }
+        public ModuleDefinition Module { get; }
 
         /// <summary>
         ///     The types in the assembly.
@@ -99,11 +115,6 @@ namespace Faultify.Analyze.AssemblyMutator
                 .Select(type => new FaultifyTypeDefinition(type, OpCodeMethodAnalyzers, FieldAnalyzers,
                     VariableMutationAnalyzers, ArrayMutationAnalyzers))
                 .ToList();
-        }
-
-        public void Open(Stream stream)
-        {
-            Module = ModuleDefinition.ReadModule(stream);
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace Faultify.Tests.UnitTests
         {
             var pool = new TestProjectDuplicationPool(new List<TestProjectDuplication>
             {
-                new TestProjectDuplication(null, null, 0)
+                new(null, null, 0)
             });
 
             Assert.AreEqual(pool.TakeTestProject().DuplicationNumber, 0);
@@ -25,8 +25,8 @@ namespace Faultify.Tests.UnitTests
         {
             var pool = new TestProjectDuplicationPool(new List<TestProjectDuplication>
             {
-                new TestProjectDuplication(null, null, 0),
-                new TestProjectDuplication(null, null, 1)
+                new(null, null, 0),
+                new(null, null, 1)
             });
 
             var project1 = pool.AcquireTestProject();
@@ -41,12 +41,12 @@ namespace Faultify.Tests.UnitTests
         {
             var pool = new TestProjectDuplicationPool(new List<TestProjectDuplication>
             {
-                new TestProjectDuplication(null, null, 0),
-                new TestProjectDuplication(null, null, 1),
-                new TestProjectDuplication(null, null, 2),
-                new TestProjectDuplication(null, null, 3),
-                new TestProjectDuplication(null, null, 4),
-                new TestProjectDuplication(null, null, 5)
+                new(null, null, 0),
+                new(null, null, 1),
+                new(null, null, 2),
+                new(null, null, 3),
+                new(null, null, 4),
+                new(null, null, 5)
             });
 
             Parallel.ForEach(Enumerable.Range(0, 6), i =>
@@ -63,19 +63,19 @@ namespace Faultify.Tests.UnitTests
         {
             var pool = new TestProjectDuplicationPool(new List<TestProjectDuplication>
             {
-                new TestProjectDuplication(null, null, 0),
-                new TestProjectDuplication(null, null, 1),
-                new TestProjectDuplication(null, null, 2),
-                new TestProjectDuplication(null, null, 3),
-                new TestProjectDuplication(null, null, 4),
-                new TestProjectDuplication(null, null, 5)
+                new(null, null, 0),
+                new(null, null, 1),
+                new(null, null, 2),
+                new(null, null, 3),
+                new(null, null, 4),
+                new(null, null, 5)
             });
 
             Parallel.ForEach(Enumerable.Range(0, 6), i =>
             {
                 var project1 = pool.AcquireTestProject();
                 Assert.NotNull(project1);
-                project1.FreeTestProject();
+                project1.MarkAsFree();
             });
 
             Assert.IsNotNull(pool.GetFreeProject());

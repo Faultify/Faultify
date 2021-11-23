@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Faultify.Core.Extensions;
 
 namespace Faultify.Analyze
@@ -27,7 +28,10 @@ namespace Faultify.Analyze
                 return Convert.ToInt32(FlipBool(Convert.ToBoolean(fieldReference)));
             if (fieldType == typeof(string))
                 return GenerateString();
-            if (fieldType.IsNumericType()) return GenerateNumberFor(fieldType, fieldReference);
+            if (fieldType == typeof(char))
+                return GenerateChar(fieldReference);
+            if (fieldType.IsNumericType())
+                return GenerateNumber(fieldType, fieldReference);
 
             return null;
         }
@@ -52,42 +56,30 @@ namespace Faultify.Analyze
         }
 
         /// <summary>
+        ///     Generates a new random character.
+        /// </summary>
+        /// <param name="originalRef">Reference to the orginial char</param>
+        /// <returns>The random character</returns>
+        private object GenerateChar(object originalRef)
+        {
+            var original = Convert.ToChar(originalRef);
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var generated = chars[_rng.Next(chars.Length)];
+
+            return original == generated ? GenerateChar(original) : generated;
+        }
+
+        /// <summary>
         ///     Returns a random number for the given originalField field.
         /// </summary>
         /// <param name="originalField"></param>
         /// <returns></returns>
-        public object GenerateNumberFor(Type fieldType, object originalField)
+        public object GenerateNumber(Type fieldType, object originalField)
         {
-            object generated = 0;
+            var type = TypeChecker.NumericTypes.First(type => type == fieldType);
+            var generated = Convert.ChangeType(_rng.Next(), type);
 
-            if (fieldType == typeof(sbyte))
-                generated = _rng.Next(sbyte.MinValue, sbyte.MaxValue);
-            if (fieldType == typeof(short))
-                generated = _rng.Next(short.MinValue, short.MaxValue);
-            if (fieldType == typeof(int) || fieldType == typeof(long))
-                generated = _rng.Next(int.MinValue, int.MaxValue);
-
-            if (fieldType == typeof(byte))
-                generated = _rng.Next(byte.MinValue, byte.MaxValue);
-            if (fieldType == typeof(ushort))
-                generated = _rng.Next(ushort.MinValue, ushort.MaxValue);
-
-            if (fieldType == typeof(uint) || fieldType == typeof(ulong))
-                generated = _rng.Next((int) uint.MinValue, int.MaxValue);
-            if (fieldType == typeof(double))
-                generated = _rng.NextDouble();
-            if (fieldType == typeof(float))
-                generated = (float) _rng.NextDouble();
-
-            if (fieldType == typeof(char))
-                generated = _rng.Next(char.MinValue, char.MaxValue);
-
-
-            // Recursive generate until generated is not equal to the original.
-            if (generated == originalField)
-                return GenerateNumberFor(fieldType, originalField);
-
-            return generated;
+            return fieldType == generated ? GenerateNumber(fieldType, originalField) : generated;
         }
     }
 }

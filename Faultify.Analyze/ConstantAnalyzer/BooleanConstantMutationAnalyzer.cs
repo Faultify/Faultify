@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze.ConstantAnalyzer
 {
@@ -16,7 +17,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
         public override string Name => "Boolean ConstantMutation Analyzer";
 
         public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
-            MutationLevel mutationLevel)
+            MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             if (field.Constant is bool original)
                 yield return new ConstantMutation

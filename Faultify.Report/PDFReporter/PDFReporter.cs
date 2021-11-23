@@ -9,7 +9,7 @@ namespace Faultify.Report.PDFReporter
 {
     public class PdfReporter : IReporter
     {
-        private static readonly BasicConverter Converter = new BasicConverter(new PdfTools());
+        private static readonly BasicConverter Converter = new(new PdfTools());
         public string FileExtension => ".pdf";
 
         public async Task<byte[]> CreateReportAsync(MutationProjectReportModel mutationRun)
@@ -28,8 +28,9 @@ namespace Faultify.Report.PDFReporter
                     {
                         PagesCount = true,
                         HtmlContent = await Template(mutationRun),
-                        WebSettings = {DefaultEncoding = "utf-8"},
-                        HeaderSettings = {FontSize = 9, Right = "Page [page] of [toPage]", Line = true, Spacing = 2.812}
+                        WebSettings = { DefaultEncoding = "utf-8" },
+                        HeaderSettings =
+                            { FontSize = 9, Right = "Page [page] of [toPage]", Line = true, Spacing = 2.812 }
                     }
                 }
             };

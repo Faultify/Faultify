@@ -36,7 +36,8 @@ namespace Faultify.Analyze
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IEnumerable<ArrayMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel)
+        public IEnumerable<ArrayMutation> AnalyzeMutations(MethodDefinition method, MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null)
         {
             foreach (var instruction in method.Body.Instructions)
                 // Call the corresponding strategy based on the result
@@ -51,7 +52,7 @@ namespace Faultify.Analyze
         /// <returns></returns>
         private bool SupportedTypeCheck(Instruction newarr)
         {
-            var type = ((TypeReference) newarr.Operand).ToSystemType();
+            var type = ((TypeReference)newarr.Operand).ToSystemType();
             return Mapped.Types.TryGetValue(type, out _);
         }
     }

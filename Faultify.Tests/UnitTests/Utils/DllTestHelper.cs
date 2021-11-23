@@ -54,8 +54,8 @@ namespace Faultify.Tests.UnitTests.Utils
         {
             var source = File.ReadAllText(path);
 
-            var compilation = CSharpCompilation.Create("test.dll", new[] {CSharpSyntaxTree.ParseText(source)},
-                new[] {MetadataReference.CreateFromFile(typeof(object).Assembly.Location)},
+            var compilation = CSharpCompilation.Create("test.dll", new[] { CSharpSyntaxTree.ParseText(source) },
+                new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) },
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             var memoryStream = new MemoryStream();
@@ -210,7 +210,7 @@ namespace Faultify.Tests.UnitTests.Utils
         public object DynamicMethodCall(string name, string methodName, object[] parameters)
         {
             var instance = CreateInstance(name);
-            var method = ((object) instance).GetType().GetMethod(methodName.FirstCharToUpper());
+            var method = ((object)instance).GetType().GetMethod(methodName.FirstCharToUpper());
             return method.Invoke(instance, parameters);
         }
 

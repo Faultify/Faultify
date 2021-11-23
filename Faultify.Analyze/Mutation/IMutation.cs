@@ -5,6 +5,8 @@
     /// </summary>
     public interface IMutation
     {
+        public string Report { get; }
+
         /// <summary>
         ///     Mutates the the bytecode to its mutated version.
         /// </summary>

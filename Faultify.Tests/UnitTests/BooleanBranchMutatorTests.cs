@@ -24,8 +24,8 @@ namespace Faultify.Tests.UnitTests
 
             using (var binaryInteractor = new DllTestHelper(binary))
             {
-                var actual = (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                    new[] {expectedReturn});
+                var actual = (bool)binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
+                    new[] { expectedReturn });
 
                 // Assert
                 Assert.AreEqual(expected, actual);
@@ -50,8 +50,8 @@ namespace Faultify.Tests.UnitTests
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual =
-                    (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
-                        new[] {argument1});
+                    (bool)binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
+                        new[] { argument1 });
 
                 // Assert
                 Assert.AreEqual(expected, actual);

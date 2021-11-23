@@ -23,17 +23,33 @@ namespace Faultify.Analyze.OpcodeAnalyzer
 
         public abstract string Name { get; }
 
-        public IEnumerable<OpCodeMutation> AnalyzeMutations(Instruction scope, MutationLevel mutationLevel)
+        public IEnumerable<OpCodeMutation> AnalyzeMutations(Instruction scope, MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null)
         {
             // Store original opcode for a reset later on.
             var original = scope.OpCode;
+
+            var lineNumber = -1;
+            if (debug != null)
+            {
+                var prev = scope;
+                SequencePoint seqPoint = null;
+                // If prev is not null
+                // and line number is not found
+                // Try previous instruction.
+                while (prev != null && !debug.TryGetValue(prev, out seqPoint)) prev = prev.Previous;
+
+                if (seqPoint != null) lineNumber = seqPoint.StartLine;
+            }
 
             // Try to get the instruction opcode from the mapped mappedOpCodes.
             return _mappedOpCodes.TryGetValue(original, out var mutations)
                 ? mutations
                     .Where(mutant => mutationLevel.HasFlag(mutant.Item1))
                     .Select(mutant => new OpCodeMutation
-                        {Original = original, Replacement = mutant.Item2, Instruction = scope})
+                    {
+                        Original = original, Replacement = mutant.Item2, Instruction = scope, LineNumber = lineNumber
+                    })
                 : Enumerable.Empty<OpCodeMutation>();
         }
     }

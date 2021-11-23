@@ -30,6 +30,7 @@ namespace Faultify.Core.ProjectAnalyzing
                     assemblyName,
                     settings.ThrowOnAssemblyResolveErrors,
                     file.DetectTargetFrameworkId(),
+                    null,
                     settings.LoadInMemory ? PEStreamOptions.PrefetchMetadata : PEStreamOptions.Default,
                     settings.ApplyWindowsRuntimeProjections
                         ? MetadataReaderOptions.ApplyWindowsRuntimeProjections

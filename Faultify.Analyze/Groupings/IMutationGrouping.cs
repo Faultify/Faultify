@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Faultify.Analyze.Mutation;
+using Faultify.Core;
 
 namespace Faultify.Analyze.Groupings
 {
@@ -8,7 +9,7 @@ namespace Faultify.Analyze.Groupings
     ///     Groups the subject that is mutated and the possible mutations together.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IMutationGrouping<out T> : IGrouping<string, T> where T : IMutation
+    public interface IMutationGrouping<out T> : IGrouping<string, T>, IReportable where T : IMutation
     {
         /// <summary>
         ///     Description of the analyzer that analyzed for the mutation.

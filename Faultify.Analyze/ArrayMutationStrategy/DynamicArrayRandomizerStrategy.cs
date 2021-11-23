@@ -9,7 +9,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
     /// <summary>
     ///     Contains Mutating Strategy for Dynamic Arrays.
     /// </summary>
-    public class DynamicArrayRandomizerStrategy : ArrayMutationStrategy
+    public class DynamicArrayRandomizerStrategy : IArrayMutationStrategy
     {
         private readonly ArrayBuilder _arrayBuilder;
         private readonly MethodDefinition _methodDefinition;
@@ -21,10 +21,17 @@ namespace Faultify.Analyze.ArrayMutationStrategy
             _methodDefinition = methodDefinition;
         }
 
+        public void Reset(MethodDefinition mutatedMethodDef, MethodDefinition methodClone)
+        {
+            mutatedMethodDef.Body.Instructions.Clear();
+            foreach (var instruction in methodClone.Body.Instructions)
+                mutatedMethodDef.Body.Instructions.Add(instruction);
+        }
+
         /// <summary>
         ///     Mutates a dynamic array by creating a new array with random values with the arraybuilder.
         /// </summary>
-        public override void Mutate()
+        public void Mutate()
         {
             var processor = _methodDefinition.Body.GetILProcessor();
             _methodDefinition.Body.SimplifyMacros();
@@ -46,12 +53,12 @@ namespace Faultify.Analyze.ArrayMutationStrategy
                 {
                     beforeArray.Remove(instruction.Previous);
                     // get type of array
-                    _type = (TypeReference) instruction.Operand;
+                    _type = (TypeReference)instruction.Operand;
 
                     var previous = instruction.Previous;
                     var call = instruction.Next.Next.Next;
                     // get length of array.
-                    length = (int) previous.Operand;
+                    length = (int)previous.Operand;
 
                     // Add all other nodes to the list.
                     var next = call.Next;

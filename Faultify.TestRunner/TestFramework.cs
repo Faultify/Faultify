@@ -5,6 +5,7 @@
         XUnit,
         NUnit,
         MsTest,
+        DotNet,
         None
     }
 }

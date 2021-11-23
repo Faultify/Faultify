@@ -31,7 +31,28 @@ namespace Faultify.TestRunner.TestRun
     /// </summary>
     public class MutationVariant
     {
-        public bool CausesTimeOut { get; set; } = false;
+        public MutationVariant(
+            bool causesTimeOut,
+            AssemblyMutator assembly,
+            MutationVariantIdentifier mutationIdentifier,
+            MutationAnalyzerInfo mutationAnalyzerInfo,
+            EntityHandle memberHandle,
+            IMutation mutation,
+            string mutatedSource,
+            string originalSource
+        )
+        {
+            CausesTimeOut = causesTimeOut;
+            Assembly = assembly;
+            MutationIdentifier = mutationIdentifier;
+            MutationAnalyzerInfo = mutationAnalyzerInfo;
+            MemberHandle = memberHandle;
+            Mutation = mutation;
+            MutatedSource = mutatedSource;
+            OriginalSource = originalSource;
+        }
+
+        public bool CausesTimeOut { get; set; }
 
         public AssemblyMutator Assembly { get; set; }
         public MutationVariantIdentifier MutationIdentifier { get; set; }

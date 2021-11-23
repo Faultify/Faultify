@@ -20,7 +20,7 @@ namespace Faultify.TestRunner.TestRun
         public MutationLevel MutationLevel { get; set; }
 
         public int RunId { get; set; }
-        public int MutationCount => MutationIdentifiers.Count;
+        public int MutationCount => MutationIdentifiers?.Count ?? 0;
 
         public async Task<IEnumerable<TestRunResult>> RunMutationTestAsync(TimeSpan timeout,
             MutationSessionProgressTracker sessionProgressTracker, ITestHostRunFactory testHostRunnerFactory,
@@ -41,7 +41,7 @@ namespace Faultify.TestRunner.TestRun
 
             return new List<TestRunResult>
             {
-                new TestRunResult
+                new()
                 {
                     TestResults = testResults,
                     Mutations = _mutationVariants

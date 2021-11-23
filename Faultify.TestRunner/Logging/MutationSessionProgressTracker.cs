@@ -73,7 +73,7 @@ namespace Faultify.TestRunner.Logging
 
         public void LogTestRunUpdate(int index, int max, int failedRuns)
         {
-            _currentPercentage = (int) Map(index, 0f, max, 0f, 100f);
+            _currentPercentage = (int)Map(index, 0f, max, 0f, 100f);
             Log("Test Run Progress:\n" +
                 $"| Test Runs: {max - index}\n" +
                 $"| Completed: {index}\n" +
@@ -85,7 +85,7 @@ namespace Faultify.TestRunner.Logging
         {
             _currentPercentage = 85;
 
-            var mutationPerSeconds = (float) elapsed.Seconds == 0.0 ? 0.0 : mutationCount / (float) elapsed.Seconds;
+            var mutationPerSeconds = (float)elapsed.Seconds == 0.0 ? 0.0 : mutationCount / (float)elapsed.Seconds;
 
             Log("Finished Mutation Session:\n" +
                 $"| Test Rounds: {completedTestRounds}\n" +

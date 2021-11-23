@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze.ConstantAnalyzer
 {
@@ -15,6 +16,6 @@ namespace Faultify.Analyze.ConstantAnalyzer
         public abstract string Name { get; }
 
         public abstract IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
-            MutationLevel mutationLevel);
+            MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null);
     }
 }

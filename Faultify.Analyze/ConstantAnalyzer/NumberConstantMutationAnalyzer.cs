@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze.ConstantAnalyzer
 {
@@ -12,7 +13,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
     /// </summary>
     public class NumberConstantMutationAnalyzer : ConstantMutationAnalyzer
     {
-        private readonly RandomValueGenerator _rng = new RandomValueGenerator();
+        private readonly RandomValueGenerator _rng = new();
 
         public NumberConstantMutationAnalyzer()
         {
@@ -28,7 +29,7 @@ namespace Faultify.Analyze.ConstantAnalyzer
         public TypeCollection Mapped { get; }
 
         public override IEnumerable<ConstantMutation> AnalyzeMutations(FieldDefinition field,
-            MutationLevel mutationLevel)
+            MutationLevel mutationLevel, IDictionary<Instruction, SequencePoint> debug = null)
         {
             var constantMutation = new ConstantMutation
             {

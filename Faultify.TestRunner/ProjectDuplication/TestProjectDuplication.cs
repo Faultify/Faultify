@@ -56,7 +56,7 @@ namespace Faultify.TestRunner.ProjectDuplication
         /// <summary>
         ///     Mark this project as free for any test runner.
         /// </summary>
-        public void FreeTestProject()
+        public void MarkAsFree()
         {
             IsInUse = false;
             TestProjectFreed?.Invoke(this, this);
@@ -78,7 +78,7 @@ namespace Faultify.TestRunner.ProjectDuplication
                 // Read the reference its contents
                 using var stream = reference.OpenReadStream();
                 using var binReader = new BinaryReader(stream);
-                var data = binReader.ReadBytes((int) stream.Length);
+                var data = binReader.ReadBytes((int)stream.Length);
 
                 var decompiler = new CodeDecompiler(reference.FullFilePath(), new MemoryStream(data));
 
@@ -105,21 +105,12 @@ namespace Faultify.TestRunner.ProjectDuplication
                                 x.MutationId == methodMutationId && method.AssemblyQualifiedName == x.MemberName);
 
                             if (mutationIdentifier.MemberName != null)
-                                foundMutations.Add(new MutationVariant
-                                {
-                                    Assembly = assembly,
-                                    CausesTimeOut = false,
-                                    MemberHandle = method.Handle,
-                                    OriginalSource = decompiler.Decompile(method.Handle),
-                                    MutatedSource = "",
-                                    Mutation = mutation,
-                                    MutationAnalyzerInfo = new MutationAnalyzerInfo
+                                foundMutations.Add(new MutationVariant(false, assembly, mutationIdentifier,
+                                    new MutationAnalyzerInfo
                                     {
                                         AnalyzerDescription = group.AnalyzerDescription,
                                         AnalyzerName = group.AnalyzerName
-                                    },
-                                    MutationIdentifier = mutationIdentifier
-                                });
+                                    }, method.Handle, mutation, "", decompiler.Decompile(method.Handle)));
 
                             methodMutationId++;
                         }

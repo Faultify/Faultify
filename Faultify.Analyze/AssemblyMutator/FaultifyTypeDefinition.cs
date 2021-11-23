@@ -56,7 +56,7 @@ namespace Faultify.Analyze.AssemblyMutator
         {
             foreach (var analyzer in _constantAnalyzers)
             foreach (var field in TypeDefinition.Fields)
-                yield return new ConstGrouping
+                yield return new ConstMutationGrouping
                 {
                     Mutations = analyzer.AnalyzeMutations(field, mutationLevel),
                     Key = field.Name,

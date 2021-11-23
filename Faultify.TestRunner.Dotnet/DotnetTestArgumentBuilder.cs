@@ -10,7 +10,7 @@ namespace Faultify.TestRunner.Dotnet
     /// </summary>
     internal class DotnetTestArgumentBuilder
     {
-        private readonly StringBuilder _arguments = new StringBuilder();
+        private readonly StringBuilder _arguments = new();
 
         public DotnetTestArgumentBuilder(string projectReference)
         {
@@ -31,7 +31,7 @@ namespace Faultify.TestRunner.Dotnet
 
         public DotnetTestArgumentBuilder Silent()
         {
-            _arguments.Append(" -v s");
+            _arguments.Append(" -v d");
             return this;
         }
 

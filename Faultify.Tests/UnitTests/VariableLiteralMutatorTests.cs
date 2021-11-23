@@ -23,7 +23,7 @@ namespace Faultify.Tests.UnitTests
             using (var binaryInteractor = new DllTestHelper(mutatedBinary))
             {
                 var actual =
-                    (bool) binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
+                    (bool)binaryInteractor.DynamicMethodCall(_nameSpace, methodName.FirstCharToUpper(),
                         new object[] { });
 
                 // Assert

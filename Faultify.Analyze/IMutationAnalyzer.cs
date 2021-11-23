@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Faultify.Analyze.Mutation;
+using Mono.Cecil.Cil;
 
 namespace Faultify.Analyze
 {
@@ -24,6 +25,7 @@ namespace Faultify.Analyze
         ///     Analyzes possible mutations in the given scope.
         ///     Returns the mutation that can be either executed or reverted.
         /// </summary>
-        IEnumerable<TMutation> AnalyzeMutations(TScope scope, MutationLevel mutationLevel);
+        IEnumerable<TMutation> AnalyzeMutations(TScope scope, MutationLevel mutationLevel,
+            IDictionary<Instruction, SequencePoint> debug = null);
     }
 }
