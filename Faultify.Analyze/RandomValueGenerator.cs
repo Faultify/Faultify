@@ -125,7 +125,7 @@ namespace Faultify.Analyze
                 }
                 else if (fieldType == typeof(uint) || fieldType == typeof(ulong) || fieldType == typeof(nuint))
                 {
-                    newNumber = _rng.Next(int.MinValue, int.MaxValue);
+                    newNumber = _rng.Next(0, int.MaxValue);
                 }
 
                 // if the generated number equals the orginal, try again
