@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Faultify.Core.Extensions;
 using ICSharpCode.Decompiler.CSharp.Syntax;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Faultify.Analyze
 {
@@ -64,55 +65,73 @@ namespace Faultify.Analyze
         /// <returns>The random character</returns>
         private object GenerateChar(object originalRef)
         {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var original = Convert.ToChar(originalRef);
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var generated = chars[_rng.Next(chars.Length)];
 
-            return original == generated ? GenerateChar(original) : generated;
+            while (true)
+            {
+                var generatedChar = chars[_rng.Next(chars.Length)];
+
+                // if the original equals the generated char, try again
+                if (original == generatedChar) continue;
+
+                // return the int value of the char
+                return (int)char.GetNumericValue(generatedChar);
+            }
         }
 
         /// <summary>
         ///     Returns a random number for the given originalField field.
         /// </summary>
+        /// <param name="fieldType"></param>
         /// <param name="originalField"></param>
         /// <returns></returns>
         public object GenerateNumber(Type fieldType, object originalField)
         {
-            var type = TypeChecker.NumericTypes.First(type => type == fieldType);
+            while (true)
+            {
+                object newNumber = null;
 
-            // Convert.ChangeType throws an exception if changing the type will result in information loss
-            // therefore, we need to make it impossible to generate a number that goes outside of
-            // the range of the target type.
-            object generatedObj;
+                // Generate a new number based on the fieldType
+                // If the type has limits higher or lower then that of Int32, just use the limits of Int32
+                // This is done because _rng.Next only takes arguments of Int32
+                if (fieldType == typeof(double))
+                {
+                    newNumber = _rng.NextDouble();
+                }
+                else if (fieldType == typeof(float))
+                {
+                    newNumber = (float) _rng.NextDouble();
+                }
+                else if (fieldType == typeof(sbyte))
+                {
+                    newNumber = _rng.Next(sbyte.MinValue, sbyte.MaxValue);
+                }
+                else if (fieldType == typeof(byte))
+                {
+                    newNumber = _rng.Next(byte.MinValue, byte.MaxValue);
+                }
+                else if (fieldType == typeof(ushort))
+                {
+                    newNumber = _rng.Next(ushort.MinValue, ushort.MaxValue);
+                }
+                else if (fieldType == typeof(short))
+                {
+                    newNumber = _rng.Next(short.MinValue, short.MaxValue);
+                }
+                else if (fieldType == typeof(int) || fieldType == typeof(long) || fieldType == typeof(nint))
+                {
+                    newNumber = _rng.Next(int.MinValue, int.MaxValue);
+                }
+                else if (fieldType == typeof(uint) || fieldType == typeof(ulong) || fieldType == typeof(nuint))
+                {
+                    newNumber = _rng.Next(int.MinValue, int.MaxValue);
+                }
 
-            if (fieldType == typeof(double))
-                generated = _rng.NextDouble();
-            if (fieldType == typeof(float))
-                generated = (float)_rng.NextDouble();
-
-            (int min, int max) = TypeLimits[fieldType];
-            generatedObj = Convert.ChangeType(_rng.Next(min, max), type);
-            int generated = Convert.ToInt32(generatedObj);
-
-            return originalField == generatedObj ? GenerateNumber(fieldType, originalField) : generated;
+                // if the generated number equals the orginal, try again
+                if (originalField == newNumber) continue;
+                return newNumber;
+            }
         }
-
-        /// <summary>
-        ///     Contains the limits for all numeric types, as integers.
-        ///     If a type has a higher limit than int.MaxValue, we simply use int.Maxvalue.
-        /// </summary>
-        private static Dictionary<Type, (int, int)> TypeLimits = new Dictionary<Type, (int, int)>()
-        {
-            {typeof(sbyte),  (sbyte.MinValue, sbyte.MaxValue)},
-            {typeof(byte),   (byte.MinValue, byte.MaxValue)},
-            {typeof(short),  (short.MinValue, short.MaxValue)},
-            {typeof(ushort), (ushort.MinValue, ushort.MaxValue)},
-            {typeof(int),    (int.MinValue, int.MaxValue)},
-            {typeof(long),   (int.MinValue, int.MaxValue)},
-            {typeof(nint),   (int.MinValue, int.MaxValue)},
-            {typeof(uint),   (0, int.MaxValue)},
-            {typeof(ulong),  (0, int.MaxValue)},
-            {typeof(nuint),  (0, int.MaxValue)}
-        };
     }
 }
