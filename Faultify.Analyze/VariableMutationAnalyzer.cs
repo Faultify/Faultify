@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Faultify.Analyze.Mutation;
 using Faultify.Core.Extensions;
@@ -62,7 +63,7 @@ namespace Faultify.Analyze
                     }
 
                     // Get variable type. Might throw InvalidCastException
-                    var type = ((TypeReference)instruction.Operand).ToSystemType();
+                    var type = ((VariableReference)instruction.Operand).Resolve().VariableType.ToSystemType();
 
 
                     // Get previous instruction.
@@ -82,7 +83,8 @@ namespace Faultify.Analyze
                                 LineNumber = lineNumber
                             });
                 }
-                catch
+                // TODO: Catch only the exception(s) that should be ignored for hopefully obvious reasons...
+                catch (Exception e)
                 {
                     // ignore (sometimes `Type.GetType` fails)
                 }
