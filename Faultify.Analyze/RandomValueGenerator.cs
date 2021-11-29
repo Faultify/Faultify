@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Faultify.Core.Extensions;
+using ICSharpCode.Decompiler.CSharp.Syntax;
 
 namespace Faultify.Analyze
 {
@@ -77,9 +79,40 @@ namespace Faultify.Analyze
         public object GenerateNumber(Type fieldType, object originalField)
         {
             var type = TypeChecker.NumericTypes.First(type => type == fieldType);
-            var generated = Convert.ChangeType(_rng.Next(), type);
 
-            return fieldType == generated ? GenerateNumber(fieldType, originalField) : generated;
+            // Convert.ChangeType throws an exception if changing the type will result in information loss
+            // therefore, we need to make it impossible to generate a number that goes outside of
+            // the range of the target type.
+            object generatedObj;
+
+            if (fieldType == typeof(double))
+                generated = _rng.NextDouble();
+            if (fieldType == typeof(float))
+                generated = (float)_rng.NextDouble();
+
+            (int min, int max) = TypeLimits[fieldType];
+            generatedObj = Convert.ChangeType(_rng.Next(min, max), type);
+            int generated = Convert.ToInt32(generatedObj);
+
+            return originalField == generatedObj ? GenerateNumber(fieldType, originalField) : generated;
         }
+
+        /// <summary>
+        ///     Contains the limits for all numeric types, as integers.
+        ///     If a type has a higher limit than int.MaxValue, we simply use int.Maxvalue.
+        /// </summary>
+        private static Dictionary<Type, (int, int)> TypeLimits = new Dictionary<Type, (int, int)>()
+        {
+            {typeof(sbyte),  (sbyte.MinValue, sbyte.MaxValue)},
+            {typeof(byte),   (byte.MinValue, byte.MaxValue)},
+            {typeof(short),  (short.MinValue, short.MaxValue)},
+            {typeof(ushort), (ushort.MinValue, ushort.MaxValue)},
+            {typeof(int),    (int.MinValue, int.MaxValue)},
+            {typeof(long),   (int.MinValue, int.MaxValue)},
+            {typeof(nint),   (int.MinValue, int.MaxValue)},
+            {typeof(uint),   (0, int.MaxValue)},
+            {typeof(ulong),  (0, int.MaxValue)},
+            {typeof(nuint),  (0, int.MaxValue)}
+        };
     }
 }
