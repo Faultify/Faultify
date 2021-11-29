@@ -364,3 +364,4 @@ FodyWeavers.xsd
 Faultify.sln.DotSettings.user
 
 .idea/
+Faultify.Cli/Properties/launchSettings.json

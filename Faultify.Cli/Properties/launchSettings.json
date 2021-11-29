@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Faultify.Cli": {
-      "commandName": "Project",
-      "commandLineArgs":
-        "-i C:\\Users\\Timon\\Desktop\\Faultify\\Benchmark\\Faultify.Benchmark.NUnit\\Faultify.Benchmark.NUnit.csproj -p 5 -f html"
-    }
-  }
-}
