@@ -130,6 +130,7 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+*.DotSettings
 
 # TeamCity is a build add-in
 _TeamCity*
@@ -361,7 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-Faultify.sln.DotSettings.user
 
 .idea/
 Faultify.Cli/Properties/launchSettings.json
