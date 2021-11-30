@@ -54,9 +54,19 @@ namespace Faultify.Tests.UnitTests.Utils
         {
             var source = File.ReadAllText(path);
 
-            var compilation = CSharpCompilation.Create("test.dll", new[] { CSharpSyntaxTree.ParseText(source) },
-                new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) },
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            var compilation = CSharpCompilation.Create(
+                "test.dll",
+                new[] { CSharpSyntaxTree.ParseText(source) },
+
+                // The string returned by typeof(object).Assembly.Location causes an exception to
+                // happen in CodeDecompiler.cs. The string contains a path to 
+                // "dotnet\shared\Microsoft.NETCore.App\5.0.12", which for some reason doesn't work.
+                // Using the 3.1.21 folder instead fixes it.
+                // Another solution is probably needed in the future.
+                new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location.Replace("5.0.12", "3.1.21")) },
+
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            );
 
             var memoryStream = new MemoryStream();
             var emitResult = compilation.Emit(memoryStream);
