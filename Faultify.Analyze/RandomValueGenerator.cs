@@ -88,50 +88,32 @@ namespace Faultify.Analyze
         /// <returns></returns>
         public object GenerateNumber(Type fieldType, object originalField)
         {
-            while (true)
+            object newNumber = null;
+            do
             {
-                object newNumber = null;
-
                 // Generate a new number based on the fieldType
                 // If the type has limits higher or lower then that of Int32, just use the limits of Int32
                 // This is done because _rng.Next only takes arguments of Int32
                 if (fieldType == typeof(double))
-                {
                     newNumber = _rng.NextDouble();
-                }
                 else if (fieldType == typeof(float))
-                {
                     newNumber = (float) _rng.NextDouble();
-                }
                 else if (fieldType == typeof(sbyte))
-                {
                     newNumber = _rng.Next(sbyte.MinValue, sbyte.MaxValue);
-                }
                 else if (fieldType == typeof(byte))
-                {
                     newNumber = _rng.Next(byte.MinValue, byte.MaxValue);
-                }
                 else if (fieldType == typeof(ushort))
-                {
                     newNumber = _rng.Next(ushort.MinValue, ushort.MaxValue);
-                }
                 else if (fieldType == typeof(short))
-                {
                     newNumber = _rng.Next(short.MinValue, short.MaxValue);
-                }
                 else if (fieldType == typeof(int) || fieldType == typeof(long) || fieldType == typeof(nint))
-                {
                     newNumber = _rng.Next(int.MinValue, int.MaxValue);
-                }
                 else if (fieldType == typeof(uint) || fieldType == typeof(ulong) || fieldType == typeof(nuint))
-                {
                     newNumber = _rng.Next(0, int.MaxValue);
-                }
 
                 // if the generated number equals the orginal, try again
-                if (originalField == newNumber) continue;
-                return newNumber;
-            }
+            } while (originalField == newNumber);
+            return newNumber;
         }
     }
 }
