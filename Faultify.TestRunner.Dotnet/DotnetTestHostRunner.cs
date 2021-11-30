@@ -104,8 +104,6 @@ namespace Faultify.TestRunner.Dotnet
                 var coverageProcessRunner = BuildCodeCoverageTestProcessRunner();
                 var process = await coverageProcessRunner.RunAsync();
 
-                var test = coverageProcessRunner.Output;
-
                 var output = coverageProcessRunner.Output.ToString();
 
                 _logger.LogDebug(output);
