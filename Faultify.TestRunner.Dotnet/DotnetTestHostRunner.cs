@@ -114,16 +114,18 @@ namespace Faultify.TestRunner.Dotnet
                 if (process.ExitCode != 0)
                 {
                     var regex = new Regex(".*Failed (.*) \\[.*");
-                    List<string> failedTests = new List<string>();
                     if (regex.IsMatch(output))
                     {
+                        List<string> failedTests = new List<string>();
                         var myCapturedText = regex.Matches(output);
                         foreach (Match item in myCapturedText)
                         {
                             failedTests.Add(item.Groups[1].Value);
                         }
-                    progressTracker.LogTestFailed(failedTests);
+
+                        progressTracker.LogTestFailed(failedTests);
                     }
+
                     throw new ExitCodeException(process.ExitCode);
                 }
 
