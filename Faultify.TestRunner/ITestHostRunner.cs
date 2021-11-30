@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.Shared;
 
 namespace Faultify.TestRunner
@@ -28,7 +29,8 @@ namespace Faultify.TestRunner
         ///     This process finds out which tests cover which mutations.
         /// </summary>
         /// <param name="cancellationToken"></param>
+        /// <param name="progressTracker"></param>
         /// <returns></returns>
-        Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken);
+        Task<MutationCoverage> RunCodeCoverage(MutationSessionProgressTracker progressTracker, CancellationToken cancellationToken);
     }
 }

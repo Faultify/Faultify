@@ -116,6 +116,12 @@ namespace Faultify.Cli
                     Console.WriteLine($"\n> [{s.Progress}%] {s.Message}");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
+                else if (s.LogMessageType == LogMessageType.Error)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\n> [{s.Progress}%] {s.Message}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
                 else if (s.LogMessageType != LogMessageType.Other)
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;

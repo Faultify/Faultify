@@ -78,7 +78,8 @@ namespace Faultify.TestRunner
 
             var coverageTimer = new Stopwatch();
             coverageTimer.Start();
-            var coverage = await RunCoverage(coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
+            var coverage = await RunCoverage(progressTracker, coverageProject.TestProjectFile.FullFilePath(), cancellationToken);
+            
             coverageTimer.Stop();
 
             var timeout = _createTimeOut(coverageTimer);
@@ -202,14 +203,14 @@ namespace Faultify.TestRunner
         /// <param name="testAssemblyPath"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async Task<MutationCoverage> RunCoverage(string testAssemblyPath, CancellationToken cancellationToken)
+        private async Task<MutationCoverage> RunCoverage(MutationSessionProgressTracker progressTracker, string testAssemblyPath, CancellationToken cancellationToken)
         {
             using var file = Utils.CreateCoverageMemoryMappedFile();
             try
             {
                 var testRunner =
                     _testHostRunFactory.CreateTestRunner(testAssemblyPath, TimeSpan.FromSeconds(12), _testHostLogger);
-                return await testRunner.RunCodeCoverage(cancellationToken);
+                return await testRunner.RunCodeCoverage(progressTracker, cancellationToken);
             }
             catch (Exception e)
             {
