@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
 namespace Faultify.TestRunner.Logging
@@ -57,6 +58,19 @@ namespace Faultify.TestRunner.Logging
                 "| - Run test session\n" +
                 "| - Calculate optimal way to execute most mutations in the least amount of test runs.",
                 LogMessageType.CodeCoverage);
+        }
+
+        public void LogTestFailed(List<string> failedTests)
+        {
+            _currentPercentage = 100;
+
+            var logFailedTests = "";
+            failedTests.ForEach(x => { logFailedTests += $"| - {x}\n"; });
+
+            Log("Process stopped: Not all unit-tests passed in the target project\n" +
+                $"{logFailedTests}",
+                LogMessageType.Error
+                );
         }
 
         public void LogBeginTestSession(int totalTestRounds, int mutationCount, TimeSpan testRunTime)

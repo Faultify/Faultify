@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Faultify.MemoryTest.TestInformation;
+using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -36,7 +37,7 @@ namespace Faultify.TestRunner.XUnit
             return _testResults;
         }
 
-        public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
+        public async Task<MutationCoverage> RunCodeCoverage(MutationSessionProgressTracker progressTracker, CancellationToken cancellationToken)
         {
             var xunitHostRunner = new MemoryTest.XUnit.XUnitTestHostRunner(_testProjectAssemblyPath);
             xunitHostRunner.TestEnd += OnTestEndCoverage;

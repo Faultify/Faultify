@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Faultify.TestRunner.Logging;
 using Faultify.TestRunner.Shared;
 using Faultify.TestRunner.TestProcess;
 using Microsoft.Extensions.Logging;
@@ -95,19 +97,35 @@ namespace Faultify.TestRunner.Dotnet
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<MutationCoverage> RunCodeCoverage(CancellationToken cancellationToken)
+        public async Task<MutationCoverage> RunCodeCoverage(MutationSessionProgressTracker progressTracker, CancellationToken cancellationToken)
         {
             try
             {
                 var coverageProcessRunner = BuildCodeCoverageTestProcessRunner();
                 var process = await coverageProcessRunner.RunAsync();
 
+                var test = coverageProcessRunner.Output;
+
                 var output = coverageProcessRunner.Output.ToString();
 
                 _logger.LogDebug(output);
                 _logger.LogError(coverageProcessRunner.Error.ToString());
 
-                if (process.ExitCode != 0) throw new ExitCodeException(process.ExitCode);
+                if (process.ExitCode != 0)
+                {
+                    var regex = new Regex(".*Failed (.*) \\[.*");
+                    List<string> failedTests = new List<string>();
+                    if (regex.IsMatch(output))
+                    {
+                        var myCapturedText = regex.Matches(output);
+                        foreach (Match item in myCapturedText)
+                        {
+                            failedTests.Add(item.Groups[1].Value);
+                        }
+                    progressTracker.LogTestFailed(failedTests);
+                    }
+                    throw new ExitCodeException(process.ExitCode);
+                }
 
                 return Utils.ReadMutationCoverageFile();
             }
@@ -120,6 +138,8 @@ namespace Faultify.TestRunner.Dotnet
             catch (ExitCodeException e)
             {
                 _logger.LogError(e, $"Subprocess terminated with error code {e.ExitCode}");
+                
+                Environment.Exit(1);
             }
             catch (Exception e)
             {
