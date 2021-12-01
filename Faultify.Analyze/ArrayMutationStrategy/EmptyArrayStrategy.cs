@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Faultify.Core.Extensions;
 
 namespace Faultify.Analyze.ArrayMutationStrategy
 {
@@ -15,30 +16,14 @@ namespace Faultify.Analyze.ArrayMutationStrategy
     /// </summary>
     public class EmptyArrayStrategy : IArrayMutationStrategy
     {
+        private readonly ArrayBuilder _arrayBuilder;
         private readonly MethodDefinition _methodDefinition;
         private TypeReference _type;
+
         public EmptyArrayStrategy(MethodDefinition methodDefinition)
         {
+            _arrayBuilder = new ArrayBuilder();
             _methodDefinition = methodDefinition;
-        }
-
-        public void Mutate()
-        {
-            var processor = _methodDefinition.Body.GetILProcessor();
-            _methodDefinition.Body.SimplifyMacros();
-
-            for (int i = 0; i < _methodDefinition.Body.Instructions.Count; i++)
-            {
-                var instruction = _methodDefinition.Body.Instructions[i];
-
-                if (instruction.Next != null && instruction.Next.OpCode == OpCodes.Newarr )
-                {
-                    processor.Body.Instructions[i].OpCode = OpCodes.Ldc_I4_0;
-                }
-            }
-
-            //processor.Clear();
-            _methodDefinition.Body.OptimizeMacros();
         }
 
         public void Reset(MethodDefinition methodBody, MethodDefinition methodClone)
@@ -46,6 +31,58 @@ namespace Faultify.Analyze.ArrayMutationStrategy
             methodBody.Body.Instructions.Clear();
             foreach (var instruction in methodClone.Body.Instructions)
                 methodBody.Body.Instructions.Add(instruction);
+        }
+
+        public void Mutate()
+        {
+            var processor = _methodDefinition.Body.GetILProcessor();
+            _methodDefinition.Body.SimplifyMacros();
+
+            var beforeArray = new List<Instruction>();
+            var afterArray = new List<Instruction>();
+
+            foreach (var instruction in _methodDefinition.Body.Instructions)
+            {
+                if (!instruction.IsDynamicArray())
+                {
+                    beforeArray.Add(instruction);
+                }
+
+                // if dynamic array add all instructions after the array initialisation.
+                else if (instruction.IsDynamicArray())
+                {
+                    beforeArray.Remove(instruction.Previous);
+                    // get type of array
+                    _type = (TypeReference)instruction.Operand;
+
+                    var call = instruction.Next.Next.Next;
+
+                    // Add all other nodes to the list.
+                    var next = call.Next;
+                    while (next != null)
+                    {
+                        afterArray.Add(next);
+                        next = next.Next;
+                    }
+
+                    break;
+                }
+            }
+
+            processor.Clear();
+
+            // append everything before array.
+            foreach (var before in beforeArray) processor.Append(before);
+
+            var newArray = _arrayBuilder.CreateArray(processor, 0, _type);
+
+            // append new array
+            foreach (var newInstruction in newArray) processor.Append(newInstruction);
+
+            // append after array.
+            foreach (var after in afterArray) processor.Append(after);
+
+            _methodDefinition.Body.OptimizeMacros();
         }
     }
 }
