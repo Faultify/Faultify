@@ -42,7 +42,7 @@ namespace Faultify.Analyze
             foreach (var instruction in method.Body.Instructions)
                 // Call the corresponding strategy based on the result
                 if (instruction.IsDynamicArray() && SupportedTypeCheck(instruction))
-                    yield return new ArrayMutation(new EmptyArrayStrategy(method), method);
+                    yield return new ArrayMutation(new DynamicArrayRandomizerStrategy(method), method);
         }
 
         /// <summary>
