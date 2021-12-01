@@ -50,7 +50,8 @@ namespace Faultify.TestRunner
                     // Add mutation to the report
                     _testProjectReportModel.Mutations.Add(new MutationVariantReportModel(
                         mutation.Mutation.Report, "",
-                        new MutationAnalyzerReportModel(mutation.MutationAnalyzerInfo.AnalyzerName,
+                        new MutationAnalyzerReportModel(
+                            mutation.MutationAnalyzerInfo.AnalyzerName,
                             mutation.MutationAnalyzerInfo.AnalyzerDescription),
                         mutationStatus,
                         testRunDuration,
