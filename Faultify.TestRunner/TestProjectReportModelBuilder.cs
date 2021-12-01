@@ -75,10 +75,10 @@ namespace Faultify.TestRunner
             if (testResultsTests.All(t => t.Outcome == TestOutcome.Passed)) return MutationStatus.Survived;
 
             // if any of the tests have failed, the mutation was caught (it was killed)
-            if (testResultsTests.Any(t => t.Outcome == TestOutcome.Failed)) return MutationStatus.Timeout;
+            if (testResultsTests.Any(t => t.Outcome == TestOutcome.Failed)) return MutationStatus.Killed;
 
-            // any other outcome is being marked as a timeout 
-            return MutationStatus.Timeout;
+           // any other outcome is being marked as a timeout 
+           return MutationStatus.Timeout;
         }
     }
 }
