@@ -332,6 +332,7 @@ namespace Faultify.TestRunner
                 }
             }
 
+            // maps testRuns to their results
             var tasks = from testRun in mutationTestRuns select RunTestRun(testRun);
 
             Task.WaitAll(tasks.ToArray());
