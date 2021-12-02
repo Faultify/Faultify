@@ -63,7 +63,7 @@ namespace Faultify.Tests.UnitTests.Utils
                 // "dotnet\shared\Microsoft.NETCore.App\5.0.12", which for some reason doesn't work.
                 // Using the 3.1.21 folder instead fixes it.
                 // Another solution is probably needed in the future.
-                new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location.Replace("5.0.12", "3.1.21")) },
+                new[] { MetadataReference.CreateFromFile(GetAssemblyForDecompilerTests()) },
 
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
             );
@@ -250,6 +250,29 @@ namespace Faultify.Tests.UnitTests.Utils
         protected override Assembly Load(AssemblyName assemblyName)
         {
             return null;
+        }
+
+        /// <summary>
+        ///     Gets the assembly which works for all of the DecompilerTests.
+        ///     For some reason, the default directory for .NET 5 causes an exception, but directories for .NET 3 work fine.
+        ///     So this gets the assembly, and traverses out of the .NET 5 path into the .NET 3 path, which supposedly fixes it.
+        /// </summary>
+        /// <returns>An assembly directory that doesn't cause the DecompilerTests to "Fail to resolve assembly"</returns>
+        private static string GetAssemblyForDecompilerTests()
+        {
+            string assembly = typeof(object).Assembly.Location;
+            string currentDir = Path.GetDirectoryName(assembly);
+            string folderName = Path.GetFileName(currentDir);
+
+            if (!folderName.StartsWith('3'))
+            {
+                string versionFolder = Path.GetDirectoryName(currentDir);
+                var newDir = Directory.EnumerateDirectories(versionFolder, "3.*").OrderByDescending(x => x).FirstOrDefault();
+                if (newDir is null) throw new Exception("No .NET 3 directory found.");
+                assembly = Path.Combine(newDir, Path.GetFileName(assembly));
+            }
+
+            return assembly;
         }
     }
 }
