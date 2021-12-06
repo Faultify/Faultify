@@ -9,7 +9,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
     /// <summary>
     ///     Builder for building arrays in IL-code.
     /// </summary>
-    public class ArrayBuilder
+    public class RandomizedArrayBuilder
     {
         private RandomValueGenerator _randomValueGenerator;
 
@@ -20,7 +20,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
         /// <param name="length"></param>
         /// <param name="arrayType"></param>
         /// <returns></returns>
-        public List<Instruction> CreateArray(ILProcessor processor, int length, TypeReference arrayType)
+        public List<Instruction> CreateRandomizedArray(ILProcessor processor, int length, TypeReference arrayType, object[] data)
         {
             _randomValueGenerator = new RandomValueGenerator();
             var opcodeTypeValueAssignment = arrayType.GetLdcOpCodeByTypeReference();
@@ -35,7 +35,7 @@ namespace Faultify.Analyze.ArrayMutationStrategy
             };
             for (var i = 0; i < length; i++)
             {
-                var random = _randomValueGenerator.GenerateValueForField(arrayType.ToSystemType(), 0);
+                var random = _randomValueGenerator.GenerateValueForField(arrayType.ToSystemType(), data[i]);
 
                 list.Add(processor.Create(OpCodes.Dup));
 
